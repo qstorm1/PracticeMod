@@ -34,6 +34,18 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider {
         addDrop(ModBlocks.RAW_DEEPSLATE_SOUL_ORE_BLOCK, oreDrops(ModBlocks.RAW_DEEPSLATE_SOUL_ORE_BLOCK, ModItems.RAW_SOUL_ORE));
         addDrop(ModBlocks.SOUL_SUMMONER);
 
+
+        addDrop(ModBlocks.SOUL_BLOCK_FENCE);
+        addDrop(ModBlocks.SOUL_BLOCK_FENCE_GATE);
+        addDrop(ModBlocks.SOUL_BLOCK_WALL);
+        addDrop(ModBlocks.SOUL_BLOCK_BUTTON);
+        addDrop(ModBlocks.SOUL_BLOCK_STAIR);
+        //2 blocks in one sometimes for slab and door so we have 2 outputs
+        addDrop(ModBlocks.SOUL_BLOCK_SLAB,slabDrops(ModBlocks.SOUL_BLOCK_SLAB));
+        addDrop(ModBlocks.SOUL_BLOCK_DOOR,doorDrops(ModBlocks.SOUL_BLOCK_DOOR));
+        addDrop(ModBlocks.SOUL_BLOCK_TRAP_DOOR);
+        addDrop(ModBlocks.SOUL_BLOCK_PRESSURE_PLATE);
+
     }
 
     //Im not even gonna try to understand this

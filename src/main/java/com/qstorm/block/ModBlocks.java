@@ -2,9 +2,7 @@ package com.qstorm.block;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.block.custom.MagicBlock;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.ExperienceDroppingBlock;
+import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -30,6 +28,48 @@ public class ModBlocks {
 
     public static final Block SOUL_BLOCK = registerBlock("soul_block", Block::new,AbstractBlock.Settings.create()
             .strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+
+    public static final Block SOUL_BLOCK_STAIR = registerBlock("soul_block_stair",
+            settings -> new StairsBlock(ModBlocks.SOUL_BLOCK.getDefaultState(),settings),
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+    public static final Block SOUL_BLOCK_SLAB = registerBlock("soul_block_slab",
+            SlabBlock::new,
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+
+    public static final Block SOUL_BLOCK_BUTTON = registerBlock("soul_block_button",
+            settings -> new ButtonBlock(BlockSetType.OAK,5,settings),
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+    public static final Block SOUL_BLOCK_PRESSURE_PLATE = registerBlock("soul_block_pressure_plate",
+            settings -> new PressurePlateBlock(BlockSetType.IRON,settings),
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+
+    public static final Block SOUL_BLOCK_FENCE = registerBlock("soul_block_fence",
+            FenceBlock::new,
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+    public static final Block SOUL_BLOCK_FENCE_GATE = registerBlock("soul_block_fence_gate",
+            settings -> new FenceGateBlock(WoodType.ACACIA,settings),
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+    public static final Block SOUL_BLOCK_WALL = registerBlock("soul_block_wall",
+            WallBlock::new,
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+//call non-opaque
+    public static final Block SOUL_BLOCK_DOOR = registerBlock("soul_block_door",
+            settings -> new DoorBlock(BlockSetType.IRON,settings),
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+    public static final Block SOUL_BLOCK_TRAP_DOOR = registerBlock("soul_block_trap_door",
+            settings -> new TrapdoorBlock(BlockSetType.IRON,settings),
+            AbstractBlock.Settings.create().strength(4f).requiresTool().sounds(BlockSoundGroup.DRIPSTONE_BLOCK));
+
+
 
     public static final Block RAW_SOUL_ORE_BLOCK = registerBlock("raw_soul_ore_block",
             settings -> new ExperienceDroppingBlock(UniformIntProvider.create(3,4),settings),

@@ -1,2 +1,5 @@
 // 1.21.11	-999999999-01-01T00:00:00	practice mod/Tags for minecraft:block
+d5909f96cb3cd8aca5667d8ed9b9aa509029ec7a data/minecraft/tags/block/fence_gates.json
+ef90bb8431effb9aeb1c7dbc83151e8e1cc287f6 data/minecraft/tags/block/fences.json
 ffdf613caebe93e5699a0783e731ef1e745f282d data/minecraft/tags/block/mineable/pickaxe.json
+e04301b026888f8c106b2f5638604ac5fdb89188 data/minecraft/tags/block/walls.json

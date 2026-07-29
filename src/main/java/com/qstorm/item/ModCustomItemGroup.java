@@ -28,6 +28,18 @@ public class ModCustomItemGroup {
                                 entries.add(ModBlocks.RAW_DEEPSLATE_SOUL_ORE_BLOCK);
 
 
+                                entries.add(ModBlocks.SOUL_BLOCK_FENCE);
+                                entries.add(ModBlocks.SOUL_BLOCK_FENCE_GATE);
+                                entries.add(ModBlocks.SOUL_BLOCK_WALL);
+                                entries.add(ModBlocks.SOUL_BLOCK_STAIR);
+                                entries.add(ModBlocks.SOUL_BLOCK_SLAB);
+                                entries.add(ModBlocks.SOUL_BLOCK_PRESSURE_PLATE);
+                                entries.add(ModBlocks.SOUL_BLOCK_BUTTON);
+                                entries.add(ModBlocks.SOUL_BLOCK_TRAP_DOOR);
+                                entries.add(ModBlocks.SOUL_BLOCK_DOOR);
+
+
+
                             }))
 
                     .build());

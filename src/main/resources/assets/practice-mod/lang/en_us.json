@@ -7,6 +7,17 @@
   "item.practice-mod.raw_soul_ore_block": "Raw Soul Block",
   "item.practice-mod.raw_deepslate_soul_ore_block": "Raw Deepslate Soul Block",
 
+
+  "item.practice-mod.soul_block_stair": "Soul Stair",
+  "item.practice-mod.soul_block_slab": "Soul Slab",
+  "item.practice-mod.soul_block_pressure_plate": "Soul Pressure Plate",
+  "item.practice-mod.soul_block_button": "Soul Button",
+  "item.practice-mod.soul_block_trapdoor": "Soul Trapdoor",
+  "item.practice-mod.soul_block_door": "Soul Door",
+  "item.practice-mod.soul_block_fence_gate": "Soul Fence Gate",
+  "item.practice-mod.soul_block_fence": "Soul Fence",
+  "item.practice-mod.soul_block_wall": "Soul Wall",
+
   "item.practice-mod.chisel": "Chisel",
 
   "item.practice-mod.magic_block": "Sorcery Device",

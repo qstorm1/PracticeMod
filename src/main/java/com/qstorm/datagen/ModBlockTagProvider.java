@@ -23,5 +23,11 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 .add(ModBlocks.RAW_SOUL_ORE_BLOCK)
                 .add(ModBlocks.RAW_DEEPSLATE_SOUL_ORE_BLOCK)
                 .add(ModBlocks.SOUL_SUMMONER);
+
+
+        //handle conection to other fences
+        valueLookupBuilder(BlockTags.FENCES).add(ModBlocks.SOUL_BLOCK_FENCE);
+        valueLookupBuilder(BlockTags.WALLS).add(ModBlocks.SOUL_BLOCK_WALL);
+        valueLookupBuilder(BlockTags.FENCE_GATES).add(ModBlocks.SOUL_BLOCK_FENCE_GATE);
     }
 }
