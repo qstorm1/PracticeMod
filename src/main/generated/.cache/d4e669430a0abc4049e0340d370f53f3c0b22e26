@@ -1,0 +1,6 @@
+// 1.21.11	-999999999-01-01T00:00:00	practice mod/Block Loot Tables
+29bdb8c4edc62c78a4548167e91f09b5ef7e434a data/practice-mod/loot_table/blocks/magic_block.json
+846457040a3978004c13864f718546badd110eef data/practice-mod/loot_table/blocks/raw_deepslate_soul_ore_block.json
+400778c716193337e1932a71af364df345735719 data/practice-mod/loot_table/blocks/raw_soul_ore_block.json
+e39f90dfee90f67b0bcb3141379c15bb59a90358 data/practice-mod/loot_table/blocks/soul_block.json
+4ced1f0245fd8fae7dd75fe45a0b7167e60da590 data/practice-mod/loot_table/blocks/soul_summoner.json

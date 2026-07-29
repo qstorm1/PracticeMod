@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "practice-mod:soul_block",
+    "B": "minecraft:enchanted_golden_apple",
+    "C": "minecraft:conduit",
+    "D": "minecraft:heavy_core",
+    "E": "minecraft:totem_of_undying",
+    "F": "minecraft:netherite_block"
+  },
+  "pattern": [
+    "#F#",
+    "DEC",
+    "#B#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "practice-mod:soul_summoner"
+  }
+}

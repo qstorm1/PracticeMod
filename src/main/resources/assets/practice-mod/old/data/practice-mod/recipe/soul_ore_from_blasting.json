@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 3,
+  "ingredient": "practice-mod:raw_soul_ore",
+  "result": {
+    "id": "practice-mod:soul_ore"
+  }
+}

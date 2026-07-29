@@ -1,0 +1,16 @@
+{
+  "item.practice-mod.soul_ore":"Revival Ingot",
+  "item.practice-mod.raw_soul_ore":"Unpowered Soul ore",
+
+  "item.practice-mod.soul_summoner":"Soul Summoner",
+  "item.practice-mod.soul_block":"Revival Block",
+  "item.practice-mod.raw_soul_ore_block": "Raw Soul Block",
+  "item.practice-mod.raw_deepslate_soul_ore_block": "Raw Deepslate Soul Block",
+
+  "item.practice-mod.chisel": "Chisel",
+
+  "item.practice-mod.magic_block": "Sorcery Device",
+
+
+  "itemgroup.practice-mod.jjk_group": "JJK Items"
+}

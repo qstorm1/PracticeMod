@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "practice-mod:block/raw_soul_ore_block"
+  }
+}

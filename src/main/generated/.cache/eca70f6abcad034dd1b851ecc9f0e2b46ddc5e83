@@ -1,0 +1,22 @@
+// 1.21.11	-999999999-01-01T00:00:00	practice mod/Model Definitions
+2b82da88dd423f077779240dea46ba3c9993682f assets/practice-mod/blockstates/magic_block.json
+cebeec2985a8196d3238812e22f5abf9e263f058 assets/practice-mod/blockstates/raw_deepslate_soul_ore_block.json
+641c6bec5e8635fe452339497431746a543b86be assets/practice-mod/blockstates/raw_soul_ore_block.json
+e5a46af98998fa7ef809d2e9d29dff878e8160e3 assets/practice-mod/blockstates/soul_block.json
+17c0a479f9c1e8438f057f8b74cf475f4cea14d1 assets/practice-mod/blockstates/soul_summoner.json
+3181196903ed7a180f5f3571a4a994d937b9bba4 assets/practice-mod/items/chisel.json
+22b3ea4b74ad7755ae1e88199ff78068e2188834 assets/practice-mod/items/magic_block.json
+cc03fa44cba328144a302e3ba6a4eafe491707b9 assets/practice-mod/items/raw_deepslate_soul_ore_block.json
+e095c807de59e600ff8d8a19b67d39186a3b1d44 assets/practice-mod/items/raw_soul_ore.json
+ee3cf8f913b4a79bd60f7cc17631888c172bd709 assets/practice-mod/items/raw_soul_ore_block.json
+9ab63be131cfd2a50d3d55f3a97613e5e2e7d1c6 assets/practice-mod/items/soul_block.json
+be7116826d4bb9c42eee941000fb7054c7c7d4fd assets/practice-mod/items/soul_ore.json
+7387eb57929bf9680f74414c7ada55b31a2db7ff assets/practice-mod/items/soul_summoner.json
+c3972ca76b6596e34ef97022423c6112bfe72d9a assets/practice-mod/models/block/magic_block.json
+4ad91b45058d6f51088b6c488373cb76b999f3ee assets/practice-mod/models/block/raw_deepslate_soul_ore_block.json
+6316e577f2967b62e8c070be498f753cc5133147 assets/practice-mod/models/block/raw_soul_ore_block.json
+d53929fc0166176a54f94d38bd40cdac87af2afb assets/practice-mod/models/block/soul_block.json
+ce73834c49ac164eec45a3f8386f856e34bdb288 assets/practice-mod/models/block/soul_summoner.json
+ac229925cdbaf4ea1c1651756cc823ff93a38a27 assets/practice-mod/models/item/chisel.json
+55391002a7398d9f7f7c7a898db616ccd66d4f43 assets/practice-mod/models/item/raw_soul_ore.json
+36cf734736344936008f46f5f4cd1c817c642834 assets/practice-mod/models/item/soul_ore.json
