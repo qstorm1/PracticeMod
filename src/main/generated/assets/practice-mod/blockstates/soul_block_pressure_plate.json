@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "practice-mod:block/soul_block_pressure_plate"
+    },
+    "powered=true": {
+      "model": "practice-mod:block/soul_block_pressure_plate_down"
+    }
+  }
+}

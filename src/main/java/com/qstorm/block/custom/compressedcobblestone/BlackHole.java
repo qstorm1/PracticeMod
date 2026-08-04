@@ -1,8 +1,11 @@
 package com.qstorm.block.custom.compressedcobblestone;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 public class BlackHole extends Block {
+    public BlackHole(Properties properties) {
+        super(properties);
+    }
     //A blackhole forms when 2GM>c^2 (r is 1 meter cubed so it's factored out)
     //the mass must be equal to 6.73295462e26
     //We need to convert it 28 times to form a black hole
@@ -11,7 +14,4 @@ public class BlackHole extends Block {
 
     //GM/r^2=g
 
-    public BlackHole(Settings settings) {
-        super(settings);
-    }
 }

@@ -3,9 +3,9 @@
 	"id": "practice-mod",
 	"version": "${version}",
 	"name": "practice mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Just a mod I made for fun and adding random stuff to!",
 	"authors": [
-		"Me!"
+		"qstorm"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
@@ -29,9 +29,9 @@
 		"practice-mod.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.19.3",
-		"minecraft": "~1.21.11",
-		"java": ">=21",
+		"fabricloader": ">=0.15.10",
+		"minecraft": "26.1",
+		"java": ">=25",
 		"fabric-api": "*"
 	}
 }
