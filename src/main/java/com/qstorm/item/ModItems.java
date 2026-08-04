@@ -2,7 +2,9 @@ package com.qstorm.item;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.item.custom.Chizel;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
@@ -16,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ModItems {
     public static final Item SOUL_ORE = registerItem("soul_ore",new Item.Settings(),Item.class);
+
     public static final Item RAW_SOUL_ORE = registerItem("raw_soul_ore",new Item.Settings(),Item.class);
 
     public static final Item CHISEl = registerItem("chisel",new Item.Settings(),Chizel.class);
@@ -34,10 +37,12 @@ public class ModItems {
             System.out.println("error loading object: "+name);
             PracticeMod.LOGGER.info("error loading object {}", name);
         }
+
         return Registry.register(Registries.ITEM, key, new Item(itemSettings));
 
 
     }
+
 
 
     public static void registerModItems(){

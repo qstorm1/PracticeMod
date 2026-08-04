@@ -12,7 +12,7 @@ public class PracticeModDataGenerator implements DataGeneratorEntrypoint {
 
 		//adds a constructor to the code that creates data packs/resource packs
 		pack.addProvider(ModBlockTagProvider::new);
-		//pack.addProvider(ModItemTagProvider::new);
+		pack.addProvider(ModItemTagProvider::new);
 		pack.addProvider(ModLootTableProvider::new);
 		pack.addProvider(ModModelProvider::new);
 		pack.addProvider(ModRecipeProvider::new);
