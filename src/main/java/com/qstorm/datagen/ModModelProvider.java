@@ -21,7 +21,15 @@ public class ModModelProvider extends FabricModelProvider {
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.RAW_SOUL_ORE_BLOCK);
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.RAW_DEEPSLATE_SOUL_ORE_BLOCK);
         blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.MAGIC_BLOCK);
-        
+
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.COMPRESSED_COBBLESTONE);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.VERY_COMPRESSED_COBBLESTONE);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.EXTREMELY_COMPRESSED_COBBLESTONE);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.SUPER_COMPRESSED_COBBLESTONE);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ULTRA_COMPRESSED_COBBLESTONE);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.INCREDIBLY_COMPRESSED_COBBLESTONE);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.RADICALLY_COMPRESSED_COBBLESTONE);
+
         soulBlockPool.stairs(ModBlocks.SOUL_BLOCK_STAIR);
         soulBlockPool.slab(ModBlocks.SOUL_BLOCK_SLAB);
         soulBlockPool.button(ModBlocks.SOUL_BLOCK_BUTTON);

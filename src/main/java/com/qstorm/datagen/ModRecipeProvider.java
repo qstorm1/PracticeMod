@@ -42,7 +42,18 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
                 offerReversibleCompactingRecipes(RecipeCategory.BUILDING_BLOCKS,ModItems.SOUL_ORE,RecipeCategory.DECORATIONS,ModBlocks.SOUL_BLOCK);
 
-                
+                offerReversibleCompactingRecipes(RecipeCategory.BUILDING_BLOCKS,Blocks.COBBLESTONE,RecipeCategory.BUILDING_BLOCKS,ModBlocks.COMPRESSED_COBBLESTONE);
+                offerReversibleCompactingRecipes(RecipeCategory.BUILDING_BLOCKS,ModBlocks.VERY_COMPRESSED_COBBLESTONE,RecipeCategory.BUILDING_BLOCKS,ModBlocks.EXTREMELY_COMPRESSED_COBBLESTONE);
+                offerReversibleCompactingRecipes(RecipeCategory.BUILDING_BLOCKS,ModBlocks.SUPER_COMPRESSED_COBBLESTONE,RecipeCategory.BUILDING_BLOCKS,ModBlocks.ULTRA_COMPRESSED_COBBLESTONE);
+                offerReversibleCompactingRecipes(RecipeCategory.BUILDING_BLOCKS,ModBlocks.INCREDIBLY_COMPRESSED_COBBLESTONE,RecipeCategory.BUILDING_BLOCKS,ModBlocks.RADICALLY_COMPRESSED_COBBLESTONE);
+
+//im too lazy to do this rn but I have to do this manually because the recipe json files are already created for the other blocks
+//                offerReversibleCompactingRecipes(RecipeCategory.BUILDING_BLOCKS,ModBlocks.COMPRESSED_COBBLESTONE,RecipeCategory.BUILDING_BLOCKS,ModBlocks.VERY_COMPRESSED_COBBLESTONE);
+//                offerReversibleCompactingRecipes(RecipeCategory.BUILDING_BLOCKS,ModBlocks.EXTREMELY_COMPRESSED_COBBLESTONE,RecipeCategory.BUILDING_BLOCKS,ModBlocks.SUPER_COMPRESSED_COBBLESTONE);
+//                offerReversibleCompactingRecipes(RecipeCategory.BUILDING_BLOCKS,ModBlocks.ULTRA_COMPRESSED_COBBLESTONE,RecipeCategory.BUILDING_BLOCKS,ModBlocks.INCREDIBLY_COMPRESSED_COBBLESTONE);
+//
+
+
                 //I understand everything except this cause the documentation is so bad bruh
                 ShapedRecipeJsonBuilder.create(new RegistryEntryLookup<Item>() {
                     @Override

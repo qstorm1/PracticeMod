@@ -34,6 +34,14 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider {
         addDrop(ModBlocks.RAW_DEEPSLATE_SOUL_ORE_BLOCK, oreDrops(ModBlocks.RAW_DEEPSLATE_SOUL_ORE_BLOCK, ModItems.RAW_SOUL_ORE));
         addDrop(ModBlocks.SOUL_SUMMONER);
 
+        addDrop(ModBlocks.COMPRESSED_COBBLESTONE);
+        addDrop(ModBlocks.VERY_COMPRESSED_COBBLESTONE);
+        addDrop(ModBlocks.EXTREMELY_COMPRESSED_COBBLESTONE);
+        addDrop(ModBlocks.SUPER_COMPRESSED_COBBLESTONE);
+        addDrop(ModBlocks.ULTRA_COMPRESSED_COBBLESTONE);
+        addDrop(ModBlocks.INCREDIBLY_COMPRESSED_COBBLESTONE);
+        addDrop(ModBlocks.RADICALLY_COMPRESSED_COBBLESTONE);
+
 
         addDrop(ModBlocks.SOUL_BLOCK_FENCE);
         addDrop(ModBlocks.SOUL_BLOCK_FENCE_GATE);

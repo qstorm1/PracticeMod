@@ -5,24 +5,76 @@ import com.qstorm.block.custom.MagicBlock;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 public class ModBlocks {
+    //the mass of a piece of cobble is treated as 1kg
+
+    //9 cobble
+    public static final Block COMPRESSED_COBBLESTONE = registerBlock("compressed_cobblestone",Block::new,AbstractBlock.Settings.create()
+            .strength(4f,12f).requiresTool());
+
+    //81 cobble
+    public static final Block VERY_COMPRESSED_COBBLESTONE = registerBlock("very_compressed_cobblestone",Block::new,AbstractBlock.Settings.create()
+            .strength(8f,24f).requiresTool());
+
+    //729
+    public static final Block EXTREMELY_COMPRESSED_COBBLESTONE = registerBlock("extremely_compressed_cobblestone",Block::new,AbstractBlock.Settings.create()
+            .strength(16f,48f).requiresTool());
+
+    //6561
+    public static final Block SUPER_COMPRESSED_COBBLESTONE = registerBlock("super_compressed_cobblestone",Block::new,AbstractBlock.Settings.create()
+            .strength(64f,96f).requiresTool());
+
+    //59049
+    public static final Block ULTRA_COMPRESSED_COBBLESTONE = registerBlock("ultra_compressed_cobblestone",Block::new,AbstractBlock.Settings.create()
+            .strength(256f,192f).requiresTool());
+
+    //531441
+    public static final Block INCREDIBLY_COMPRESSED_COBBLESTONE = registerBlock("incredibly_compressed_cobblestone",Block::new,AbstractBlock.Settings.create()
+            .strength(512f,384f).requiresTool());
+
+    //4782969
+    public static final Block RADICALLY_COMPRESSED_COBBLESTONE = registerBlock("radically_compressed_cobblestone",Block::new,AbstractBlock.Settings.create()
+            .strength(1024f,768f).requiresTool());
+
+    //43046721
+    //387420489
+    //3486784401
+    //3.13810596e10 Has A gravitational Radius
+    //2.82429536e11
+    //2.54186582e12
+    //2.28767924e13
+    //2.05891132e14
+    //1.85302019e15
+    //1.66771817e16
+    //1.50094635e17
+    //1.35085172e18
+    //1.21576655e19
+    //1.0941899e20
+    //9.8477091e20
+    //8.86293819e21
+    //7.97664437e22
+    //7.17897993e23
+    //6.46108194e24
+    //5.81497375e25 incomprehensibility
+    //5.23347638e26 black hole
+    //4.71012874e27
+    //4.23911587e28
+    //3.81520428e29 super massive black hole
+
+
+    //gravitational fields begin to form after 10 compresses
+
+
     public static final Block SOUL_SUMMONER = registerBlock("soul_summoner",Block::new, AbstractBlock.Settings.create()
             .strength(6f).requiresTool().sounds(BlockSoundGroup.IRON));
 
@@ -94,23 +146,6 @@ public class ModBlocks {
     }
 
 
-//    /**
-//     * Use when registering a normal Block
-//     * @param name name of an object
-//     * @param settings settings for the object
-//     * @return the registered block
-//     */
-//    private static Block registerBlock(String name,AbstractBlock.Settings settings){
-//        RegistryKey<Block> key = RegistryKey.of(RegistryKeys.BLOCK,Identifier.of(PracticeMod.MOD_ID,name));
-//        settings.registryKey(key);
-//        Block block = new Block(settings);
-//        registerBlockItems(name,block);
-//        return Registry.register(Registries.BLOCK,
-//                key,
-//                block);
-//    }
-
-
 
 
     //AI GENERATED
@@ -133,30 +168,6 @@ public class ModBlocks {
         return Registry.register(Registries.BLOCK, key, block);
     }
 
-//    /**
-//     * Used when child class has the same number of constructor parameters as Block constructor
-//     * @param name the name of the block
-//     * @param settings the settings for the block
-//     * @param classT the class that the block is in
-//     * @return the registered block
-//     * @param <T> the type of the class the block is in
-//     */
-//    private static<T extends Block> Block registerBlock(String name, AbstractBlock.Settings settings,Class<T> classT){
-//        RegistryKey<Block> key = RegistryKey.of(RegistryKeys.BLOCK,Identifier.of(PracticeMod.MOD_ID,name));
-//        settings.registryKey(key);
-//
-//        T block = null;
-//        try {
-//            block = classT.getConstructor(AbstractBlock.Settings.class).newInstance(settings);
-//        } catch (Exception e) {
-//            PracticeMod.LOGGER.info("ERROR WITH GENERATING CLASS");
-//        }
-//
-//        registerBlockItems(name,block);
-//        return Registry.register(Registries.BLOCK,
-//                key,
-//                block);
-//    }
 
     public static void registerModdedBlocks(){
         PracticeMod.LOGGER.info("registering blocks for "+PracticeMod.MOD_ID);

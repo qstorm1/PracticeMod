@@ -38,6 +38,14 @@ public class ModCustomItemGroup {
                                 entries.add(ModBlocks.SOUL_BLOCK_TRAP_DOOR);
                                 entries.add(ModBlocks.SOUL_BLOCK_DOOR);
 
+                                entries.add(ModBlocks.COMPRESSED_COBBLESTONE);
+                                entries.add(ModBlocks.VERY_COMPRESSED_COBBLESTONE);
+                                entries.add(ModBlocks.EXTREMELY_COMPRESSED_COBBLESTONE);
+                                entries.add(ModBlocks.SUPER_COMPRESSED_COBBLESTONE);
+                                entries.add(ModBlocks.ULTRA_COMPRESSED_COBBLESTONE);
+                                entries.add(ModBlocks.RADICALLY_COMPRESSED_COBBLESTONE);
+                                entries.add(ModBlocks.INCREDIBLY_COMPRESSED_COBBLESTONE);
+
 
 
                             }))

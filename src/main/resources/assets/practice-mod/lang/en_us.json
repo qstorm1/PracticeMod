@@ -22,6 +22,13 @@
 
   "item.practice-mod.magic_block": "Sorcery Device",
 
+  "item.practice-mod.compressed_cobblestone": "Compressed Cobblestone",
+  "item.practice-mod.very_compressed_cobblestone": "Very Compressed Cobblestone",
+  "item.practice-mod.extremely_compressed_cobblestone": "Extremely Compressed Cobblestone",
+  "item.practice-mod.super_compressed_cobblestone": "Super Compressed Cobblestone",
+  "item.practice-mod.ultra_compressed_cobblestone": "Ultra Compressed Cobblestone",
+  "item.practice-mod.incredibly_compressed_cobblestone": "Incredibly Compressed Cobblestone",
+  "item.practice-mod.radically_compressed_cobblestone": "Radically Compressed Cobblestone",
 
   "itemgroup.practice-mod.jjk_group": "JJK Items"
 }
