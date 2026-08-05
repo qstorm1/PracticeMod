@@ -1,12 +1,7 @@
 package com.qstorm;
 
-import com.qstorm.block.ModBlocks;
-import com.qstorm.item.ModCustomItemGroup;
-import com.qstorm.item.ModItems;
-import com.qstorm.world.gen.ModWorldGeneration;
-import net.fabricmc.api.ModInitializer;
-import com.qstorm.render.hud.renderer;
 
+import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +16,6 @@ public class PracticeMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ModItems.registerModItems();
-		ModBlocks.registerModdedBlocks();
-		ModCustomItemGroup.registerGroups();
-		//ModWorldGeneration.generateModWorldGen();
-		//renderer.renderBasicImage();
-
 
 	}
 

@@ -24,7 +24,13 @@ fabricApi {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+
+	//has loom set the mappings to a new mapping that is a dependancy
+	//this is called the official mojang mappings and adding to it is parchment, a more readable thing
+	mappings loom.layered() {
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
+	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
@@ -45,6 +51,7 @@ processResources {
 	}
 }
 
+//makes sure all files that are compiled are in java 21
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 21
 }
