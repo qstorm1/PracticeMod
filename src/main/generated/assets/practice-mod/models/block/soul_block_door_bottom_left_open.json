@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/door_bottom_left_open",
-  "textures": {
-    "bottom": "practice-mod:block/soul_block_door_bottom",
-    "top": "practice-mod:block/soul_block_door_top"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "practice-mod:block/soul_block",
-    "side": "practice-mod:block/soul_block",
-    "top": "practice-mod:block/soul_block"
-  }
-}
