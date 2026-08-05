@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "practice-mod:block/radically_compressed_cobblestone"
+  }
+}

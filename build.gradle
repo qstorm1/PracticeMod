@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"//I think this updates gradle to audamatically install the repositories
 	id 'maven-publish'
 }
 
@@ -14,6 +14,7 @@ repositories {
 	// for more information about repositories.
 }
 
+//fabricAPI settings
 fabricApi {
 	configureDataGeneration {
 		client = true
@@ -30,10 +31,15 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
 
+
+//gathers resources such as language files, textures, datapacks etc
+//this specific code makes sure all code is updated when gradle.properties version is updated when gathering resources i think
 processResources {
+	//tells gradle to rerun tasks when project.version is rerun
 	def version = project.version
 	inputs.property "version", version
 
+	//
 	filesMatching("fabric.mod.json") {
 		expand "version": version
 	}
@@ -47,12 +53,13 @@ java {
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
 	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-
+	withSourcesJar()//generates source code along with normal jar file
+	//says what version the source code should be written in
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
 }
 
+//how gradle builds the jar file configuration
 jar {
 	def projectName = project.name
 	inputs.property "projectName", projectName
