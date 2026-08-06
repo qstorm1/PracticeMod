@@ -71,6 +71,7 @@ public class ModItems {
                 .register(entries -> {
                     entries.accept(ModItems.SOUL_ORE);
                     entries.accept(ModItems.BLAZE_SWORD);
+                    entries.accept(ModItems.LASER_EYES);
                 });
     }
 }
