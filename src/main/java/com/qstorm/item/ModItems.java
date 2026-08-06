@@ -2,6 +2,7 @@ package com.qstorm.item;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.effects.CustomEffects;
+import com.qstorm.item.tools.SoulPickaxe;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,21 +28,22 @@ public class ModItems {
 
     //States how the food is consumed as well as what effects the food has
     //basically treats component as something more than food
-    public static Consumable IN_SOUL_STATE_CONSUMABLE_COMPONENT = Consumable.builder()
+    public static final Consumable IN_SOUL_STATE_CONSUMABLE_COMPONENT = Consumable.builder()
             .animation(ItemUseAnimation.SPEAR)
             .onConsume(ClearAllStatusEffectsConsumeEffect.INSTANCE)
             .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(CustomEffects.SOUL_EFFECT,9600)))
             .build();
     //this is the normal settings when you create a food item which represents it's food related properties like
     //saturation, and nutrition
-    public static FoodProperties IN_SOUL_STATE_COMPONENT = new FoodProperties.Builder()
+    public static final FoodProperties IN_SOUL_STATE_COMPONENT = new FoodProperties.Builder()
             .alwaysEdible()
             .build();
 
-    public static Item SOUL_ORE = register("soul_ore",Item::new,
+    public static final Item SOUL_ORE = register("soul_ore",Item::new,
             new Item.Properties().food(IN_SOUL_STATE_COMPONENT,IN_SOUL_STATE_CONSUMABLE_COMPONENT));
 
-
+    public static final Item BLAZE_SWORD = register("blaze_sword", Item::new,
+            new Item.Properties().sword(SoulPickaxe.BLAZE_TOOL_MATERIAL,10f,-2.4f));
 
 
 
@@ -60,6 +62,9 @@ public class ModItems {
 
         //modifies the CreativeModeTabs.INGREDIENTS entry as an event by registering ModItems.SOUL_ORE
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS)
-                .register(entries -> entries.accept(ModItems.SOUL_ORE));
+                .register(entries -> {
+                    entries.accept(ModItems.SOUL_ORE);
+                    entries.accept(ModItems.BLAZE_SWORD);
+                });
     }
 }

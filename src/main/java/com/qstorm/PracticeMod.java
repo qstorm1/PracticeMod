@@ -1,7 +1,9 @@
 package com.qstorm;
 
 
+import com.qstorm.effects.CustomEffects;
 import com.qstorm.item.ModItems;
+import com.qstorm.potion.ModPotions;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,8 @@ public class PracticeMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ModItems.initialize();
+		CustomEffects.onInitialize();
+		ModPotions.onInitialize();
 	}
 
 
