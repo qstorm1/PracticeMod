@@ -2,6 +2,7 @@ package com.qstorm.item;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.effects.CustomEffects;
+import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.item.tools.SoulPickaxe;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
@@ -21,6 +22,9 @@ import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.ClearAllStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.ConsumeEffect;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import java.util.function.Function;
 
@@ -45,6 +49,8 @@ public class ModItems {
     public static final Item BLAZE_SWORD = register("blaze_sword", Item::new,
             new Item.Properties().sword(SoulPickaxe.BLAZE_TOOL_MATERIAL,10f,-2.4f));
 
+    public static final Item LASER_EYES = register("laser_eyes", LaserEyes::new,
+            new Item.Properties().humanoidArmor(ArmorMaterials.IRON, ArmorType.HELMET));
 
 
     //A function is a class that takes an input and returns an output where <Input class, Output class>
