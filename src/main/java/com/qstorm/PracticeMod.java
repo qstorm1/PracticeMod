@@ -4,7 +4,10 @@ package com.qstorm;
 import com.qstorm.effects.CustomEffects;
 import com.qstorm.item.ModItems;
 import com.qstorm.potion.ModPotions;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +25,17 @@ public class PracticeMod implements ModInitializer {
 		ModItems.initialize();
 		CustomEffects.onInitialize();
 		ModPotions.onInitialize();
+		if(FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER){
+
+		}
+
 	}
+	public static void test(){
+
+	}
+
+
+
 
 
 

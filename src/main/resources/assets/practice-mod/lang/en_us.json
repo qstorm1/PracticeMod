@@ -35,5 +35,16 @@
   "item.practice-mod.incredibly_compressed_cobblestone": "Incredibly Compressed Cobblestone",
   "item.practice-mod.radically_compressed_cobblestone": "Radically Compressed Cobblestone",
 
-  "itemgroup.practice-mod.jjk_group": "JJK Items"
+  "itemgroup.practice-mod.jjk_group": "JJK Items",
+
+  "item.practice-mod.laser_eyes": "Laser Eyes",
+  "item.practice-mod.ability1": "Ability 1",
+  "item.practice-mod.ability2": "Ability 2",
+  "item.practice-mod.ability3": "Ability 3",
+  "item.practice-mod.ability4": "Ability 4",
+  "item.practice-mod.ability5": "Ability 5",
+  "item.practice-mod.domain": "domain",
+
+
+  "key.catagory.practice-mod.custom_mod_controls": "jjk controlsr"
 }
