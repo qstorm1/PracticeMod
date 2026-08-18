@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.*;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -67,6 +68,7 @@ public class LaserEyes extends Item {
         //partialTick represents the position at the end of the vector
         Vec3 eyePosition = player.getEyePosition();
         Vec3 direction = player.getViewVector(1F);
+        //new array representing max distance
         Vec3 endTarget = eyePosition.add(direction.scale(max));
 
         //make a raycast to the closest block
@@ -85,26 +87,34 @@ public class LaserEyes extends Item {
         }
 
 
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(
+        //the 5th element represents the broad phase search, a narrow search is then done after using the vectors
+        //I really wish this had documentation bruh (aka i wish my documentation freaking worked)
+        EntityHitResult entityHitResult = getRaycastedHitresult(
                 player.level(),
                 player,
                 eyePosition,
-                direction.scale(currentMinBlock),
+                eyePosition.add(direction.scale(currentMinBlock)),
                 player.getBoundingBox().expandTowards(direction.scale(currentMinBlock)).inflate(1.0),
                 entity -> entity != player,
-                3F
+                0F
 
         );
 
 
+        if(entityHitResult==null) {
+
+            PracticeMod.LOGGER.info(player.getBoundingBox().expandTowards(direction.scale(currentMinBlock)).inflate(1.0).toString());
+        }else{
+            PracticeMod.LOGGER.info("HIT");
+        }
 
 
 
 
 
-        if(entityHitResult.getType()== HitResult.Type.ENTITY){
+
+        if(entityHitResult!=null&&entityHitResult.getType()== HitResult.Type.ENTITY){
             currentMinBlock=entityHitResult.getEntity().getPosition(1F).distanceTo(eyePosition);
-
 
 
 
@@ -112,7 +122,7 @@ public class LaserEyes extends Item {
             entityHitResult.getEntity().hurtServer((ServerLevel) player.level(), new DamageSource(
                         player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE)
                                 .get(DamageTypes.EXPLOSION.identifier()).get()
-                ), 5);
+                ), 1);
         }else if(currentMinBlock!=max){
             //if hit a block
             player.level().setBlockAndUpdate(hitResult.getBlockPos(),Blocks.REDSTONE_BLOCK.defaultBlockState());
@@ -123,7 +133,7 @@ public class LaserEyes extends Item {
 
 
 
-
+        PracticeMod.LOGGER.info("min: "+ currentMinBlock);
         DustParticleOptions redParticle = new DustParticleOptions(16711680,1F);
 
         Vec3 targetPosition;
@@ -140,6 +150,33 @@ public class LaserEyes extends Item {
 
 
 
+    }
+
+    public static EntityHitResult getRaycastedHitresult(Level level, Entity projectile,Vec3 startVec,Vec3 endVec,AABB boundingBox, Predicate<Entity> filter,float inflationAmount){
+        double d = Double.MAX_VALUE;
+        Optional<Vec3> optional = Optional.empty();
+        Entity entity = null;
+
+        for(Entity entity2 : level.getEntities(projectile, boundingBox, filter)) {
+            PracticeMod.LOGGER.info("entities exist");
+            AABB aABB = entity2.getBoundingBox().inflate((double)inflationAmount);
+            Optional<Vec3> optional2 = aABB.clip(startVec, endVec);
+            PracticeMod.LOGGER.info("clip result"+optional2.toString()+"\n vStart " + startVec +"vEnd "+endVec);
+            if (optional2.isPresent()) {
+                double e = startVec.distanceToSqr((Vec3)optional2.get());
+                if (e < d) {
+                    entity = entity2;
+                    d = e;
+                    optional = optional2;
+                }
+            }
+        }
+
+        if (entity == null) {
+            return null;
+        } else {
+            return new EntityHitResult(entity, (Vec3)optional.get());
+        }
     }
 
     static {
