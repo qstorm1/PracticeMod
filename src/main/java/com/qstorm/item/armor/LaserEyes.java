@@ -27,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -59,7 +60,6 @@ public class LaserEyes extends Item {
         super.use(level, player, hand);
         if(!level.isClientSide()){
             shootLaser(player);
-
         }
 
         return InteractionResult.SUCCESS;
@@ -68,6 +68,8 @@ public class LaserEyes extends Item {
 
 
     public static void shootLaser(Player shooter){
+        if(shooter.level().isClientSide()) return;
+
         int max=20;//max distance in blocks the laser can shoot
 
 
@@ -157,18 +159,7 @@ public class LaserEyes extends Item {
         ServerLevel serverLevel = (ServerLevel)shooter.level();
 
 
-
-
-        String[] ps= new String[serverLevel.players().size()];
-        for(int i = 0; i<serverLevel.players().size();i++){
-            if(serverLevel.players().get(i) instanceof ServerPlayer)
-                ps[i]=serverLevel.players().get(i).getDisplayName().getString();
-        }
-        PracticeMod.LOGGER.info("players " + Arrays.toString(ps));
-
-
-
-
+        //particle shooter
         //for each player in the world
         for(Player player: serverLevel.players()){
             if(player instanceof ServerPlayer serverPlayer) {
@@ -184,7 +175,6 @@ public class LaserEyes extends Item {
                                 0.0, 0.0, 0.0, 0.0
                         );
                     }
-                    PracticeMod.LOGGER.info(serverPlayer.getDisplayName().getString()+ " shot");
                 }else {
                     for (double i = 0; i < currentMinBlock; i += step) {
                         targetPosition = eyePosition.add(direction.scale(i));
@@ -196,7 +186,6 @@ public class LaserEyes extends Item {
                                 0.0, 0.0, 0.0, 0.0
                         );
                     }
-                    PracticeMod.LOGGER.info(serverPlayer.getDisplayName().getString() + " saw a shot");
                 }
             }
 
