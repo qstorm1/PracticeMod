@@ -86,10 +86,15 @@ public class LaserEyes extends Item {
             currentMinBlock=hitResult.getLocation().distanceTo(eyePosition);
         }
 
-
+        //the first point represents the world the player is doing the action
+        //the second point says which entities to ignore (so that the raycast doesn't stop at the player
+        //the third represents the starting vertor raycast, the forth represents the end
         //the 5th element represents the broad phase search, a narrow search is then done after using the vectors
+        //the 6th is just a predicate lambda that says to stop at all entities other then the player
+        //the inflation amount is how far from the initial point the raycast should start
         //I really wish this had documentation bruh (aka i wish my documentation freaking worked)
-        EntityHitResult entityHitResult = getRaycastedHitresult(
+        //took me like an hour to troubleshoot this
+        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(
                 player.level(),
                 player,
                 eyePosition,
@@ -101,13 +106,6 @@ public class LaserEyes extends Item {
         );
 
 
-        if(entityHitResult==null) {
-
-            PracticeMod.LOGGER.info(player.getBoundingBox().expandTowards(direction.scale(currentMinBlock)).inflate(1.0).toString());
-        }else{
-            PracticeMod.LOGGER.info("HIT");
-        }
-
 
 
 
@@ -115,9 +113,6 @@ public class LaserEyes extends Item {
 
         if(entityHitResult!=null&&entityHitResult.getType()== HitResult.Type.ENTITY){
             currentMinBlock=entityHitResult.getEntity().getPosition(1F).distanceTo(eyePosition);
-
-
-
 
             entityHitResult.getEntity().hurtServer((ServerLevel) player.level(), new DamageSource(
                         player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE)
@@ -133,7 +128,7 @@ public class LaserEyes extends Item {
 
 
 
-        PracticeMod.LOGGER.info("min: "+ currentMinBlock);
+
         DustParticleOptions redParticle = new DustParticleOptions(16711680,1F);
 
         Vec3 targetPosition;
@@ -150,33 +145,6 @@ public class LaserEyes extends Item {
 
 
 
-    }
-
-    public static EntityHitResult getRaycastedHitresult(Level level, Entity projectile,Vec3 startVec,Vec3 endVec,AABB boundingBox, Predicate<Entity> filter,float inflationAmount){
-        double d = Double.MAX_VALUE;
-        Optional<Vec3> optional = Optional.empty();
-        Entity entity = null;
-
-        for(Entity entity2 : level.getEntities(projectile, boundingBox, filter)) {
-            PracticeMod.LOGGER.info("entities exist");
-            AABB aABB = entity2.getBoundingBox().inflate((double)inflationAmount);
-            Optional<Vec3> optional2 = aABB.clip(startVec, endVec);
-            PracticeMod.LOGGER.info("clip result"+optional2.toString()+"\n vStart " + startVec +"vEnd "+endVec);
-            if (optional2.isPresent()) {
-                double e = startVec.distanceToSqr((Vec3)optional2.get());
-                if (e < d) {
-                    entity = entity2;
-                    d = e;
-                    optional = optional2;
-                }
-            }
-        }
-
-        if (entity == null) {
-            return null;
-        } else {
-            return new EntityHitResult(entity, (Vec3)optional.get());
-        }
     }
 
     static {
