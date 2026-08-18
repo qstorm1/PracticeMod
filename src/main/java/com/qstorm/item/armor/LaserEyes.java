@@ -5,6 +5,9 @@ import com.mojang.authlib.minecraft.client.MinecraftClient;
 import com.qstorm.PracticeMod;
 import com.qstorm.effects.CustomEffects;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.core.particles.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -16,19 +19,19 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public class LaserEyes extends Item {
@@ -59,7 +62,7 @@ public class LaserEyes extends Item {
 
     public static void shootLaser(Player player){
         int max=20;//max distance in blocks the laser can shoot
-        boolean laserHit=false;
+
 
         //partialTick represents the position at the end of the vector
         Vec3 eyePosition = player.getEyePosition();
@@ -69,29 +72,72 @@ public class LaserEyes extends Item {
         //make a raycast to the closest block
         //the 3 settings at the end tell when the ray should stop,
         //The block one says it should stop
-        HitResult hitResult= player.level().clip(new ClipContext(
+        BlockHitResult hitResult= player.level().clip(new ClipContext(
                 eyePosition,
                 endTarget,
                 ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE,
                 player
         ));
-
+        double currentMinBlock = max;
         if(hitResult.getType()== HitResult.Type.BLOCK){
-            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-            player.level().setBlockAndUpdate(blockHitResult.getBlockPos(),Blocks.REDSTONE_BLOCK.defaultBlockState());
+            currentMinBlock=hitResult.getLocation().distanceTo(eyePosition);
         }
-        else if(hitResult.getType()==HitResult.Type.ENTITY){
-            EntityHitResult entityHitResult=(EntityHitResult) hitResult;
-            if(player.level() instanceof ServerLevel) {
-                entityHitResult.getEntity().hurtServer((ServerLevel) player.level(), new DamageSource(
+
+
+        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(
+                player.level(),
+                player,
+                eyePosition,
+                direction.scale(currentMinBlock),
+                player.getBoundingBox().expandTowards(direction.scale(currentMinBlock)).inflate(1.0),
+                entity -> entity != player,
+                3F
+
+        );
+
+
+
+
+
+
+
+        if(entityHitResult.getType()== HitResult.Type.ENTITY){
+            currentMinBlock=entityHitResult.getEntity().getPosition(1F).distanceTo(eyePosition);
+
+
+
+
+
+            entityHitResult.getEntity().hurtServer((ServerLevel) player.level(), new DamageSource(
                         player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE)
                                 .get(DamageTypes.EXPLOSION.identifier()).get()
                 ), 5);
-            }else{
-                PracticeMod.LOGGER.info("error i think");
-            }
+        }else if(currentMinBlock!=max){
+            //if hit a block
+            player.level().setBlockAndUpdate(hitResult.getBlockPos(),Blocks.REDSTONE_BLOCK.defaultBlockState());
         }
+        //do things
+
+
+
+
+
+
+        DustParticleOptions redParticle = new DustParticleOptions(16711680,1F);
+
+        Vec3 targetPosition;
+        double step=0.1;
+        for(double i = 0; i<currentMinBlock;i+=step) {
+            targetPosition = direction.scale(i);
+            ((ServerLevel) player.level()).sendParticles(
+                    redParticle,
+                    targetPosition.x, targetPosition.y, targetPosition.z, 1,
+                    0.0, 0.0, 0.0, 0.0
+            );
+        }
+
+
 
 
     }
