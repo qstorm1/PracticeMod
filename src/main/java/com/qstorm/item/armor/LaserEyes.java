@@ -134,7 +134,7 @@ public class LaserEyes extends Item {
         Vec3 targetPosition;
         double step=0.1;
         for(double i = 0; i<currentMinBlock;i+=step) {
-            targetPosition = direction.scale(i);
+            targetPosition = eyePosition.add(direction.scale(i));
             ((ServerLevel) player.level()).sendParticles(
                     redParticle,
                     targetPosition.x, targetPosition.y, targetPosition.z, 1,

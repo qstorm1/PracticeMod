@@ -20,6 +20,10 @@ repositories {
 		name = "RedlanceMinecraft"
 		url = "https://repo.redlance.org/public"
 	}
+	maven {
+		name="Modrinth"
+		url="https://api.modrinth.com/maven"
+	}
 }
 
 //fabricAPI settings
@@ -45,6 +49,13 @@ dependencies {
 
 	//player animation library
 	modImplementation "com.zigythebird.playeranim:PlayerAnimationLibFabric:${project.pal_version}"
+
+	//carpet
+	modRuntimeOnly "maven.modrinth:carpet:${project.carpet_version}"
+
+
+
+
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"

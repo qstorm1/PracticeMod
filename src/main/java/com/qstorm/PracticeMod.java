@@ -25,9 +25,6 @@ public class PracticeMod implements ModInitializer {
 		ModItems.initialize();
 		CustomEffects.onInitialize();
 		ModPotions.onInitialize();
-		if(FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER){
-
-		}
 
 	}
 	public static void test(){
