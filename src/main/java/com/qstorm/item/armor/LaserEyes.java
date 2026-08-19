@@ -66,7 +66,9 @@ public class LaserEyes extends Item {
     }
 
 
-
+    //TODO: make certin blocks take longer to burn
+    //TODO: sound
+    //TODO: make it so that it can be used when holding items with the tag canUseWithLaser and also if your holding nothing, and maybe make it customizable
     public static void shootLaser(Player shooter){
         if(shooter.level().isClientSide()) return;
 
@@ -126,7 +128,7 @@ public class LaserEyes extends Item {
 
 
 
-
+        final float damageAmount = 10;
         if(entityHitResult!=null&&entityHitResult.getType()== HitResult.Type.ENTITY){
             //if hit an entity
 
@@ -137,7 +139,7 @@ public class LaserEyes extends Item {
             entityHitResult.getEntity().hurtServer((ServerLevel) shooter.level(), new DamageSource(
                         shooter.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE)
                                 .get(DamageTypes.EXPLOSION.identifier()).get()
-                ), 1);
+                ), damageAmount);
         }else if(currentMinBlock!=max){
             //if hit a block
             shooter.level().setBlockAndUpdate(hitResult.getBlockPos(),Blocks.REDSTONE_BLOCK.defaultBlockState());
