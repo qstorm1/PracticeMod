@@ -19,3 +19,31 @@ Domains:
 Everyone has an innate domain that represents their soul
 
 Six eyes makes good efficiency
+
+
+Key.CursedEnergyMode -> enables all abilities to use cursed energy based on reserves.value
+Key.IncreaseOutput (ScrollUp) -> increases output of all cursed energies, if maxed out, player types max output in chat (exponetial cost increase and exponential output increase)
+Key.ReveresedEnergyMode -> enables all abilities to use reversed cursed energy if possible
+
+Keybind one pressed -> nextKeybind.waitFor()
+Combo.Attack1 -> first attack
+Limitless ex: blue        reverse ex: red
+Combo.Attack2 -> second attack
+Shikigami ex: frog
+Combo.Attack3 -> third attack
+Shikigami ex: bird
+Combo.Attack4 -> fourth attack
+Shikigami ex: mahoraga
+certin abilities have more combo's and expansion techniques are incredibly hard to setup (techniques that are completely unique and break the rules of the technique)
+
+Key.inate -> enable constantly on ability
+ex: lava guy makes all things around super hot fire (based on cursed energy)
+
+Key.useEnergy ->
+if normal defend/speed/attack increase
+if reverse heal
+
+Key.domain -> domain if possible (inate domain if not)
+Key.simple-domain -> simple domain that based on player training
+
+concentration -> increase when standing still or hit black flash

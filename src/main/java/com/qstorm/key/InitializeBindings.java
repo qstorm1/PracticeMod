@@ -11,6 +11,10 @@ import net.minecraft.resources.Identifier;
 public class InitializeBindings {
     public static KeyMapping laserKey;
     public static KeyMapping domainKey;
+    public static KeyMapping combo1;
+    public static KeyMapping combo2;
+    public static KeyMapping combo3;
+    public static KeyMapping combo4;
 
     private static boolean prevState = false;
     public static void init(){
