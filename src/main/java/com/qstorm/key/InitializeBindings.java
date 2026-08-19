@@ -27,11 +27,13 @@ public class InitializeBindings {
                 )
         );
 
+
+
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while(laser.consumeClick()){
                 if(client.player!=null){
-                    ClientPlayNetworking.send(() ->
-                            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"pressed-laser")));
+                    ClientPlayNetworking.send(new HandleKeybinds.LaserKeyServer());
                 }
             }
         });

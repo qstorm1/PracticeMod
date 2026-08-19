@@ -58,9 +58,9 @@ public class LaserEyes extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         super.use(level, player, hand);
-        if(!level.isClientSide()){
-            shootLaser(player);
-        }
+//        if(!level.isClientSide()){
+//            shootLaser(player);
+//        }
 
         return InteractionResult.SUCCESS;
     }
