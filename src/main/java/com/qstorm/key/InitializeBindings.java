@@ -17,7 +17,8 @@ public class InitializeBindings {
         KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"custom_mod_controls"));
         laserKey = KeyBindingHelper.registerKeyBinding(
                 new KeyMapping(
-                        "laser", InputConstants.MOUSE_BUTTON_RIGHT,CATEGORY
+                        "laser",InputConstants.Type.MOUSE,
+                        InputConstants.MOUSE_BUTTON_RIGHT,CATEGORY
                 )
         );
 
