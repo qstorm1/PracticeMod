@@ -30,7 +30,7 @@ public class Combo {
     Player player;
 
     /**
-     * @param ticksForContinue the required ticks needed before the combo fails
+     * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey1(int ticksForContinue){
         comboKeys.add(ComboKey.key1.get(player));
@@ -39,25 +39,77 @@ public class Combo {
 
 
     /**
-     * @param ticksForContinue the required ticks needed before the combo fails
+     * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey2(int ticksForContinue){
-
+        comboKeys.add(ComboKey.key2.get(player));
         return this;
     }
     /**
-     * @param ticksForContinue the required ticks needed before the combo fails
+     * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey3(int ticksForContinue){
-
+        comboKeys.add(ComboKey.key3.get(player));
         return this;
     }
     /**
-     * @param ticksForContinue the required ticks needed before the combo fails
+     * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey4(int ticksForContinue){
-
+        comboKeys.add(ComboKey.key4.get(player));
         return this;
+    }
+
+
+    public void updateComboStatus(){
+        if(comboKeys.get(current).keyDown){
+            if(checkBefore()){
+                if(current==comboKeys.size()){
+                    doComboAction();
+                }
+                else {
+                    current++;
+                }
+            }
+            else{
+                resetCombo();
+            }
+        }
+    }
+
+    public void resetCombo(){
+
+    }
+
+    public void doComboAction(){
+
+    }
+
+
+
+
+
+
+    /**
+     * TODO: waiting ticks
+     * TODO: when combo ends say so in chat
+     * checks if next combo key was pressed quickly enough
+     * @return if the combo should continue
+     */
+    private boolean checkBefore(){
+        if(current==0){
+            return true;
+        }
+        //if the current combo key was pressed before the time limit ended
+        //ex current=1, key[0] starts ticking up from 0, if key[0] goes past key[1]'s limit (timeRequiredToContinue)
+        //then false is returned and the combo ends
+        //this usually happens automatically but is only run just in case
+        if(comboKeys.get(current-1).timeSinceLastPressed<=comboKeys.get(current).timeRequiredToContinue){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 
@@ -67,68 +119,5 @@ public class Combo {
      */
     private Combo(Player player){
         this.player=player;
-    }
-
-    /**
-     * checks if next combo key was pressed quickly enough
-     * @return
-     */
-    private boolean checkBefore(){
-        if(current==0){
-            return true;
-        }
-        if(comboKeys[current-1].timeSinceLastPressed>){
-
-        }
-        else{
-            return false;
-        }
-    }
-
-
-
-
-
-
-    //updates combo must run every tick
-
-    /**
-     * Checks if combo has ended
-     * @return returns if combo is sucessful
-     */
-    public boolean checkCombo(){
-        switch (comboKeys[current].check()){
-            //if timer is run out
-            case(0) -> {
-                endCombo();
-            }//if key is pressed in the correct amount of time
-            case(1) -> {
-                //if at the end of combo
-                if(current>comboKeys.length) return true;
-                else current++;
-            }//if nothing happens
-            case(2) -> {
-
-            }
-
-        }
-        return false;
-    }
-
-    //the client will send the server a request, that request will trigger
-    public void endCombo(){
-
-    }
-    public void doAction(){
-        //action.apply();
-    }
-
-    public static Combo createCombo(ComboKey... mappings){
-        return new Combo(mappings);
-
-    }
-
-    private Combo(ComboKey[] keys){
-        comboKeys=keys;
     }
 }

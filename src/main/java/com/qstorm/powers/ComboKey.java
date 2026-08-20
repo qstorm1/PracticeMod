@@ -35,9 +35,12 @@ public class ComboKey{
     //if true it will update to the next value
 
 
-    double timeSinceLastPressed = 0;//ticks since the previous button was pressed, if it reaches max combo value then it ends
     boolean keyDown;
-    int timeRequiredToContinue=0;//ticks required
+    int timeSinceLastPressed = 0;//ticks since the previous button was pressed, if it reaches max combo value then it ends
+    int timeRequiredToContinue=0;//ticks required for this keybind to count, basically
+    //old key pressed -> timer for this key starts, if that time limit is over the time require to continue, then the combo will reset
+    //TODO: if a player starts a combo but then stops typing, they probably expect that combo to automatically reset, make sure this happens
+
 
     /**
      * when player joins the server
@@ -53,12 +56,22 @@ public class ComboKey{
 
     }
 
+    public void tick(){
+        timeSinceLastPressed++;
+    }
+
 
 
     public void keyChange(){
-        keyDown=!keyDown;
+        if(keyDown){
+            keyUp();
+        }
+        else{
+            keyDown();
+        }
     }
     public void keyDown(){
+        timeSinceLastPressed=0;
         keyDown=false;
     }
 
