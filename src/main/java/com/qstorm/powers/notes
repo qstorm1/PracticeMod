@@ -47,3 +47,8 @@ Key.domain -> domain if possible (inate domain if not)
 Key.simple-domain -> simple domain that based on player training
 
 concentration -> increase when standing still or hit black flash
+
+
+Combo:
+client sends key hits -> server recieves (subtracts latency from the time)
+each time server recieves, all combo keys of that type turn to ComboKey.keydown=true;

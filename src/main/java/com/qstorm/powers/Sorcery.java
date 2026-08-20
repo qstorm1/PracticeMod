@@ -1,13 +1,12 @@
 package com.qstorm.powers;
 
+import net.minecraft.world.entity.player.Player;
+
 public interface Sorcery {
     double cursedOutput = 0;
-    Combo ability1;
-    Combo ability2;
-    Combo ability3;
-    Combo ability4;
 
-    static void simpleDomain(){
+
+    static void innateDomain(){
 
     }
 

@@ -32,21 +32,8 @@ public class PracticeMod implements ModInitializer {
 		CustomEffects.onInitialize();
 		ModPotions.onInitialize();
 
-		//configure a client to server payload
-		//packets have two types of "phases", play and configure
-		//playC2S() happens during gameplay while configureC2S() happens during initial connection
-		PayloadTypeRegistry.playC2S().register(HandleKeybinds.LaserKeyServer.TYPE,HandleKeybinds.LaserKeyServer.CODEC);
-
-		//tells the server that if it recieves packet data of the given type, run the following
-		ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.LaserKeyServer.TYPE, (payload, context) -> {
-			//says to run it on server
-			context.server().execute(() -> {
-				//if the player is wearing a laser eye
-				if(context.player().getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof LaserEyes){
-					LaserEyes.shootLaser(context.player());
-				}
-			});
-        });
+		//handle serverside keybinding management
+		HandleKeybinds.handle();
 
 	}
 	public static void test(){
