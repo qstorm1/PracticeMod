@@ -17,24 +17,6 @@ import java.util.function.Function;
  * A limitless instance is created for every single player
  */
 public class Limitless implements Sorcery {
-    Combo ability1=Combo.createCombo(
-            new ComboKey(InitializeBindings.attack1,80),
-            new ComboKey(InitializeBindings.attack2,80),
-            new ComboKey(InitializeBindings.attack3,80));
-    Combo ability2=Combo.createCombo(
-            new ComboKey(InitializeBindings.attack3,80),
-            new ComboKey(InitializeBindings.attack2,80),
-            new ComboKey(InitializeBindings.attack3,80));;
-    Combo ability3=Combo.createCombo(
-            new ComboKey(InitializeBindings.attack2, 80),
-            new ComboKey(InitializeBindings.attack3, 80),
-            new ComboKey(InitializeBindings.attack1, 80));;
-    Combo ability4=Combo.createCombo(
-            new ComboKey(InitializeBindings.attack2,80),
-            new ComboKey(InitializeBindings.attack2,80),
-            new ComboKey(InitializeBindings.attack1,80));
-
-
     public static Limitless[] limitlessPlayers;
     public static String tag= "Limitless User";
 

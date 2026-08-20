@@ -42,11 +42,9 @@ public class HandleKeybinds {
         });
 
 
-        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
-            //says to run it on server
-            context.server().execute(() -> {
-            });
-        });
+
+
+        ComboKey.setupServersideManagement();
     }
 
     //This is a packet that is sent to the server when the keybind is pressed

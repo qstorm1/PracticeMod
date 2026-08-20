@@ -1,5 +1,6 @@
 package com.qstorm.powers;
 
+import com.qstorm.PracticeMod;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.world.entity.player.Player;
 
@@ -60,7 +61,7 @@ public class Combo {
         return this;
     }
 
-
+    //updateCombo
     public void updateComboStatus(){
         if(comboKeys.get(current).keyDown){
             if(checkBefore()){
@@ -68,7 +69,7 @@ public class Combo {
                     doComboAction();
                 }
                 else {
-                    current++;
+                    nextKey();
                 }
             }
             else{
@@ -77,12 +78,18 @@ public class Combo {
         }
     }
 
-    public void resetCombo(){
+    public void nextKey(){
+        current++;
+    }
 
+    public void resetCombo(){
+        current=0;
+        PracticeMod.LOGGER.info("reset combo");
     }
 
     public void doComboAction(){
-
+        current=0;
+        PracticeMod.LOGGER.info("did combo thing ig");
     }
 
 

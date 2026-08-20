@@ -1,11 +1,9 @@
 package com.qstorm.powers;
 
-import com.qstorm.PracticeMod;
-import com.qstorm.key.InitializeBindings;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.Identifier;
+import com.qstorm.item.armor.LaserEyes;
+import com.qstorm.key.HandleKeybinds;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -41,6 +39,33 @@ public class ComboKey{
     //old key pressed -> timer for this key starts, if that time limit is over the time require to continue, then the combo will reset
     //TODO: if a player starts a combo but then stops typing, they probably expect that combo to automatically reset, make sure this happens
 
+
+    /**
+     * update the timeSinceLastPressed value of each key
+     */
+    public static void tickComboKeys(){
+        key1.forEach((player, comboKey) -> {
+            comboKey.timeSinceLastPressed++;
+        });
+        key2.forEach((player, comboKey) -> {
+            comboKey.timeSinceLastPressed++;
+        });
+        key3.forEach((player, comboKey) -> {
+            comboKey.timeSinceLastPressed++;
+        });
+        key4.forEach((player, comboKey) -> {
+            comboKey.timeSinceLastPressed++;
+        });
+    }
+
+    public static void setupServersideManagement(){
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
+            context.server().execute(() -> {
+
+            });
+        });
+
+    }
 
     /**
      * when player joins the server
