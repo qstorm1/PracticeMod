@@ -20,6 +20,8 @@ import java.util.UUID;
  */
 public class ComboKey{
 
+    private ComboKey(){}
+
     //each key currently instantiated, once per player, to add to a combo do .key.get(player) maybe switch to UUID or something idk
     public static HashMap<UUID,ComboKey> key1= new HashMap<>();
     public static HashMap<UUID,ComboKey> key2= new HashMap<>();
@@ -36,7 +38,8 @@ public class ComboKey{
 
     boolean keyDown;
     int timeSinceLastPressed = 0;//ticks since the previous button was pressed, if it reaches max combo value then it ends
-    int timeRequiredToContinue=0;//ticks required for this keybind to count, basically
+    // timeRequiredToContinue has been moved to Combo class
+    // int timeRequiredToContinue=0;//ticks required for this keybind to count, basically
     //old key pressed -> timer for this key starts, if that time limit is over the time require to continue, then the combo will reset
     //TODO: if a player starts a combo but then stops typing, they probably expect that combo to automatically reset, make sure this happens
 
@@ -91,15 +94,21 @@ public class ComboKey{
     /**
      * when player joins the server
      */
-    public void registerPlayer(UUID uuid){
-        key1.put(uuid,);
+    public static void registerPlayer(UUID uuid){
+        key1.put(uuid,new ComboKey());
+        key2.put(uuid,new ComboKey());
+        key3.put(uuid,new ComboKey());
+        key4.put(uuid,new ComboKey());
     }
 
     /**
      * when player leaves the server
      */
-    public void deregisterPlayer(){
-
+    public static void deregisterPlayer(UUID uuid){
+        key1.remove(uuid);
+        key2.remove(uuid);
+        key3.remove(uuid);
+        key4.remove(uuid);
     }
 
     public void tick(){
@@ -108,6 +117,11 @@ public class ComboKey{
 
 
 
+
+
+
+
+    //key on/off management
     public void keyChange(){
         if(keyDown){
             keyUp();

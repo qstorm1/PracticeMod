@@ -7,6 +7,7 @@ import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.potion.ModPotions;
+import com.qstorm.powers.ComboKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -58,10 +59,12 @@ public class PracticeMod implements ModInitializer {
 
 	public static void onPlayerJoin(Player player){
 		InitializeBindings.onPlayerJoin(player);
+		ComboKey.registerPlayer(player.getUUID());
 	}
 
 	public static void onPlayerLeave(Player player){
 		InitializeBindings.onPlayerLeave(player);
+		ComboKey.deregisterPlayer(player.getUUID());
 
 	}
 
