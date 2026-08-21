@@ -1,5 +1,6 @@
 package com.qstorm.powers;
 
+import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.key.HandleKeybinds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -37,6 +38,7 @@ public class ComboKey{
 
 
     boolean keyDown;
+    //@ERROR TODO: timer not incrementing
     int timeSinceLastPressed = 0;//ticks since the previous button was pressed, if it reaches max combo value then it ends
     // timeRequiredToContinue has been moved to Combo class
     // int timeRequiredToContinue=0;//ticks required for this keybind to count, basically
@@ -68,24 +70,29 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
+                PracticeMod.LOGGER.info("attack-key-1.isDown()");
             });
         });
-
+//{UUID@33615} "19487181-3859-391a-bf75-143cc8396d12" -> {ComboKey@33616}
+        //{UUID@33617} "24b1aadd-92ce-4423-8517-114eab65e1d5" -> {ComboKey@33618}
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key2.get(context.player().getUUID()).keyDown();
+                PracticeMod.LOGGER.info("attack-key-2.isDown()");
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK3.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key3.get(context.player().getUUID()).keyDown();
+                PracticeMod.LOGGER.info("attack-key-3.isDown()");
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK4.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key4.get(context.player().getUUID()).keyDown();
+                PracticeMod.LOGGER.info("attack-key-4.isDown()");
             });
         });
 
@@ -111,10 +118,6 @@ public class ComboKey{
         key4.remove(uuid);
     }
 
-    public void tick(){
-        timeSinceLastPressed++;
-    }
-
 
 
 
@@ -132,7 +135,7 @@ public class ComboKey{
     }
     public void keyDown(){
         timeSinceLastPressed=0;
-        keyDown=false;
+        keyDown=true;
     }
 
     public void keyUp(){

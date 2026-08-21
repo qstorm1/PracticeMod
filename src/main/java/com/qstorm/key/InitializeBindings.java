@@ -16,6 +16,10 @@ import net.minecraft.world.entity.player.Player;
 import java.util.HashMap;
 import java.util.UUID;
 
+
+//issues:
+//1, disconnecting stuff isn't handled
+//2, key's are being pressed but multiple times
 public class InitializeBindings {
     public static KeyMapping laserKey;
     public static KeyMapping attack1;
@@ -91,10 +95,9 @@ public class InitializeBindings {
 
             //only happens once and then turned off
             if(attack1.isDown() && !InitializeBindings.attack1WasDown.get(client.player.getUUID())){
-                if(client.player!=null) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK1());
-                    InitializeBindings.attack1WasDown.put(client.player.getUUID(),false);
-                }
+                ClientPlayNetworking.send(new HandleKeybinds.AttackJJK1());
+                InitializeBindings.attack1WasDown.put(client.player.getUUID(),false);
+
             }
             else{
                 InitializeBindings.attack1WasDown.put(client.player.getUUID(),false);
@@ -103,10 +106,8 @@ public class InitializeBindings {
 
 
             if(attack2.isDown() && !InitializeBindings.attack2WasDown.get(client.player.getUUID())){
-                if(client.player!=null) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
-                    InitializeBindings.attack2WasDown.put(client.player.getUUID(),false);
-                }
+                ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
+                InitializeBindings.attack2WasDown.put(client.player.getUUID(),false);
             }
             else{
                 InitializeBindings.attack2WasDown.put(client.player.getUUID(),false);
@@ -116,10 +117,8 @@ public class InitializeBindings {
 
 
             if(attack3.isDown() && !InitializeBindings.attack3WasDown.get(client.player.getUUID())){
-                if(client.player!=null) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK3());
-                    InitializeBindings.attack3WasDown.put(client.player.getUUID(),false);
-                }
+                ClientPlayNetworking.send(new HandleKeybinds.AttackJJK3());
+                InitializeBindings.attack3WasDown.put(client.player.getUUID(),false);
             }
             else{
                 InitializeBindings.attack3WasDown.put(client.player.getUUID(),false);
@@ -127,10 +126,8 @@ public class InitializeBindings {
 
 
             if(attack4.isDown() && !InitializeBindings.attack4WasDown.get(client.player.getUUID())){
-                if(client.player!=null) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK4());
-                    InitializeBindings.attack4WasDown.put(client.player.getUUID(),false);
-                }
+                ClientPlayNetworking.send(new HandleKeybinds.AttackJJK4());
+                InitializeBindings.attack4WasDown.put(client.player.getUUID(),false);
             }
             else{
                 InitializeBindings.attack4WasDown.put(client.player.getUUID(),false);
@@ -143,6 +140,7 @@ public class InitializeBindings {
     }
 
     public static void onPlayerJoin(Player player){
+        PracticeMod.LOGGER.info("player joined");
         attack1WasDown.put(player.getUUID(), false);
         attack2WasDown.put(player.getUUID(), false);
         attack3WasDown.put(player.getUUID(), false);
@@ -151,6 +149,7 @@ public class InitializeBindings {
 
 
     public static void onPlayerLeave(Player player){
+        PracticeMod.LOGGER.info("player left");
         attack1WasDown.remove(player.getUUID());
         attack2WasDown.remove(player.getUUID());
         attack3WasDown.remove(player.getUUID());

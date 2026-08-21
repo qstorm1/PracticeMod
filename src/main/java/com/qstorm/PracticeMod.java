@@ -63,8 +63,11 @@ public class PracticeMod implements ModInitializer {
 	}
 
 	public static void onPlayerLeave(Player player){
+		PracticeMod.LOGGER.info(player.getDisplayName().getString() + " has left");
+
 		InitializeBindings.onPlayerLeave(player);
 		ComboKey.deregisterPlayer(player.getUUID());
+
 
 	}
 
