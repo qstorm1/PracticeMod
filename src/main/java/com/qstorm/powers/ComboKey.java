@@ -7,6 +7,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * A key that can be used in a combo
@@ -20,10 +21,10 @@ import java.util.HashMap;
 public class ComboKey{
 
     //each key currently instantiated, once per player, to add to a combo do .key.get(player) maybe switch to UUID or something idk
-    public static HashMap<Player,ComboKey> key1= new HashMap<>();
-    public static HashMap<Player,ComboKey> key2= new HashMap<>();
-    public static HashMap<Player,ComboKey> key3= new HashMap<>();
-    public static HashMap<Player,ComboKey> key4= new HashMap<>();
+    public static HashMap<UUID,ComboKey> key1= new HashMap<>();
+    public static HashMap<UUID,ComboKey> key2= new HashMap<>();
+    public static HashMap<UUID,ComboKey> key3= new HashMap<>();
+    public static HashMap<UUID,ComboKey> key4= new HashMap<>();
 
     //the combo class handles start and end stuff
     //combo.build().key1(3T).key4(4T).Key2(72T)
@@ -44,19 +45,21 @@ public class ComboKey{
      * update the timeSinceLastPressed value of each key
      */
     public static void tickComboKeys(){
-        key1.forEach((player, comboKey) -> {
+        key1.forEach((uuid, comboKey) -> {
             comboKey.timeSinceLastPressed++;
         });
-        key2.forEach((player, comboKey) -> {
+        key2.forEach((uuid, comboKey) -> {
             comboKey.timeSinceLastPressed++;
         });
-        key3.forEach((player, comboKey) -> {
+        key3.forEach((uuid, comboKey) -> {
             comboKey.timeSinceLastPressed++;
         });
-        key4.forEach((player, comboKey) -> {
+        key4.forEach((uuid, comboKey) -> {
             comboKey.timeSinceLastPressed++;
         });
     }
+
+
 
     public static void setupServersideManagement(){
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
@@ -70,7 +73,7 @@ public class ComboKey{
     /**
      * when player joins the server
      */
-    public void registerPlayer(Player player){
+    public void registerPlayer(UUID uuid){
 
     }
 

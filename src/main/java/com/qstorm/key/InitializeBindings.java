@@ -14,6 +14,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class InitializeBindings {
     public static KeyMapping laserKey;
@@ -24,11 +25,11 @@ public class InitializeBindings {
     public static KeyMapping domainKey;
     public static KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"custom_mod_controls"));
 
-
-    static HashMap<Player,Boolean> attack1WasDown=new HashMap<>();
-    static HashMap<Player,Boolean> attack2WasDown=new HashMap<>();
-    static HashMap<Player,Boolean> attack3WasDown=new HashMap<>();
-    static HashMap<Player,Boolean> attack4WasDown=new HashMap<>();
+    //a hash map, each map represents a player and weather their attack key was down
+    static HashMap<UUID,Boolean> attack1WasDown=new HashMap<>();
+    static HashMap<UUID,Boolean> attack2WasDown=new HashMap<>();
+    static HashMap<UUID,Boolean> attack3WasDown=new HashMap<>();
+    static HashMap<UUID,Boolean> attack4WasDown=new HashMap<>();
 
     public static void init(){
         laserKey = KeyBindingHelper.registerKeyBinding(
@@ -85,60 +86,60 @@ public class InitializeBindings {
         });
 
 
-        //combo handler
+        //combo key handler
         //updates maps that require players
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             //if the player wasn't initialized
-            if(!attack1WasDown.keySet().contains(client.player)){
+            if(!attack1WasDown.containsKey(client.player)){
                 PracticeMod.LOGGER.info("error player was not added to set");
                 return;
             }
 
             //only happens once and then turned off
-            if(attack1.isDown() && !InitializeBindings.attack1WasDown.get(client.player)){
+            if(attack1.isDown() && !InitializeBindings.attack1WasDown.get(client.player.getUUID())){
                 if(client.player!=null) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK1());
-                    InitializeBindings.attack1WasDown.put(client.player,false);
+                    InitializeBindings.attack1WasDown.put(client.player.getUUID(),false);
                 }
             }
             else{
-                InitializeBindings.attack1WasDown.put(client.player,false);
+                InitializeBindings.attack1WasDown.put(client.player.getUUID(),false);
             }
 
 
 
-            if(attack2.isDown() && !InitializeBindings.attack2WasDown.get(client.player)){
+            if(attack2.isDown() && !InitializeBindings.attack2WasDown.get(client.player.getUUID())){
                 if(client.player!=null) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
-                    InitializeBindings.attack2WasDown.put(client.player,false);
+                    InitializeBindings.attack2WasDown.put(client.player.getUUID(),false);
                 }
             }
             else{
-                InitializeBindings.attack2WasDown.put(client.player,false);
+                InitializeBindings.attack2WasDown.put(client.player.getUUID(),false);
             }
 
 
 
 
-            if(attack3.isDown() && !InitializeBindings.attack3WasDown.get(client.player)){
+            if(attack3.isDown() && !InitializeBindings.attack3WasDown.get(client.player.getUUID())){
                 if(client.player!=null) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK3());
-                    InitializeBindings.attack3WasDown.put(client.player,false);
+                    InitializeBindings.attack3WasDown.put(client.player.getUUID(),false);
                 }
             }
             else{
-                InitializeBindings.attack3WasDown.put(client.player,false);
+                InitializeBindings.attack3WasDown.put(client.player.getUUID(),false);
             }
 
 
-            if(attack4.isDown() && !InitializeBindings.attack4WasDown.get(client.player)){
+            if(attack4.isDown() && !InitializeBindings.attack4WasDown.get(client.player.getUUID())){
                 if(client.player!=null) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK4());
-                    InitializeBindings.attack4WasDown.put(client.player,false);
+                    InitializeBindings.attack4WasDown.put(client.player.getUUID(),false);
                 }
             }
             else{
-                InitializeBindings.attack4WasDown.put(client.player,false);
+                InitializeBindings.attack4WasDown.put(client.player.getUUID(),false);
             }
         });
 
@@ -148,18 +149,18 @@ public class InitializeBindings {
     }
 
     public static void onPlayerJoin(Player player){
-        attack1WasDown.put(player, false);
-        attack2WasDown.put(player, false);
-        attack3WasDown.put(player, false);
-        attack4WasDown.put(player, false);
+        attack1WasDown.put(player.getUUID(), false);
+        attack2WasDown.put(player.getUUID(), false);
+        attack3WasDown.put(player.getUUID(), false);
+        attack4WasDown.put(player.getUUID(), false);
     }
 
 
     public static void onPlayerLeave(Player player){
-        attack1WasDown.remove(player);
-        attack2WasDown.remove(player);
-        attack3WasDown.remove(player);
-        attack4WasDown.remove(player);
+        attack1WasDown.remove(player.getUUID());
+        attack2WasDown.remove(player.getUUID());
+        attack3WasDown.remove(player.getUUID());
+        attack4WasDown.remove(player.getUUID());
     }
 
 

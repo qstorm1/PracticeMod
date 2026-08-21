@@ -34,7 +34,7 @@ public class Combo {
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey1(int ticksForContinue){
-        comboKeys.add(ComboKey.key1.get(player));
+        comboKeys.add(ComboKey.key1.get(player.getUUID()));
         return this;
     }
 
@@ -43,21 +43,21 @@ public class Combo {
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey2(int ticksForContinue){
-        comboKeys.add(ComboKey.key2.get(player));
+        comboKeys.add(ComboKey.key2.get(player.getUUID()));
         return this;
     }
     /**
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey3(int ticksForContinue){
-        comboKeys.add(ComboKey.key3.get(player));
+        comboKeys.add(ComboKey.key3.get(player.getUUID()));
         return this;
     }
     /**
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey4(int ticksForContinue){
-        comboKeys.add(ComboKey.key4.get(player));
+        comboKeys.add(ComboKey.key4.get(player.getUUID()));
         return this;
     }
 
