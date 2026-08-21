@@ -19,8 +19,10 @@ public class Combo {
 
     //the combo
     public ArrayList<ComboKey> comboKeys=new ArrayList<>();
+    public static ArrayList<Integer> timeRequiredToContinue;//the time required for this key to count
     //the amount into the combo
     int current=0;
+
 
     public Combo build(Player player){
         return new Combo(player);

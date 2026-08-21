@@ -5,17 +5,20 @@ import com.qstorm.effects.CustomEffects;
 import com.qstorm.item.ModItems;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.key.HandleKeybinds;
+import com.qstorm.key.InitializeBindings;
 import com.qstorm.potion.ModPotions;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +38,13 @@ public class PracticeMod implements ModInitializer {
 		ModPotions.onInitialize();
 
 		//if player leaves check
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			onPlayerJoin(handler.player);
 
+		});
+		ServerPlayConnectionEvents.DISCONNECT.register((handler,server) -> {
+			onPlayerLeave(handler.player);
+		});
 
 
 
@@ -47,11 +56,12 @@ public class PracticeMod implements ModInitializer {
 
 	}
 
-	public static void onPlayerJoin(){
-
+	public static void onPlayerJoin(Player player){
+		InitializeBindings.onPlayerJoin(player);
 	}
 
-	public static void onPlayerLeave(){
+	public static void onPlayerLeave(Player player){
+		InitializeBindings.onPlayerLeave(player);
 
 	}
 

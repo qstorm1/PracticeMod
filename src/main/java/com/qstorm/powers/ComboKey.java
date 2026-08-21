@@ -62,9 +62,27 @@ public class ComboKey{
 
 
     public static void setupServersideManagement(){
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
+            context.server().execute(() -> {
+                key1.get(context.player().getUUID()).keyDown();
+            });
+        });
+
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
+                key2.get(context.player().getUUID()).keyDown();
+            });
+        });
 
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK3.TYPE, (payload, context) -> {
+            context.server().execute(() -> {
+                key3.get(context.player().getUUID()).keyDown();
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK4.TYPE, (payload, context) -> {
+            context.server().execute(() -> {
+                key4.get(context.player().getUUID()).keyDown();
             });
         });
 
@@ -74,7 +92,7 @@ public class ComboKey{
      * when player joins the server
      */
     public void registerPlayer(UUID uuid){
-
+        key1.put(uuid,);
     }
 
     /**

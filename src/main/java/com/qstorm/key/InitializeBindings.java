@@ -68,15 +68,6 @@ public class InitializeBindings {
 
 
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            onPlayerJoin(handler.player);
-        });
-        ServerPlayConnectionEvents.DISCONNECT.register((handler,server) -> {
-            onPlayerLeave(handler.player);
-        });
-
-
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if(laserKey.isDown()){
                 if(client.player!=null) {
@@ -89,8 +80,9 @@ public class InitializeBindings {
         //combo key handler
         //updates maps that require players
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+
             //if the player wasn't initialized
-            if(!attack1WasDown.containsKey(client.player)){
+            if(!attack1WasDown.containsKey(client.player.getUUID())){
                 PracticeMod.LOGGER.info("error player was not added to set");
                 return;
             }
