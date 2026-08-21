@@ -1,11 +1,9 @@
 package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.key.HandleKeybinds;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -49,7 +47,7 @@ public class ComboKey{
     /**
      * update the timeSinceLastPressed value of each key
      */
-    public static void tickComboKeys(){
+    public static void tickUpdateComboKeys(){
         key1.forEach((uuid, comboKey) -> {
             comboKey.timeSinceLastPressed++;
         });
@@ -94,6 +92,10 @@ public class ComboKey{
                 key4.get(context.player().getUUID()).keyDown();
                 PracticeMod.LOGGER.info("attack-key-4.isDown()");
             });
+        });
+
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            tickUpdateComboKeys();
         });
 
     }
