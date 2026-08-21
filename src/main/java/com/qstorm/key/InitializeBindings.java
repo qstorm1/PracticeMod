@@ -80,6 +80,8 @@ public class InitializeBindings {
         //combo key handler
         //updates maps that require players
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if(client.player==null) return;
+
 
             //if the player wasn't initialized
             if(!attack1WasDown.containsKey(client.player.getUUID())){

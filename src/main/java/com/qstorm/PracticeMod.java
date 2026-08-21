@@ -38,7 +38,7 @@ public class PracticeMod implements ModInitializer {
 		CustomEffects.onInitialize();
 		ModPotions.onInitialize();
 
-		//if player leaves check
+		//if player joins/leaves checks
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			onPlayerJoin(handler.player);
 

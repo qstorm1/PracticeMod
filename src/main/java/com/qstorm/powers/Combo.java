@@ -17,9 +17,9 @@ public class Combo {
     //if true it will update to the next value
 
 
-    //the combo
+    //the keys required for the combo to work
     public ArrayList<ComboKey> comboKeys=new ArrayList<>();
-    public static ArrayList<Integer> timeRequiredToContinue;//the time required for this key to count
+    public static ArrayList<Integer> timeRequiredToContinue;//the time you need to press this key to count to combo
     //the amount into the combo
     int current=0;
 
@@ -37,6 +37,7 @@ public class Combo {
      */
     public Combo addKey1(int ticksForContinue){
         comboKeys.add(ComboKey.key1.get(player.getUUID()));
+        timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
 
@@ -46,6 +47,7 @@ public class Combo {
      */
     public Combo addKey2(int ticksForContinue){
         comboKeys.add(ComboKey.key2.get(player.getUUID()));
+        timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
     /**
@@ -53,6 +55,7 @@ public class Combo {
      */
     public Combo addKey3(int ticksForContinue){
         comboKeys.add(ComboKey.key3.get(player.getUUID()));
+        timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
     /**
@@ -60,10 +63,14 @@ public class Combo {
      */
     public Combo addKey4(int ticksForContinue){
         comboKeys.add(ComboKey.key4.get(player.getUUID()));
+        timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
 
+
+
     //updateCombo
+    //REQUIRED FOR CODE TO TICK
     public void updateComboStatus(){
         if(comboKeys.get(current).keyDown){
             if(checkBefore()){
@@ -113,7 +120,7 @@ public class Combo {
         //ex current=1, key[0] starts ticking up from 0, if key[0] goes past key[1]'s limit (timeRequiredToContinue)
         //then false is returned and the combo ends
         //this usually happens automatically but is only run just in case
-        if(comboKeys.get(current-1).timeSinceLastPressed<=comboKeys.get(current).timeRequiredToContinue){
+        if(comboKeys.get(current-1).timeSinceLastPressed<=timeRequiredToContinue.get(current)){
             return true;
         }
         else{
