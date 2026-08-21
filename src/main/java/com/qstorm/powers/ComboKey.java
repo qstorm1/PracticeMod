@@ -34,9 +34,8 @@ public class ComboKey{
     //a combo will check if the timeSinceLastPressed of the previous key is below the minimum time of the current one
     //if true it will update to the next value
 
-
+    //@ERROR TODO: keyDown doesn't go up
     boolean keyDown;
-    //@ERROR TODO: timer not incrementing
     int timeSinceLastPressed = 0;//ticks since the previous button was pressed, if it reaches max combo value then it ends
     // timeRequiredToContinue has been moved to Combo class
     // int timeRequiredToContinue=0;//ticks required for this keybind to count, basically
@@ -95,7 +94,7 @@ public class ComboKey{
         });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            tickUpdateComboKeys();
+            server.execute(ComboKey::tickUpdateComboKeys);
         });
 
     }

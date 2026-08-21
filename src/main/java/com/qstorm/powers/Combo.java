@@ -2,9 +2,12 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Combo {
@@ -23,13 +26,14 @@ public class Combo {
     //the amount into the combo
     int current=0;
 
+    //if need input replace with Consumer<Input type> and then run .accept(input)
+    public Runnable action;
 
-    public Combo build(Player player){
+
+    public static Combo build(Player player){
         return new Combo(player);
     }
-
-
-
+    //the player this combo is attached to (used to detect ComboKey's)
     Player player;
 
     /**
@@ -102,6 +106,14 @@ public class Combo {
     }
 
 
+    public void action(Runnable runnable){
+        this.action=runnable;
+    }
+
+    public void finish(){
+
+    }
+
 
 
 
@@ -135,5 +147,9 @@ public class Combo {
      */
     private Combo(Player player){
         this.player=player;
+        //update the state of the combo every tick from the server
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            server.execute(this::updateComboStatus);
+        });
     }
 }

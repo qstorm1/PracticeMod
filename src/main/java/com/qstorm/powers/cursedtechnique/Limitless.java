@@ -11,86 +11,60 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
- * A limitless instance is created for every single player
+ * A limitless instance is created for every single player with the tag of Limitless
  */
 public class Limitless implements Sorcery {
-    public static Limitless[] limitlessPlayers;
+
+    public static HashMap<UUID,Limitless> limitlessPlayers;
     public static String tag= "Limitless User";
 
-    Player player;
+    //I know i'm eventually gonna have to deal with player data and storing but for now i'll use these
+    public final int cursedEnergy=999999;
+    public final int cursedOutput=999999;
 
 
-    public Limitless(Player player){
-        if(!player.getTags().contains(tag)) {
-            for(Limitless ls: limitlessPlayers) {
-                if(ls.player.equals(player)) {
-                    PracticeMod.LOGGER.info("Player was cast to limitless a second time");
-                    return;
-                }
-            }
-            this.player = player;
-        }
+//    public Limitless(Player player){
+//        if(!player.getTags().contains(tag)) {
+//            for(Limitless ls: limitlessPlayers) {
+//                if(ls.player.equals(player)) {
+//                    PracticeMod.LOGGER.info("Player was cast to limitless a second time");
+//                    return;
+//                }
+//            }
+//            this.player = player;
+//        }
+//
+//        PracticeMod.LOGGER.info("Player was cast to limitless a second time");
+//
+//    }
 
-        PracticeMod.LOGGER.info("Player was cast to limitless a second time");
-
-    }
-
-
-
-
-    /**
-     * for each client run this tick
-     * MUST BE RUN IN THE CORRECT CLIENT
-     * @param ls the Limitless technique that has been initialized
-     */
-    public void initLimitlessPlayer(Limitless ls){
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            //code
-            if(client.player!=null) {
-                if (InitializeBindings.attack1.isDown()) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK1());
-                }
-                if (InitializeBindings.attack2.isDown()) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
-                }
-                if (InitializeBindings.attack3.isDown()) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK3());
-                }
-                if (InitializeBindings.attack4.isDown()) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK4());
-                }
-                if (InitializeBindings.domainKey.isDown()) {
-                    ClientPlayNetworking.send(new HandleKeybinds.Domain());
-                }
-            }
-
-        });
+    //generate a limtiless technicue
+    private Limitless(){
 
     }
 
+
+    public Combo redCombo;
+    public Combo blueCombo;
+    public Combo purpleCombo;
+
+
     /**
-     * for each client run this tick
-     * @param player the player that will receive limitless
+     * for each client tick run
+     * MUST BE RUN IN EVERY CLIENT
+     * @param player the Limitless player that has been initialized
      */
     public void initLimitlessPlayer(Player player){
-        initLimitlessPlayer(new Limitless(player));
+        limitlessPlayers.put(player.getUUID(),new Limitless());
+        redCombo = Combo.build(player).addKey1(100);
+
     }
-
-
-    /**
-     * tbh does nothing rn its run at the start of the game
-     */
-    public static void initLimitless(){
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            for(Limitless l:limitlessPlayers){
-                l.player.addTag(tag);
-            }
-        });
-    }
-
 
 
 
