@@ -2,13 +2,15 @@ package com.qstorm.key;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.qstorm.PracticeMod;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -20,6 +22,8 @@ public class InitializeBindings {
     public static KeyMapping attack3;
     public static KeyMapping attack4;
     public static KeyMapping domainKey;
+    public static KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"custom_mod_controls"));
+
 
     static HashMap<Player,Boolean> attack1WasDown=new HashMap<>();
     static HashMap<Player,Boolean> attack2WasDown=new HashMap<>();
@@ -27,12 +31,11 @@ public class InitializeBindings {
     static HashMap<Player,Boolean> attack4WasDown=new HashMap<>();
 
     public static void init(){
-        KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"custom_mod_controls"));
         laserKey = KeyBindingHelper.registerKeyBinding(
-                new KeyMapping(
-                        "laser",InputConstants.Type.MOUSE,
-                        InputConstants.MOUSE_BUTTON_RIGHT,CATEGORY
-                )
+            new KeyMapping(
+                "laser",InputConstants.Type.MOUSE,
+                InputConstants.MOUSE_BUTTON_RIGHT,CATEGORY
+            )
         );
 
         attack1 = KeyBindingHelper.registerKeyBinding(
@@ -64,6 +67,12 @@ public class InitializeBindings {
 
 
 
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            onPlayerJoin(handler.player);
+        });
+        ServerPlayConnectionEvents.DISCONNECT.register((handler,server) -> {
+            onPlayerLeave(handler.player);
+        });
 
 
 
@@ -75,46 +84,82 @@ public class InitializeBindings {
             }
         });
 
+
+        //combo handler
+        //updates maps that require players
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if(attack1.isDown()){
+            //if the player wasn't initialized
+            if(!attack1WasDown.keySet().contains(client.player)){
+                PracticeMod.LOGGER.info("error player was not added to set");
+                return;
+            }
+
+            //only happens once and then turned off
+            if(attack1.isDown() && !InitializeBindings.attack1WasDown.get(client.player)){
                 if(client.player!=null) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK1());
-                }
-            }
-        });
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if(attack2.isDown()){
-                if(client.player!=null) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
-                }
-            }
-        });
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if(attack3.isDown()){
-                if(client.player!=null) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK3());
-                }
-            }
-        });
-
-
-        //if down but not letGo
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            Boolean attack4WasDown = InitializeBindings.attack4WasDown.get(client.player);
-            if(attack4.isDown()&& !attack4WasDown){
-                if(client.player!=null) {
-                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK4());
-                    attack4WasDown=true;
+                    InitializeBindings.attack1WasDown.put(client.player,false);
                 }
             }
             else{
-                attack4WasDown=false;
+                InitializeBindings.attack1WasDown.put(client.player,false);
+            }
+
+
+
+            if(attack2.isDown() && !InitializeBindings.attack2WasDown.get(client.player)){
+                if(client.player!=null) {
+                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
+                    InitializeBindings.attack2WasDown.put(client.player,false);
+                }
+            }
+            else{
+                InitializeBindings.attack2WasDown.put(client.player,false);
+            }
+
+
+
+
+            if(attack3.isDown() && !InitializeBindings.attack3WasDown.get(client.player)){
+                if(client.player!=null) {
+                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK3());
+                    InitializeBindings.attack3WasDown.put(client.player,false);
+                }
+            }
+            else{
+                InitializeBindings.attack3WasDown.put(client.player,false);
+            }
+
+
+            if(attack4.isDown() && !InitializeBindings.attack4WasDown.get(client.player)){
+                if(client.player!=null) {
+                    ClientPlayNetworking.send(new HandleKeybinds.AttackJJK4());
+                    InitializeBindings.attack4WasDown.put(client.player,false);
+                }
+            }
+            else{
+                InitializeBindings.attack4WasDown.put(client.player,false);
             }
         });
 
 
+
+
+    }
+
+    public static void onPlayerJoin(Player player){
+        attack1WasDown.put(player, false);
+        attack2WasDown.put(player, false);
+        attack3WasDown.put(player, false);
+        attack4WasDown.put(player, false);
+    }
+
+
+    public static void onPlayerLeave(Player player){
+        attack1WasDown.remove(player);
+        attack2WasDown.remove(player);
+        attack3WasDown.remove(player);
+        attack4WasDown.remove(player);
     }
 
 

@@ -8,6 +8,8 @@ import com.qstorm.key.HandleKeybinds;
 import com.qstorm.potion.ModPotions;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -32,11 +34,24 @@ public class PracticeMod implements ModInitializer {
 		CustomEffects.onInitialize();
 		ModPotions.onInitialize();
 
+		//if player leaves check
+
+
+
+
 		//handle serverside keybinding management
 		HandleKeybinds.handle();
 
 	}
 	public static void test(){
+
+	}
+
+	public static void onPlayerJoin(){
+
+	}
+
+	public static void onPlayerLeave(){
 
 	}
 
