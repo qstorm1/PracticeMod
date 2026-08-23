@@ -124,6 +124,9 @@ public class Combo {
 
     }
 
+    public void generateGUI(){
+
+    }
 
 
 
