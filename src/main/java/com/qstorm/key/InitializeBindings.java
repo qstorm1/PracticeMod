@@ -103,8 +103,6 @@ public class InitializeBindings {
                 if(!InitializeBindings.attack1WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK1());
                     InitializeBindings.attack1WasDown.put(client.player.getUUID(), true);
-
-                    PracticeMod.LOGGER.info("attack placed: " + InitializeBindings.attack1WasDown.get(client.player.getUUID()));
                 }
             }
             else InitializeBindings.attack1WasDown.put(client.player.getUUID(),false);

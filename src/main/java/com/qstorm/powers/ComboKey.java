@@ -67,7 +67,6 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
-                PracticeMod.LOGGER.info("attack-key-1.isDown()");
             });
         });
 //{UUID@33615} "19487181-3859-391a-bf75-143cc8396d12" -> {ComboKey@33616}
@@ -75,21 +74,18 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key2.get(context.player().getUUID()).keyDown();
-                PracticeMod.LOGGER.info("attack-key-2.isDown()");
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK3.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key3.get(context.player().getUUID()).keyDown();
-                PracticeMod.LOGGER.info("attack-key-3.isDown()");
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK4.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key4.get(context.player().getUUID()).keyDown();
-                PracticeMod.LOGGER.info("attack-key-4.isDown()");
             });
         });
 
