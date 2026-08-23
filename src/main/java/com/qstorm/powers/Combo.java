@@ -75,7 +75,13 @@ public class Combo {
 
     //updateCombo
     //REQUIRED FOR CODE TO TICK
+    //so we only want to reset the combo if
     public void updateComboStatus(){
+        if(!checkBefore()){
+            resetCombo();
+
+        }
+
         if(comboKeys.get(current).keyDown){
             if(checkBefore()){
                 if(current>=comboKeys.size()-1){
@@ -90,7 +96,9 @@ public class Combo {
             }
 
         }
-        ComboKey.reset(player.getUUID());
+
+
+
     }
 
     public void nextKey(){
@@ -103,8 +111,8 @@ public class Combo {
     }
 
     public void doComboAction(){
-        current=0;
         PracticeMod.LOGGER.info("did combo thing ig");
+        resetCombo();
     }
 
 
