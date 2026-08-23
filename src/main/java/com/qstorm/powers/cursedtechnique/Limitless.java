@@ -56,16 +56,14 @@ public class Limitless implements Sorcery {
 
 
     /**
-     * for each client tick run
-     * MUST BE RUN IN EVERY CLIENT
+     *
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
         PracticeMod.LOGGER.info("new instance created");
         limitlessPlayers.put(player.getUUID(),new Limitless());
 
-        Limitless local = limitlessPlayers.get(player.getUUID());
-        local.redCombo = Combo.build(player).addKey1(100);
+        limitlessPlayers.get(player.getUUID()).redCombo = Combo.build(player).addKey1(100).addKey3(100);
 
     }
 
@@ -73,7 +71,7 @@ public class Limitless implements Sorcery {
 
 
 
-
+    //TODO: maybe replace with runnable classes so you can implement methods (like a parent method with combo)
     //two times as much cursed energy as blue
     public void triggerRed(){
 

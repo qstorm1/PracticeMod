@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -32,20 +33,38 @@ public class PracticeMod implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+
+
+	public static final Identifier USES_DATA = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"use_data");
+	public static final Identifier RESET = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"reset");
+
+
+
 	@Override
 	public void onInitialize() {
+
+		//all actions that reset happen after the data is used
+		ServerTickEvents.END_SERVER_TICK.addPhaseOrdering(USES_DATA,RESET);
+
+
+
+
 		ModItems.initialize();
 		CustomEffects.onInitialize();
 		ModPotions.onInitialize();
 
+
+		ComboKey.init();
+
 		//if player joins/leaves checks
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			onPlayerJoin(handler.player);
-
 		});
 		ServerPlayConnectionEvents.DISCONNECT.register((handler,server) -> {
 			onPlayerLeave(handler.player);
 		});
+
+
 
 
 

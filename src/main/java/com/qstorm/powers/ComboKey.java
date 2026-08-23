@@ -4,6 +4,7 @@ import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -20,6 +21,10 @@ import java.util.UUID;
 public class ComboKey{
 
     private ComboKey(){}
+
+    public static void init(){
+
+    }
 
     //each key currently instantiated, once per player, to add to a combo do .key.get(player) maybe switch to UUID or something idk
     public static HashMap<UUID,ComboKey> key1= new HashMap<>();
@@ -45,6 +50,7 @@ public class ComboKey{
 
     /**
      * update the timeSinceLastPressed value of each key
+     * must happen after checking
      */
     public static void tickUpdateComboKeys(){
         key1.forEach((uuid, comboKey) -> {
@@ -63,14 +69,19 @@ public class ComboKey{
 
 
 
+
     public static void setupServersideManagement(){
+
+
+
+
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
             });
         });
-//{UUID@33615} "19487181-3859-391a-bf75-143cc8396d12" -> {ComboKey@33616}
-        //{UUID@33617} "24b1aadd-92ce-4423-8517-114eab65e1d5" -> {ComboKey@33618}
+
+
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key2.get(context.player().getUUID()).keyDown();
@@ -89,9 +100,17 @@ public class ComboKey{
             });
         });
 
+
+
+        //Doesn't use data so no identifier needed
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             server.execute(ComboKey::tickUpdateComboKeys);
         });
+
+        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.RESET,server -> {
+            ComboKey.reset();
+        });
+
 
     }
 
@@ -115,10 +134,28 @@ public class ComboKey{
         key4.remove(uuid);
     }
 
+    public static void reset(UUID uuid) {
+        key1.get(uuid).keyUp();
+        key2.get(uuid).keyUp();
+        key3.get(uuid).keyUp();
+        key4.get(uuid).keyUp();
+    }
 
 
-
-
+    public static void reset() {
+        key1.forEach((uuid, comboKey) -> {
+            comboKey.keyUp();
+        });
+        key2.forEach((uuid, comboKey) -> {
+            comboKey.keyUp();
+        });
+        key3.forEach((uuid, comboKey) -> {
+            comboKey.keyUp();
+        });
+        key4.forEach((uuid, comboKey) -> {
+            comboKey.keyUp();
+        });
+    }
 
 
     //key on/off management

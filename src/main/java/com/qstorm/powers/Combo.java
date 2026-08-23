@@ -77,7 +77,6 @@ public class Combo {
     //REQUIRED FOR CODE TO TICK
     public void updateComboStatus(){
         if(comboKeys.get(current).keyDown){
-            comboKeys.get(current).keyUp();
             if(checkBefore()){
                 if(current>=comboKeys.size()-1){
                     doComboAction();
@@ -91,6 +90,7 @@ public class Combo {
             }
 
         }
+        ComboKey.reset(player.getUUID());
     }
 
     public void nextKey(){
@@ -142,7 +142,7 @@ public class Combo {
         }
     }
 
-
+    //TODO: all player's keys need to be reset at the end of the tick but after all of the other stuff happens
 
     /**
      * ASSUME THAT COMBO KEYS HAVE BEEN REGISTERED AND ARE FUCNTIONAL
@@ -150,7 +150,7 @@ public class Combo {
     private Combo(Player player){
         this.player=player;
         //update the state of the combo every tick from the server
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
+        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,server -> {
             server.execute(this::updateComboStatus);
         });
     }

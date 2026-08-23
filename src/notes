@@ -54,6 +54,6 @@ client sends key hits -> server recieves (subtracts latency from the time)
 each time server recieves, all combo keys of that type turn to ComboKey.keydown=true;
 
 Devlog notes:
-Each player has a value called "combo key" which have a timer that increases by one every tick and resets to 0 when the key is pressed
-A combo is created using a bunch of if logic. I used a building object creation so instead of new thing() you do Combo.build().key1(time).key2(time)
-the combo checks if the values associated to the player are done in the correct time and order using some simple logic.
+I had some problems with the server tick, basically in order to add something to the game timer, you need to call a registry function which adds it to the end of the "tick" (20 ticks per second)
+The issue is, if I were to reset player information before the tick, then that information can't be used. the theoriatically sollution is to simply call register(player) before calling reset() but
+what if a player decides to join/leave. how would one handle that?

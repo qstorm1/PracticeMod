@@ -3,6 +3,7 @@ package com.qstorm.key;
 import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.powers.ComboKey;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,6 +12,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public class HandleKeybinds {
+
+
+
+
     public static void handle(){
         //configure a client to server payload
         //packets have two types of "phases", play and configure
@@ -21,7 +26,6 @@ public class HandleKeybinds {
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK2.TYPE,HandleKeybinds.AttackJJK2.CODEC);
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK3.TYPE,HandleKeybinds.AttackJJK3.CODEC);
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK4.TYPE,HandleKeybinds.AttackJJK4.CODEC);
-
 
 
 
