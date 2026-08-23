@@ -22,7 +22,7 @@ public class Combo {
 
     //the keys required for the combo to work
     public ArrayList<ComboKey> comboKeys=new ArrayList<>();
-    public static ArrayList<Integer> timeRequiredToContinue;//the time you need to press this key to count to combo
+    public static ArrayList<Integer> timeRequiredToContinue= new ArrayList<>();//the time you need to press this key to count to combo
     //the amount into the combo
     int current=0;
 
@@ -77,8 +77,9 @@ public class Combo {
     //REQUIRED FOR CODE TO TICK
     public void updateComboStatus(){
         if(comboKeys.get(current).keyDown){
+            comboKeys.get(current).keyUp();
             if(checkBefore()){
-                if(current==comboKeys.size()){
+                if(current>=comboKeys.size()-1){
                     doComboAction();
                 }
                 else {
@@ -88,6 +89,7 @@ public class Combo {
             else{
                 resetCombo();
             }
+
         }
     }
 

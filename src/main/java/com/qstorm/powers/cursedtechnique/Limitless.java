@@ -21,7 +21,7 @@ import java.util.function.Function;
  */
 public class Limitless implements Sorcery {
 
-    public static HashMap<UUID,Limitless> limitlessPlayers;
+    public static HashMap<UUID,Limitless> limitlessPlayers = new HashMap<>();
     public static String tag= "Limitless User";
 
     //I know i'm eventually gonna have to deal with player data and storing but for now i'll use these
@@ -60,9 +60,12 @@ public class Limitless implements Sorcery {
      * MUST BE RUN IN EVERY CLIENT
      * @param player the Limitless player that has been initialized
      */
-    public void initLimitlessPlayer(Player player){
+    public static void initLimitlessPlayer(Player player){
+        PracticeMod.LOGGER.info("new instance created");
         limitlessPlayers.put(player.getUUID(),new Limitless());
-        redCombo = Combo.build(player).addKey1(100);
+
+        Limitless local = limitlessPlayers.get(player.getUUID());
+        local.redCombo = Combo.build(player).addKey1(100);
 
     }
 

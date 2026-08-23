@@ -140,7 +140,7 @@ public class ComboKey{
     }
 
     public void keyUp(){
-        keyDown=true;
+        keyDown=false;
     }
 
 }
