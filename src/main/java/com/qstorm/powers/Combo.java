@@ -2,10 +2,22 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
+import org.joml.Matrix3x2fStack;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -103,6 +115,7 @@ public class Combo {
 
     public void nextKey(){
         current++;
+
     }
 
     public void resetCombo(){
@@ -124,7 +137,33 @@ public class Combo {
 
     }
 
-    public void generateGUI(){
+    //must run on a clientInitializer
+    //if the player is in the client side, then render to screen if the key has been pressed
+    //if this method is called that means the player is doing a combo with this render
+    public void handleRender(Player player, String renderVal) {
+        player.level().isClientSide();
+
+    }
+
+
+
+    public static void render(GuiGraphics graphics, DeltaTracker tracker){
+        int color = 0x80A8A8A8;//red
+        int targetColor = 0xFF00FF00; // Green
+
+        drawResizableRectangle(graphics,0.01,0.2,0.05,0.4,color);
+
+
+    }
+
+    public static void drawResizableRectangle(GuiGraphics graphics,double percentFromLeft,double percentFromTop,double percentWidth,double percentHeight, int color){
+
+        graphics.fill(
+                (int)(graphics.guiWidth()*percentFromLeft),
+                (int)((graphics.guiHeight()*percentFromTop)),
+                (int)(graphics.guiWidth()*percentFromLeft+graphics.guiWidth()*percentWidth)+1,
+                (int)(graphics.guiHeight()*percentFromTop+graphics.guiHeight()*percentHeight)+1,
+                color);
 
     }
 

@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -175,5 +176,34 @@ public class ComboKey{
     public void keyUp(){
         keyDown=false;
     }
+
+    //TODO: idea, make certain keys not work when doing a combo and also have keys other then just the combo key's for more complex combo's
+    //TODO: if you strenthen your hand using combos the tick after you hit somebody you hit a black flash
+
+    //a list of combos that this player can render
+    ArrayList<Combo> comboRenderedOptions;
+
+
+    //if a key is pressed, a method is run that gets the list of combo's that can be run by that starting key. each key can only have 3 starting combos (any more aren't rendered)
+    //ex: pressing 'z' with limitless gives the following list of combo's: Red
+    //additionally pressing this key renders the key to the area above the combo list.
+    // an image is generated and so is a xp bar
+
+    //Key pressed, list of blackened letters that light up and have a boss bar. The letters will scroll up as the combo continues
+
+
+    //options on how to choose which combo you see,
+    // One, is to make a settings menu and you can set which combo you want to see.
+    // The second is to make it so each combo can only have one key attached to it's start. ex if u press z and there are two options, nothing shows but if you press the next value in the combo whicho nly has one option, something shows
+    // Three is to make a settings menu which says which combo should be listed first
+    // Fourth is to make the combo listed by alphabetatized/length of time, where the longest lasts the longest
+    // DOING FOURTH AS DEFAULT except there is a menu similar to the f3 settings menu where you choose which power and then chose weather it shows or not
+    // as well as weather or not it is listed at the top
+    // you can choose how to sort combo's as well but for now I'm gonna make it based on length of time
+    // you can also start a combo that makes it stay at the side of your screen no matter what
+
+
+
+
 
 }
