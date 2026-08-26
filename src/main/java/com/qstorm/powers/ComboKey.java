@@ -3,6 +3,7 @@ package com.qstorm.powers;
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
 
@@ -21,7 +22,9 @@ import java.util.UUID;
  */
 public class ComboKey{
 
-    private ComboKey(){}
+    private ComboKey(int id){
+        this.id=id;
+    }
 
     public static void init(){
 
@@ -40,14 +43,26 @@ public class ComboKey{
     //a combo will check if the timeSinceLastPressed of the previous key is below the minimum time of the current one
     //if true it will update to the next value
 
-    //@ERROR TODO: keyDown doesn't go up
     boolean keyDown;
+
+    /**
+     * 1 = key1
+     * 2 = key2
+     * 3 = key3
+     * 4 = key4
+     * 5 = wait
+     * used for rendering
+     */
+    public int id;
     int timeSinceLastPressed = 0;//ticks since the previous button was pressed, if it reaches max combo value then it ends
     // timeRequiredToContinue has been moved to Combo class
     // int timeRequiredToContinue=0;//ticks required for this keybind to count, basically
     //old key pressed -> timer for this key starts, if that time limit is over the time require to continue, then the combo will reset
-    //TODO: if a player starts a combo but then stops typing, they probably expect that combo to automatically reset, make sure this happens
 
+
+    public int getTimeSinceLastPressed() {
+        return timeSinceLastPressed;
+    }
 
     /**
      * update the timeSinceLastPressed value of each key
@@ -72,6 +87,12 @@ public class ComboKey{
 
 
     public static void setupServersideManagement(){
+
+
+        PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK1.TYPE,HandleKeybinds.AttackJJK1.CODEC);
+        PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK2.TYPE,HandleKeybinds.AttackJJK2.CODEC);
+        PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK3.TYPE,HandleKeybinds.AttackJJK3.CODEC);
+        PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK4.TYPE,HandleKeybinds.AttackJJK4.CODEC);
 
 
 
@@ -119,10 +140,10 @@ public class ComboKey{
      * when player joins the server
      */
     public static void registerPlayer(UUID uuid){
-        key1.put(uuid,new ComboKey());
-        key2.put(uuid,new ComboKey());
-        key3.put(uuid,new ComboKey());
-        key4.put(uuid,new ComboKey());
+        key1.put(uuid,new ComboKey(1));
+        key2.put(uuid,new ComboKey(2));
+        key3.put(uuid,new ComboKey(3));
+        key4.put(uuid,new ComboKey(4));
     }
 
     /**

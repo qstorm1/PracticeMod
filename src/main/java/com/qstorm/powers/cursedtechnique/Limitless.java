@@ -26,7 +26,8 @@ public class Limitless implements Sorcery {
 
     //I know i'm eventually gonna have to deal with player data and storing but for now i'll use these
     public final int cursedEnergy=999999;
-    public final int cursedOutput=999999;
+    public final int maxCursedOutput=99;
+    public final int cursedOutput=0;
 
 
 //    public Limitless(Player player){
@@ -56,7 +57,7 @@ public class Limitless implements Sorcery {
 
 
     /**
-     *
+     * MUST HAPPEN ON BOTH SERVER AND CLIENT SIDE
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
@@ -92,5 +93,48 @@ public class Limitless implements Sorcery {
 
     public void infinityOff(){
 
+    }
+
+
+    public void domain(){
+
+        // Animation is played
+        // While playing(){
+        // All block updates and entities are paused within 20 blocks of the player (done using mixin)
+        // }
+        // The domain effect is done with the stop-motion stuff similar to wifies thing using completely black blocks
+        // players are allowed to move during the domain effect, once the domain finishes loading all ender pearls attached to the player are nulled
+        // the players in the domains range tp to a dimension (idk how I handle the loading screen)
+        // once all players are loaded into the dimension, the domain owner imbues their domain technique where an animation happens
+        // afterward the players guaranteedHit variable will be set to true
+
+
+        //domain clash
+        // up to 3 domains can "clash"
+        // when a domain is created it runs clash(). for each domain clashed with (up to 3) only a bit less then half of the domain is created
+        // how the domain is created is based on shape
+        // tbh this isn't a now problem
+
+
+
+
+
+
+        //COMPLEX VERSION
+        // send server packet to initiate domain animation (the player animation),
+        // all entities and block updates within the domain range cannot move for the period the animation is happening
+        // more specifically a recording of the player animation is created, and while its playing, a new dimention is updated
+        // during this period
+        // a 0.2 second black void will appear
+
+        // onEnterDomain()
+        //create a "fake" area
+        // for each player within 20 blocks tp @s to Domain.TYPE
+
+
+
+        // on break():
+        // all players are paused and their screens get cracked (take whatever image was at the last it is then cracked) until all players are loaded back into the world
+        // after which onDomainEnd() is run
     }
 }

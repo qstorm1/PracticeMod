@@ -22,10 +22,7 @@ public class HandleKeybinds {
         //playC2S() happens during gameplay while configureC2S() happens during initial connection
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.LaserKeyServer.TYPE,HandleKeybinds.LaserKeyServer.CODEC);
 
-        PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK1.TYPE,HandleKeybinds.AttackJJK1.CODEC);
-        PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK2.TYPE,HandleKeybinds.AttackJJK2.CODEC);
-        PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK3.TYPE,HandleKeybinds.AttackJJK3.CODEC);
-        PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK4.TYPE,HandleKeybinds.AttackJJK4.CODEC);
+
 
 
 
@@ -123,6 +120,19 @@ public class HandleKeybinds {
         //just an identifier
         public static final Type<Domain> TYPE =
                 new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "domain-packet"));
+
+        public static final StreamCodec<Object, Domain> CODEC = StreamCodec.unit(new Domain());
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public record Innate() implements CustomPacketPayload {
+        //just an identifier
+        public static final Type<Domain> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "innate-packet"));
 
         public static final StreamCodec<Object, Domain> CODEC = StreamCodec.unit(new Domain());
 

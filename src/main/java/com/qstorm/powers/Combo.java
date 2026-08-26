@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.UUID;
 
 public class Combo {
 
@@ -36,13 +37,18 @@ public class Combo {
     public Runnable action;
 
 
+    //the player this combo is attached to (used to detect ComboKey's)
+    UUID playerUUID;
+
     //TODO: all player's keys need to be reset at the end of the tick but after all of the other stuff happens
 
     /**
      * ASSUME THAT COMBO KEYS HAVE BEEN REGISTERED AND ARE FUCNTIONAL
      */
     private Combo(Player player){
-        this.player=player;
+        playerUUID =player.getUUID();
+
+
         //update the state of the combo every tick from the server
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,server -> {
             server.execute(this::updateComboStatus);
@@ -52,14 +58,13 @@ public class Combo {
     public static Combo build(Player player){
         return new Combo(player);
     }
-    //the player this combo is attached to (used to detect ComboKey's)
-    Player player;
+
 
     /**
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey1(int ticksForContinue){
-        comboKeys.add(ComboKey.key1.get(player.getUUID()));
+        comboKeys.add(ComboKey.key1.get(playerUUID));
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
@@ -69,7 +74,7 @@ public class Combo {
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey2(int ticksForContinue){
-        comboKeys.add(ComboKey.key2.get(player.getUUID()));
+        comboKeys.add(ComboKey.key2.get(playerUUID));
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
@@ -77,7 +82,7 @@ public class Combo {
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey3(int ticksForContinue){
-        comboKeys.add(ComboKey.key3.get(player.getUUID()));
+        comboKeys.add(ComboKey.key3.get(playerUUID));
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
@@ -85,7 +90,7 @@ public class Combo {
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey4(int ticksForContinue){
-        comboKeys.add(ComboKey.key4.get(player.getUUID()));
+        comboKeys.add(ComboKey.key4.get(playerUUID));
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
@@ -195,7 +200,7 @@ public class Combo {
     public static final Identifier BLACKTEXTURECOMBO4 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/4.png");
 
 
-
+    //run on client whenever
     static void getRender(){
         ClientPlayNetworking.registerGlobalReceiver(new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "test")),
                 (payload, context) -> {
