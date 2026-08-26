@@ -16,7 +16,7 @@ public class PracticeModClient implements ClientModInitializer {
     public void onInitializeClient() {
         //initialize all keyboard stuff
         InitializeBindings.init();
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"before-thing"),Combo::render);
+        //HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"before-thing"),Combo::render);
     }
 
 }

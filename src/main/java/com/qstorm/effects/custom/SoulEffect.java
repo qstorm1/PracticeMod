@@ -2,6 +2,7 @@ package com.qstorm.effects.custom;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.powers.cursedtechnique.Limitless;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,7 +17,7 @@ public class SoulEffect extends MobEffect {
     @Override
     public void onEffectAdded(MobEffectInstance effectInstance, LivingEntity entity) {
         entity.addTag(Limitless.tag);
-        if(entity instanceof Player player){
+        if(entity instanceof ServerPlayer player){
             Limitless.initLimitlessPlayer(player);
 
         }

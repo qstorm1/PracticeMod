@@ -1,20 +1,13 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.key.HandleKeybinds;
-import com.qstorm.key.InitializeBindings;
 import com.qstorm.powers.Combo;
-import com.qstorm.powers.ComboKey;
 import com.qstorm.powers.Sorcery;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 
 /**
  * A limitless instance is created for every single player with the tag of Limitless
@@ -45,7 +38,7 @@ public class Limitless implements Sorcery {
 //
 //    }
 
-    //generate a limtiless technicue
+    //generate a limitless technique
     private Limitless(){
 
     }
@@ -60,12 +53,20 @@ public class Limitless implements Sorcery {
      * MUST HAPPEN ON BOTH SERVER AND CLIENT SIDE
      * @param player the Limitless player that has been initialized
      */
-    public static void initLimitlessPlayer(Player player){
+    public static void initLimitlessPlayer(ServerPlayer player){
         PracticeMod.LOGGER.info("new instance created");
-        limitlessPlayers.put(player.getUUID(),new Limitless());
+        Limitless playerLimitless = new Limitless();
+        //add combo's
+        Combo.build(player);
+                //.addKey1(100).addKey3(100);
 
-        limitlessPlayers.get(player.getUUID()).redCombo = Combo.build(player).addKey1(100).addKey3(100);
 
+        limitlessPlayers.put(player.getUUID(),playerLimitless);
+
+
+        if(player.level().isClientSide()){
+            Combo.handleRenderingClient();
+        }
     }
 
 
