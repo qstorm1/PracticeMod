@@ -17,6 +17,9 @@ import java.util.UUID;
 
 public class Combo {
 
+
+
+
     //the combo class handles start and end stuff
     //combo.build().key1(3T).key4(4T).Key2(72T)
     //if press key -> packet is sent that takes the keyID
@@ -183,9 +186,28 @@ public class Combo {
 
     }
 
-    static Identifier stuffInBoxIdentifier = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"Combo-HUD-Box");
-    static Identifier comboListIdentifier = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"Combo-List");
-    static Identifier GUIBox = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"GUI-Box");
+    public static void init(){
+        stuffInBoxIdentifier=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"combo_hud_box");
+        comboListIdentifier=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"combo_list");
+        GUIBox=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"gui_box");
+    }
+
+    public static Identifier stuffInBoxIdentifier;
+    public static Identifier comboListIdentifier;
+    public static Identifier GUIBox;
+
+
+    //the comparator mode from the settings
+    public static final Comparator<Combo> alphabeticOrder = Comparator.comparing((combo -> combo.name));
+    public static final Comparator<Combo> highestTickTime = Comparator.comparing(Combo::getCurrentTimeSinceLastPressed).reversed();
+
+    private int getCurrentTimeSinceLastPressed() {
+        return this.comboKeys.get(current).timeSinceLastPressed;
+    }
+
+
+    private static Comparator<Combo> compMode = highestTickTime;
+
 
     public static final Identifier TEXTURECOMBO1 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/1.png");
     public static final Identifier TEXTURECOMBO2 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/2.png");
@@ -249,12 +271,12 @@ public class Combo {
 
 
     private static void drawComboList(String[] comboNames){
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,comboListIdentifier,(graphics,timeDelta)->{
-            for(int i = 0 ;i<comboNames.length&&i<5;i++){
-                graphics.drawString(Minecraft.getInstance().font, comboNames[i], graphics.guiWidth()/80, (int)(graphics.guiHeight()*3.0/4+i*graphics.guiHeight()/20.0), 0xFF000000);
-
-            }
-        });
+//        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,comboListIdentifier,(graphics,timeDelta)->{
+//            for(int i = 0 ;i<comboNames.length&&i<5;i++){
+//                graphics.drawString(Minecraft.getInstance().font, comboNames[i], graphics.guiWidth()/80, (int)(graphics.guiHeight()*3.0/4+i*graphics.guiHeight()/20.0), 0xFF000000);
+//
+//            }
+//        });
     }
 
 
@@ -271,48 +293,48 @@ public class Combo {
         }else{
             black=0xFF000000;
         }
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, stuffInBoxIdentifier,(graphics,timeDelta)->{
-            switch (id){
-                case 1 -> drawResizableImage(graphics,TEXTURECOMBO1,0.015,0.205+stage*0.19,0.04,0.08);
-
-                case 2 -> drawResizableImage(graphics,TEXTURECOMBO2,0.015,0.205+stage*0.19,0.04,0.08);
-
-                case 3 -> drawResizableImage(graphics,TEXTURECOMBO3,0.015,0.205+stage*0.19,0.04,0.08);
-
-                case 4 -> drawResizableImage(graphics,TEXTURECOMBO4,0.015,0.205+stage*0.19,0.04,0.08);
-
-            }
-
-            drawResizableRectangle(graphics,0.015,0.205+stage*0.19,0.04,0.08,black);
-            drawResizableBorder(graphics,0.015,0.205+stage*0.19,0.04,0.08,1,black);
-
-        });
+//        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, stuffInBoxIdentifier,(graphics,timeDelta)->{
+//            switch (id){
+//                case 1 -> drawResizableImage(graphics,TEXTURECOMBO1,0.015,0.205+stage*0.19,0.04,0.08);
+//
+//                case 2 -> drawResizableImage(graphics,TEXTURECOMBO2,0.015,0.205+stage*0.19,0.04,0.08);
+//
+//                case 3 -> drawResizableImage(graphics,TEXTURECOMBO3,0.015,0.205+stage*0.19,0.04,0.08);
+//
+//                case 4 -> drawResizableImage(graphics,TEXTURECOMBO4,0.015,0.205+stage*0.19,0.04,0.08);
+//
+//            }
+//
+//            drawResizableRectangle(graphics,0.015,0.205+stage*0.19,0.04,0.08,black);
+//            drawResizableBorder(graphics,0.015,0.205+stage*0.19,0.04,0.08,1,black);
+//
+//        });
     }
 
     private static void drawWorkingKeybind(final int id){
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,stuffInBoxIdentifier,(graphics,tick)-> {
-            switch (id) {
-                case 1 -> drawResizableImage(graphics, TEXTURECOMBO1, 0.015, 0.205, 0.04, 0.08);
-
-                case 2 -> drawResizableImage(graphics, TEXTURECOMBO2, 0.015, 0.205, 0.04, 0.08);
-
-                case 3 -> drawResizableImage(graphics, TEXTURECOMBO3, 0.015, 0.205, 0.04, 0.08);
-
-                case 4 -> drawResizableImage(graphics, TEXTURECOMBO4, 0.015, 0.205, 0.04, 0.08);
-            }
-
-            //TODO: make a xp bar underneath key representing length of time needed to press
-        });
+//        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,stuffInBoxIdentifier,(graphics,tick)-> {
+//            switch (id) {
+//                case 1 -> drawResizableImage(graphics, TEXTURECOMBO1, 0.015, 0.205, 0.04, 0.08);
+//
+//                case 2 -> drawResizableImage(graphics, TEXTURECOMBO2, 0.015, 0.205, 0.04, 0.08);
+//
+//                case 3 -> drawResizableImage(graphics, TEXTURECOMBO3, 0.015, 0.205, 0.04, 0.08);
+//
+//                case 4 -> drawResizableImage(graphics, TEXTURECOMBO4, 0.015, 0.205, 0.04, 0.08);
+//            }
+//
+//            //TODO: make a xp bar underneath key representing length of time needed to press
+//        });
     }
 
     private static void renderComboBox(){
         final int transparent_middle = 0x80A8A8A8;
         final int border_color = 0x90000000;
 
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,GUIBox,(graphics,timeDelta)->{
-            drawResizableRectangle(graphics,0.01,0.2,0.05,0.4,transparent_middle);
-            drawResizableBorder(graphics,0.01,0.2,0.05,0.4,1,border_color);
-        });
+//        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,GUIBox,(graphics,timeDelta)->{
+//            drawResizableRectangle(graphics,0.01,0.2,0.05,0.4,transparent_middle);
+//            drawResizableBorder(graphics,0.01,0.2,0.05,0.4,1,border_color);
+//        });
 
 
     }
@@ -374,19 +396,4 @@ public class Combo {
                 color);
     }
 
-
-
-
-
-
-
-    public static final Comparator<Combo> alphabeticOrder = Comparator.comparing((combo -> combo.name));
-    public static final Comparator<Combo> highestTickTime = Comparator.comparing(Combo::getCurrentTimeSinceLastPressed).reversed();
-
-    private int getCurrentTimeSinceLastPressed() {
-        return this.comboKeys.get(current).timeSinceLastPressed;
-    }
-
-    //the comparator mode from the settings
-    static Comparator<Combo> compMode = highestTickTime;
 }

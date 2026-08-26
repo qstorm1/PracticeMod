@@ -57,7 +57,7 @@ public class Limitless implements Sorcery {
         PracticeMod.LOGGER.info("new instance created");
         Limitless playerLimitless = new Limitless();
         //add combo's
-        Combo.build(player);
+        //Combo.build(player);
                 //.addKey1(100).addKey3(100);
 
 
@@ -65,7 +65,7 @@ public class Limitless implements Sorcery {
 
 
         if(player.level().isClientSide()){
-            Combo.handleRenderingClient();
+            //Combo.handleRenderingClient();
         }
     }
 
