@@ -39,7 +39,7 @@ public class Combo {
     int current=0;
 
     //client side only
-    public static ArrayList<Combo> playerCombos = new ArrayList<>();
+    public static HashMap<UUID,ArrayList<Combo>> playerCombos = new HashMap<>();
 
     //if need input replace with Consumer<Input type> and then run .accept(input)
     public Runnable action;
@@ -56,6 +56,8 @@ public class Combo {
     private Combo(Player player){
         playerUUID =player.getUUID();
 
+        playerCombos.computeIfAbsent(playerUUID, k -> new ArrayList<>());
+        playerCombos.get(playerUUID).add(this);
 
         //update the state of the combo every tick from the server
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,server -> {

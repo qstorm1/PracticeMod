@@ -103,7 +103,12 @@ public class ComboKey{
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
 
-                Combo.handleServerSideComboLogic(context);
+                if(
+                        !(Combo.playerCombos.get(context.player().getUUID())==null||
+                        Combo.playerCombos.get(context.player().getUUID()).isEmpty())
+                ){
+                    Combo.handleServerSideComboLogic(context,1,Combo.playerCombos.get(context.player().getUUID()));
+                }
             });
         });
 
@@ -111,21 +116,36 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key2.get(context.player().getUUID()).keyDown();
-                Combo.handleServerSideComboLogic(context);
+                if(
+                        !(Combo.playerCombos.get(context.player().getUUID())==null||
+                                Combo.playerCombos.get(context.player().getUUID()).isEmpty())
+                ){
+                    Combo.handleServerSideComboLogic(context,2,Combo.playerCombos.get(context.player().getUUID()));
+                }
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK3.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key3.get(context.player().getUUID()).keyDown();
-                Combo.handleServerSideComboLogic(context);
+                if(
+                        !(Combo.playerCombos.get(context.player().getUUID())==null||
+                                Combo.playerCombos.get(context.player().getUUID()).isEmpty())
+                ){
+                    Combo.handleServerSideComboLogic(context,3,Combo.playerCombos.get(context.player().getUUID()));
+                }
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK4.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key4.get(context.player().getUUID()).keyDown();
-                Combo.handleServerSideComboLogic(context);
+                if(
+                        !(Combo.playerCombos.get(context.player().getUUID())==null||
+                                Combo.playerCombos.get(context.player().getUUID()).isEmpty())
+                ){
+                    Combo.handleServerSideComboLogic(context,4,Combo.playerCombos.get(context.player().getUUID()));
+                }
             });
         });
 
