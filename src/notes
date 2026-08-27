@@ -57,3 +57,5 @@ Devlog notes:
 I had some problems with the server tick, basically in order to add something to the game timer, you need to call a registry function which adds it to the end of the "tick" (20 ticks per second)
 The issue is, if I were to reset player information before the tick, then that information can't be used. the theoriatically sollution is to simply call register(player) before calling reset() but
 what if a player decides to join/leave. how would one handle that?
+
+Spent multiple days dealing with a bug that turned out to just be an issue with how I named an identifier (i used upercase letters when they weren't allowed)

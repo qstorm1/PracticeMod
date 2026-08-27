@@ -2,6 +2,8 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
+import com.qstorm.packets.Packet;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -100,6 +102,8 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
+
+                Combo.handleServerSideComboLogic(context);
             });
         });
 
@@ -107,18 +111,21 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key2.get(context.player().getUUID()).keyDown();
+                Combo.handleServerSideComboLogic(context);
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK3.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key3.get(context.player().getUUID()).keyDown();
+                Combo.handleServerSideComboLogic(context);
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK4.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key4.get(context.player().getUUID()).keyDown();
+                Combo.handleServerSideComboLogic(context);
             });
         });
 

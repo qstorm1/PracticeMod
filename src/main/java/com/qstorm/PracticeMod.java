@@ -51,8 +51,6 @@ public class PracticeMod implements ModInitializer {
 		//all actions that reset happen after the data is used
 		ServerTickEvents.END_SERVER_TICK.addPhaseOrdering(USES_DATA,RESET);
 
-		Combo.init();
-
 
 		ModItems.initialize();
 		CustomEffects.onInitialize();

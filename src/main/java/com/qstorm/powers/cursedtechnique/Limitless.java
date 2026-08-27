@@ -4,7 +4,6 @@ import com.qstorm.PracticeMod;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.Sorcery;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -57,15 +56,14 @@ public class Limitless implements Sorcery {
         PracticeMod.LOGGER.info("new instance created");
         Limitless playerLimitless = new Limitless();
         //add combo's
-        //Combo.build(player);
-                //.addKey1(100).addKey3(100);
+        Combo.build(player).addKey1(100).addKey3(100);
 
 
         limitlessPlayers.put(player.getUUID(),playerLimitless);
 
 
         if(player.level().isClientSide()){
-            //Combo.handleRenderingClient();
+            Combo.addComboRendererToClient();
         }
     }
 

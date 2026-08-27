@@ -2,7 +2,9 @@ package com.qstorm.key;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
+import com.qstorm.packets.Packet;
 import com.qstorm.powers.ComboKey;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -21,6 +23,8 @@ public class HandleKeybinds {
         //packets have two types of "phases", play and configure
         //playC2S() happens during gameplay while configureC2S() happens during initial connection
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.LaserKeyServer.TYPE,HandleKeybinds.LaserKeyServer.CODEC);
+
+        PayloadTypeRegistry.playS2C().register(Packet.ComboRenderInfoS2C.TYPE,Packet.ComboRenderInfoS2C.CODEC);
 
 
 
