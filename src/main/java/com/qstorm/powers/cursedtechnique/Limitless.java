@@ -1,9 +1,13 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.Sorcery;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -52,19 +56,18 @@ public class Limitless implements Sorcery {
      * MUST HAPPEN ON BOTH SERVER AND CLIENT SIDE
      * @param player the Limitless player that has been initialized
      */
-    public static void initLimitlessPlayer(ServerPlayer player){
+    public static void initLimitlessPlayer(Player player){
         PracticeMod.LOGGER.info("new instance created");
         Limitless playerLimitless = new Limitless();
         //add combo's
-        Combo.build(player).addKey1(100).addKey3(100);
+        Combo.build(player,"Limitless Blue").addKey1(100).addKey3(100);
 
 
         limitlessPlayers.put(player.getUUID(),playerLimitless);
 
+        if(player instanceof ServerPlayer serverPlayer)
+            ServerPlayNetworking.send(serverPlayer,new Packet.limitlessInit());
 
-        if(player.level().isClientSide()){
-            Combo.addComboRendererToClient();
-        }
     }
 
 

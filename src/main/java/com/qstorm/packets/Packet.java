@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 public class Packet {
     public record ComboRenderInfoS2C(ArrayList<String> comboNames, ArrayList<Integer> IDs) implements CustomPacketPayload {
-        //just an identifier
         //TODO: six eyes or advance sorcery can automatically detect which combo's a player is doing so this info shared to them as well
         public static final Type<Packet.ComboRenderInfoS2C> TYPE =
                 new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"render-info-packet"));
@@ -26,6 +25,19 @@ public class Packet {
 
                 ComboRenderInfoS2C::new
         );
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public record limitlessInit() implements CustomPacketPayload {
+
+        public static final Type<Packet.limitlessInit> TYPE =
+                new limitlessInit.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"limitless-packet"));
+
+        public static final StreamCodec<Object, Packet.limitlessInit> CODEC =StreamCodec.unit(new limitlessInit());
 
         @Override
         public Type<? extends CustomPacketPayload> type() {

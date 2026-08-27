@@ -53,11 +53,13 @@ public class Combo {
     /**
      * ASSUME THAT COMBO KEYS HAVE BEEN REGISTERED AND ARE FUCNTIONAL
      */
-    private Combo(Player player){
+    private Combo(Player player,String name){
         playerUUID =player.getUUID();
 
         playerCombos.computeIfAbsent(playerUUID, k -> new ArrayList<>());
         playerCombos.get(playerUUID).add(this);
+
+        this.name=name;
 
         //update the state of the combo every tick from the server
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,server -> {
@@ -65,8 +67,9 @@ public class Combo {
         });
     }
 
-    public static Combo build(Player player){
-        return new Combo(player);
+    //TODO: replace name with translatable
+    public static Combo build(Player player,String name){
+        return new Combo(player,name);
     }
 
 
@@ -222,6 +225,11 @@ public class Combo {
             if(combo.current==currentMax)
                 updatedComboList.add(combo);
 
+        if(updatedComboList.isEmpty()){
+            return;
+        }
+
+
         updatedComboList.sort(compMode);
 
         ArrayList<String> listOfStrings = new ArrayList<>();
@@ -262,12 +270,12 @@ public class Combo {
                 ArrayList<Integer> idOfKeysToRender = payload.IDs();//a list of id's from the combo chosen
 
 
-                if(idOfKeysToRender.size()<1){
-                    resetHUD();
+                if(idOfKeysToRender.isEmpty()){
+                    //resetHUD();
                     return;
                 }
 
-                resetHUD();
+                //resetHUD();
                 drawComboList(comboNames);
                 renderComboBox();
 
