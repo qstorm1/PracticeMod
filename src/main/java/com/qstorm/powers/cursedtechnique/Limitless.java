@@ -58,6 +58,8 @@ public class Limitless implements Sorcery {
      */
     public static void initLimitlessPlayer(Player player){
         PracticeMod.LOGGER.info("new instance created");
+        if(limitlessPlayers.get(player.getUUID())!=null) return;
+
         Limitless playerLimitless = new Limitless();
         //add combo's
         Combo.build(player,"Limitless Blue").addKey1(100).addKey3(100);

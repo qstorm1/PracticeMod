@@ -2,12 +2,9 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
-import com.qstorm.packets.Packet;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,7 +104,7 @@ public class ComboKey{
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                         Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboLogic(context,1,Combo.playerCombos.get(context.player().getUUID()));
+                    Combo.handleServerSideComboRenderingLogic(context,1,Combo.playerCombos.get(context.player().getUUID()));
                 }
             });
         });
@@ -120,7 +117,7 @@ public class ComboKey{
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboLogic(context,2,Combo.playerCombos.get(context.player().getUUID()));
+                    Combo.handleServerSideComboRenderingLogic(context,2,Combo.playerCombos.get(context.player().getUUID()));
                 }
             });
         });
@@ -132,7 +129,7 @@ public class ComboKey{
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboLogic(context,3,Combo.playerCombos.get(context.player().getUUID()));
+                    Combo.handleServerSideComboRenderingLogic(context,3,Combo.playerCombos.get(context.player().getUUID()));
                 }
             });
         });
@@ -144,7 +141,7 @@ public class ComboKey{
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboLogic(context,4,Combo.playerCombos.get(context.player().getUUID()));
+                    Combo.handleServerSideComboRenderingLogic(context,4,Combo.playerCombos.get(context.player().getUUID()));
                 }
             });
         });

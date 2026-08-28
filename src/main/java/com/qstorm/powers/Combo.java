@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.Identifier;
@@ -214,7 +213,7 @@ public class Combo {
 
 
 
-    public static void handleServerSideComboLogic(ServerPlayNetworking.Context context, int keyPressed,ArrayList<Combo> combosPlayerHas){
+    public static void handleServerSideComboRenderingLogic(ServerPlayNetworking.Context context, int keyPressed, ArrayList<Combo> combosPlayerHas){
         //find max current
         ArrayList<Combo> updatedComboList= new ArrayList<>();
         int currentMax=0;
@@ -222,21 +221,30 @@ public class Combo {
             if(combo.current>currentMax) currentMax=combo.current;
 
         for(Combo combo:combosPlayerHas)
-            if(combo.current==currentMax)
+            if(combo.current==currentMax&&combo.comboKeys.get(currentMax).id==keyPressed)
                 updatedComboList.add(combo);
 
-        if(updatedComboList.isEmpty()){
-            return;
-        }
+        //we handle this
+//        if(updatedComboList.isEmpty()){
+//            return;
+//        }
 
 
         updatedComboList.sort(compMode);
 
         ArrayList<String> listOfStrings = new ArrayList<>();
         ArrayList<Integer> listOfIntegers = new ArrayList<>();
+
+        if(updatedComboList.isEmpty()){
+            ServerPlayNetworking.send(context.player(), new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
+            return;
+        }
+
         for(Combo combo:updatedComboList){
             listOfStrings.add(combo.name);
-            listOfIntegers.add(combo.comboKeys.get(currentMax).id);
+        }
+        for(int i = updatedComboList.getFirst().current; i<updatedComboList.getFirst().comboKeys.size();i++){
+            listOfIntegers.add(updatedComboList.getFirst().comboKeys.get(i).id);
         }
 
         ServerPlayNetworking.send(context.player(), new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
@@ -261,41 +269,31 @@ public class Combo {
     public static final Identifier BLACKTEXTURECOMBO4 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/4.png");
 
 
+    public static ArrayList<String> comboNames= new ArrayList<>();
+    public static ArrayList<Integer> idOfKeysToRender = new ArrayList<>();
+
+    static boolean isRendered = false;
     //run on client whenever
     public static void addComboRendererToClient(){
+        drawComboList();
+        renderComboBox();
+        drawKeybinds();
         ClientPlayNetworking.registerGlobalReceiver(Packet.ComboRenderInfoS2C.TYPE,
                 (payload, context) -> {
             context.client().execute(()->{
                 ArrayList<String> comboNames = payload.comboNames();//a list of combo's
                 ArrayList<Integer> idOfKeysToRender = payload.IDs();//a list of id's from the combo chosen
 
-
                 if(idOfKeysToRender.isEmpty()){
-                    //resetHUD();
+                    isRendered=false;
                     return;
                 }
 
-                //resetHUD();
-                drawComboList(comboNames);
-                renderComboBox();
+                isRendered=true;
 
+                Combo.comboNames=comboNames;
+                Combo.idOfKeysToRender =idOfKeysToRender;
 
-                drawWorkingKeybind(idOfKeysToRender.get(0));
-
-                if(idOfKeysToRender.size()>4){
-                    //scroll based
-                    drawKeybind(idOfKeysToRender.get(1),1,false);
-                    drawKeybind(idOfKeysToRender.get(2),2,false);
-                    drawKeybind(idOfKeysToRender.get(3),3,true);
-
-                }
-                else {
-                    //non-scroll based
-                    for(int i = 1;i<idOfKeysToRender.size();i++){
-                        drawKeybind(idOfKeysToRender.get(i),i,false);
-                    }
-
-                }
 
             });
         });
@@ -303,17 +301,12 @@ public class Combo {
 
 
 
-
-    private static void resetHUD(){
-        HudElementRegistry.removeElement(comboListIdentifier);
-        HudElementRegistry.removeElement(GUIBox);
-        HudElementRegistry.removeElement(stuffInBoxIdentifier);
-    }
-
-
-
-    private static void drawComboList(ArrayList<String> comboNames){
+    private static void drawComboList(){
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,comboListIdentifier,(graphics,timeDelta)->{
+            if(!isRendered){
+                return;
+            }
+
             for(int i = 0 ;i<comboNames.size()&&i<5;i++){
                 graphics.drawString(Minecraft.getInstance().font, comboNames.get(i), graphics.guiWidth()/80, (int)(graphics.guiHeight()*3.0/4+i*graphics.guiHeight()/20.0), 0xFF000000);
 
@@ -322,51 +315,77 @@ public class Combo {
     }
 
 
+    private static void drawKeybinds(){
+
+        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,stuffInBoxIdentifier,(graphics,timeDelta)->{
+            if(!isRendered){
+                return;
+            }
+            drawWorkingKeybind(graphics);
+            if(idOfKeysToRender.size()>4){
+                //scroll based
+                    drawKeybind(graphics, idOfKeysToRender.get(1),1,false);
+                    drawKeybind(graphics, idOfKeysToRender.get(2),2,false);
+                    drawKeybind(graphics, idOfKeysToRender.get(3),3,true);
+
+            }
+            else {
+                //non-scroll based
+                for(int i = 1; i< idOfKeysToRender.size(); i++){
+                    drawKeybind(graphics, idOfKeysToRender.get(i),i,false);
+                }
+
+            }
+        });
+    }
+
+
+
     /**
      * draws a black keybind at some part of the box
      * @param id the type of black box keybind
      * @param stage values 1,2, or 3 which represent the height of the
      * @param isTransparent is the value transparent (for top of scroll pane)
      */
-    private static void drawKeybind(final int id,final int stage,final boolean isTransparent){
+    private static void drawKeybind(GuiGraphics graphics, final int id,final int stage,final boolean isTransparent){
         final int black;
         if(isTransparent) {
             black = 0x80000000;
         }else{
             black=0xFF000000;
         }
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, stuffInBoxIdentifier,(graphics,timeDelta)->{
-            switch (id){
-                case 1 -> drawResizableImage(graphics,TEXTURECOMBO1,0.015,0.205+stage*0.19,0.04,0.08);
+        switch (id){
+            case 1 -> drawResizableImage(graphics,TEXTURECOMBO1,0.03,0.205+stage*0.19,0.04,0.08);
 
-                case 2 -> drawResizableImage(graphics,TEXTURECOMBO2,0.015,0.205+stage*0.19,0.04,0.08);
+            case 2 -> drawResizableImage(graphics,TEXTURECOMBO2,0.03,0.205+stage*0.19,0.04,0.08);
 
-                case 3 -> drawResizableImage(graphics,TEXTURECOMBO3,0.015,0.205+stage*0.19,0.04,0.08);
+            case 3 -> drawResizableImage(graphics,TEXTURECOMBO3,0.03,0.205+stage*0.19,0.04,0.08);
 
-                case 4 -> drawResizableImage(graphics,TEXTURECOMBO4,0.015,0.205+stage*0.19,0.04,0.08);
+            case 4 -> drawResizableImage(graphics,TEXTURECOMBO4,0.03,0.205+stage*0.19,0.04,0.08);
 
-            }
+        }
 
-            drawResizableRectangle(graphics,0.015,0.205+stage*0.19,0.04,0.08,black);
-            drawResizableBorder(graphics,0.015,0.205+stage*0.19,0.04,0.08,1,black);
+        drawResizableRectangle(graphics,0.015,0.205+stage*0.19,0.04,0.08,black);
+        drawResizableBorder(graphics,0.015,0.205+stage*0.19,0.04,0.08,1,black);
 
-        });
     }
 
-    private static void drawWorkingKeybind(final int id){
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,stuffInBoxIdentifier,(graphics,tick)-> {
-            switch (id) {
-                case 1 -> drawResizableImage(graphics, TEXTURECOMBO1, 0.015, 0.205, 0.04, 0.08);
+    private static void drawWorkingKeybind(GuiGraphics graphics){
+        if (!isRendered) {
+            return;
+        }
+        switch (idOfKeysToRender.getFirst()) {
+            case 1 -> drawResizableImage(graphics, TEXTURECOMBO1, 0.015, 0.205, 0.04, 0.08);
 
-                case 2 -> drawResizableImage(graphics, TEXTURECOMBO2, 0.015, 0.205, 0.04, 0.08);
+            case 2 -> drawResizableImage(graphics, TEXTURECOMBO2, 0.015, 0.205, 0.04, 0.08);
 
-                case 3 -> drawResizableImage(graphics, TEXTURECOMBO3, 0.015, 0.205, 0.04, 0.08);
+            case 3 -> drawResizableImage(graphics, TEXTURECOMBO3, 0.015, 0.205, 0.04, 0.08);
 
-                case 4 -> drawResizableImage(graphics, TEXTURECOMBO4, 0.015, 0.205, 0.04, 0.08);
-            }
+            case 4 -> drawResizableImage(graphics, TEXTURECOMBO4, 0.015, 0.205, 0.04, 0.08);
+        }
 
-            //TODO: make a xp bar underneath key representing length of time needed to press
-        });
+        //TODO: make a xp bar underneath key representing length of time needed to press
+
     }
 
     private static void renderComboBox(){
@@ -374,6 +393,9 @@ public class Combo {
         final int border_color = 0x90000000;
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,GUIBox,(graphics,timeDelta)->{
+            if(!isRendered){
+                return;
+            }
             drawResizableRectangle(graphics,0.01,0.2,0.05,0.4,transparent_middle);
             drawResizableBorder(graphics,0.01,0.2,0.05,0.4,1,border_color);
         });

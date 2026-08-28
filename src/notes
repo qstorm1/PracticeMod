@@ -59,3 +59,4 @@ The issue is, if I were to reset player information before the tick, then that i
 what if a player decides to join/leave. how would one handle that?
 
 Spent multiple days dealing with a bug that turned out to just be an issue with how I named an identifier (i used upercase letters when they weren't allowed)
+I also fixed a bug related to how I reset the hud, basically while originally I planed on removing the hud visual effect from the registry every time I reset, I found it was easier to just make all the variables in it static
