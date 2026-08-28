@@ -10,6 +10,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ public class Combo {
 
     //the player this combo is attached to (used to detect ComboKey's)
     UUID playerUUID;
+    ServerPlayer serverPlayer;
 
     //TODO: all player's keys need to be reset at the end of the tick but after all of the other stuff happens
 
@@ -59,6 +62,9 @@ public class Combo {
         playerCombos.get(playerUUID).add(this);
 
         this.name=name;
+        if(player instanceof ServerPlayer) {
+            this.serverPlayer = (ServerPlayer) player;
+        }
 
         //update the state of the combo every tick from the server
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,server -> {
@@ -171,6 +177,7 @@ public class Combo {
 
     public void resetCombo(){
         current=0;
+        resetClientRenderFromServer();
         PracticeMod.LOGGER.info("reset combo");
     }
 
@@ -210,10 +217,23 @@ public class Combo {
     }
     public static Comparator<Combo> compMode = highestTickTime;
 
+    //the clients last key state
+    private static int lastKeyID=1;
+    private static Combo prevCombo;
+    public void resetClientRenderFromServer(){
+        Combo.handleServerSideComboRenderingLogic(serverPlayer,lastKeyID,Combo.playerCombos.get(playerUUID));
+    }
+
+    public static void handleServerSideComboRenderingLogic(ServerPlayer player, int keyPressed, ArrayList<Combo> combosPlayerHas){
+        //reset
+        if (keyPressed==0) {
+            keyPressed=lastKeyID;
+            combosPlayerHas.remove(prevCombo);
+        }
+        else
+            lastKeyID=keyPressed;
 
 
-
-    public static void handleServerSideComboRenderingLogic(ServerPlayNetworking.Context context, int keyPressed, ArrayList<Combo> combosPlayerHas){
         //find max current
         ArrayList<Combo> updatedComboList= new ArrayList<>();
         int currentMax=0;
@@ -236,7 +256,7 @@ public class Combo {
         ArrayList<Integer> listOfIntegers = new ArrayList<>();
 
         if(updatedComboList.isEmpty()){
-            ServerPlayNetworking.send(context.player(), new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
+            ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
             return;
         }
 
@@ -247,7 +267,9 @@ public class Combo {
             listOfIntegers.add(updatedComboList.getFirst().comboKeys.get(i).id);
         }
 
-        ServerPlayNetworking.send(context.player(), new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
+        prevCombo=updatedComboList.getFirst();
+
+        ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
     }
 
 
@@ -324,9 +346,9 @@ public class Combo {
             drawWorkingKeybind(graphics);
             if(idOfKeysToRender.size()>4){
                 //scroll based
-                    drawKeybind(graphics, idOfKeysToRender.get(1),1,false);
-                    drawKeybind(graphics, idOfKeysToRender.get(2),2,false);
-                    drawKeybind(graphics, idOfKeysToRender.get(3),3,true);
+                drawKeybind(graphics, idOfKeysToRender.get(1),1,false);
+                drawKeybind(graphics, idOfKeysToRender.get(2),2,false);
+                drawKeybind(graphics, idOfKeysToRender.get(3),3,true);
 
             }
             else {

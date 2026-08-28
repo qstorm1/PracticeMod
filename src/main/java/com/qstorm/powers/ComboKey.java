@@ -104,7 +104,7 @@ public class ComboKey{
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                         Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboRenderingLogic(context,1,Combo.playerCombos.get(context.player().getUUID()));
+                    Combo.handleServerSideComboRenderingLogic(context.player(),1,Combo.playerCombos.get(context.player().getUUID()));
                 }
             });
         });
@@ -117,7 +117,7 @@ public class ComboKey{
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboRenderingLogic(context,2,Combo.playerCombos.get(context.player().getUUID()));
+                    Combo.handleServerSideComboRenderingLogic(context.player(),2,Combo.playerCombos.get(context.player().getUUID()));
                 }
             });
         });
@@ -129,7 +129,7 @@ public class ComboKey{
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboRenderingLogic(context,3,Combo.playerCombos.get(context.player().getUUID()));
+                    Combo.handleServerSideComboRenderingLogic(context.player(),3,Combo.playerCombos.get(context.player().getUUID()));
                 }
             });
         });
@@ -141,7 +141,7 @@ public class ComboKey{
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboRenderingLogic(context,4,Combo.playerCombos.get(context.player().getUUID()));
+                    Combo.handleServerSideComboRenderingLogic(context.player(),4,Combo.playerCombos.get(context.player().getUUID()));
                 }
             });
         });
