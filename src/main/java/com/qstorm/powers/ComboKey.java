@@ -86,8 +86,7 @@ public class ComboKey{
 
 
     public static void setupServersideManagement(){
-
-
+        //register the types of packets
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK1.TYPE,HandleKeybinds.AttackJJK1.CODEC);
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK2.TYPE,HandleKeybinds.AttackJJK2.CODEC);
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.AttackJJK3.TYPE,HandleKeybinds.AttackJJK3.CODEC);
@@ -100,11 +99,16 @@ public class ComboKey{
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
 
+                //if the player is in the list of combos
                 if(
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                         Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboRenderingLogic(context.player(),1,Combo.playerCombos.get(context.player().getUUID()));
+                    //render server stuff
+                    Combo.handleServerSideComboRendering(context.player(),1);
+                    for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
+                        combo.checkIfContinue(1);
+                    }
                 }
             });
         });
@@ -113,11 +117,17 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key2.get(context.player().getUUID()).keyDown();
+
+                //if the player is in the list of combos
                 if(
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboRenderingLogic(context.player(),2,Combo.playerCombos.get(context.player().getUUID()));
+                    //render server stuff
+                    Combo.handleServerSideComboRendering(context.player(),2);
+                    for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
+                        combo.checkIfContinue(2);
+                    }
                 }
             });
         });
@@ -125,11 +135,17 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK3.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key3.get(context.player().getUUID()).keyDown();
+
+                //if the player is in the list of combos
                 if(
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboRenderingLogic(context.player(),3,Combo.playerCombos.get(context.player().getUUID()));
+                    //render server stuff
+                    Combo.handleServerSideComboRendering(context.player(),3);
+                    for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
+                        combo.checkIfContinue(3);
+                    }
                 }
             });
         });
@@ -137,11 +153,17 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK4.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key4.get(context.player().getUUID()).keyDown();
+
+                //if the player is in the list of combos
                 if(
                         !(Combo.playerCombos.get(context.player().getUUID())==null||
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
-                    Combo.handleServerSideComboRenderingLogic(context.player(),4,Combo.playerCombos.get(context.player().getUUID()));
+                    //render server stuff
+                    Combo.handleServerSideComboRendering(context.player(),4);
+                    for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
+                        combo.checkIfContinue(4);
+                    }
                 }
             });
         });

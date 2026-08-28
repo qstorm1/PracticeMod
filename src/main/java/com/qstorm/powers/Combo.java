@@ -2,15 +2,8 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -36,9 +29,11 @@ public class Combo {
     public ArrayList<ComboKey> comboKeys=new ArrayList<>();
     public String name;
     //the time you need to press this key to count to combo
-    public static ArrayList<Integer> timeRequiredToContinue= new ArrayList<>();
+    public ArrayList<Integer> timeRequiredToContinue= new ArrayList<>();
     //the amount into the combo
     int current=0;
+
+
 
     //server side only
     public static HashMap<UUID,ArrayList<Combo>> playerCombos = new HashMap<>();
@@ -48,7 +43,7 @@ public class Combo {
     UUID playerUUID;
     ServerPlayer serverPlayer;
 
-    //TODO: all player's keys need to be reset at the end of the tick but after all of the other stuff happens
+
 
     /**
      * ASSUME THAT COMBO KEYS HAVE BEEN REGISTERED AND ARE FUCNTIONAL
@@ -69,8 +64,8 @@ public class Combo {
 
 
         //update the state of the combo every tick from the server
-        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,server -> {
-            server.execute(this::updateComboStatus);
+        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
+            server.execute(this::tick);
         });
     }
 
@@ -78,7 +73,6 @@ public class Combo {
     public static Combo build(Player player,String name){
         return new Combo(player,name);
     }
-
 
     /**
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
@@ -88,8 +82,6 @@ public class Combo {
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
-
-
     /**
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
@@ -117,23 +109,34 @@ public class Combo {
 
 
 
-    //updateCombo
-    //REQUIRED FOR CODE TO TICK
-    //so we only want to reset the combo if
-    //ALL STUFF HERE HAPPENS IN SERVER TICK
-    public void updateComboStatus(){
+    public void tick(){
+        //if the combo ran out of time, reset it
         if(!checkBefore()){
             resetCombo();
-
         }
+    }
 
 
-        if(comboKeys.get(current).keyDown){
+    //updateCombo
+    //REQUIRED TO RUN ON EVERY COMBO WHEN A KEY IS PRESSED
+    //so we only want to reset the combo if
+    //ALL STUFF HERE HAPPENS IN SERVER TICK
+    public void checkIfContinue(int keyPressed){
+        lastKeyID = keyPressed;
+
+
+        //if the comboKey doesn't match the key pressed
+        if(comboKeys.get(current).id==keyPressed){
+            //TODO: remove if everything works to see if neccessary (I don't think it is)
             if(checkBefore()){
+
+                //this could be replaced with ==, but >= just in case some wierd thread error
+                //if the current value that was pressed is the last value, do the action
                 if(current>=comboKeys.size()-1){
                     doComboAction();
                 }
                 else {
+                    //move to the next state of the combo
                     nextKey();
                 }
             }
@@ -142,7 +145,10 @@ public class Combo {
             }
 
         }
-
+        else{
+            //reset the combo if the key pressed was wrong
+            resetCombo();
+        }
 
 
     }
@@ -188,9 +194,11 @@ public class Combo {
         PracticeMod.LOGGER.info("did combo thing ig");
         resetCombo();
     }
+
     public void finish(){
 
     }
+
     public int getCurrentTimeSinceLastPressed() {
         return this.comboKeys.get(current).timeSinceLastPressed;
     }
@@ -203,53 +211,68 @@ public class Combo {
     public static Comparator<Combo> compMode = highestTickTime;
 
 
-    //the clients last key state
-    private static int lastKeyID=1;
-    private static Combo lastCombo;
+
+    //HUD RENDERING
+
+    /**
+     * the last key that was pressed on this server?
+     */
+    private int lastKeyID=1;
+
     public void resetClientRenderFromServer(){
-        Combo.handleServerSideComboRenderingLogic(serverPlayer,lastKeyID,Combo.playerCombos.get(playerUUID));
+        Combo.handleServerSideComboRendering(serverPlayer,lastKeyID);
     }
 
-    public static void handleServerSideComboRenderingLogic(ServerPlayer player, int keyPressed, ArrayList<Combo> combosPlayerHas){
+    /**
+     *
+     * @param player the player that is going to render the HUD
+     * @param keyPressed the key that the player pressed
+     */
+
+    public static void handleServerSideComboRendering(ServerPlayer player, int keyPressed){
 
 
-        //find max current
+        ArrayList<Combo> combosPlayerHas = playerCombos.get(player.getUUID());
         ArrayList<Combo> updatedComboList= new ArrayList<>();
+
+
+
+        //find the current biggest combo, combos with the highest current will be rendered
+        //if this is a reset call, the current of the reset will be 0 therefore not being considered as the main combo
         int currentMax=0;
-        for(Combo combo:combosPlayerHas)
-            if(combo.current>currentMax) currentMax=combo.current;
+        for(Combo combo:combosPlayerHas) {
 
-        boolean resetCall=false;
-        //reset
-        if (keyPressed==0) {
-            keyPressed=lastKeyID;
-            resetCall=true;
+            if (combo.current > currentMax) currentMax = combo.current;
         }
-        else
-            lastKeyID=keyPressed;
 
+
+        //make the updated list have all the combos with the highest comboKey
         for(Combo combo:combosPlayerHas)
             if(combo.current==currentMax&&combo.comboKeys.get(currentMax).id==keyPressed)
                 updatedComboList.add(combo);
 
-        if(resetCall&&updatedComboList.contains(lastCombo)) updatedComboList.remove(lastCombo);
+
+
 
         //we handle this
 //        if(updatedComboList.isEmpty()){
 //            return;
 //        }
 
-
+        //sort combo list by whatever sorting method (ex alphabetical -> A is the one at the top of the render)
         updatedComboList.sort(compMode);
 
+        //data to send to client
         ArrayList<String> listOfStrings = new ArrayList<>();
         ArrayList<Integer> listOfIntegers = new ArrayList<>();
 
+        //if the data is empty, send empty data which the client will recognize as a reset call
         if(updatedComboList.isEmpty()){
             ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
             return;
         }
 
+        //update values correctly
         for(Combo combo:updatedComboList){
             listOfStrings.add(combo.name);
         }
@@ -257,17 +280,11 @@ public class Combo {
             listOfIntegers.add(updatedComboList.getFirst().comboKeys.get(i).id);
         }
 
-        lastCombo=updatedComboList.getFirst();
 
+
+        //send rendering data to server
         ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
     }
-
-
-
-
-
-
-
 
 
 
