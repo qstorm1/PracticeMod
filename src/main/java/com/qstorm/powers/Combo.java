@@ -217,19 +217,20 @@ public class Combo {
     /**
      * the last key that was pressed on this server?
      */
-    private int lastKeyID=1;
+    private int lastKeyID=0;
 
     public void resetClientRenderFromServer(){
-        Combo.handleServerSideComboRendering(serverPlayer,lastKeyID);
+        Combo.handleServerSideComboRendering(serverPlayer,lastKeyID,true);
     }
 
+
+
     /**
-     *
      * @param player the player that is going to render the HUD
      * @param keyPressed the key that the player pressed
      */
 
-    public static void handleServerSideComboRendering(ServerPlayer player, int keyPressed){
+    public static void handleServerSideComboRendering(ServerPlayer player, int keyPressed,boolean isReset){
 
 
         ArrayList<Combo> combosPlayerHas = playerCombos.get(player.getUUID());
@@ -241,7 +242,6 @@ public class Combo {
         //if this is a reset call, the current of the reset will be 0 therefore not being considered as the main combo
         int currentMax=0;
         for(Combo combo:combosPlayerHas) {
-
             if (combo.current > currentMax) currentMax = combo.current;
         }
 
@@ -254,10 +254,6 @@ public class Combo {
 
 
 
-        //we handle this
-//        if(updatedComboList.isEmpty()){
-//            return;
-//        }
 
         //sort combo list by whatever sorting method (ex alphabetical -> A is the one at the top of the render)
         updatedComboList.sort(compMode);
@@ -265,6 +261,12 @@ public class Combo {
         //data to send to client
         ArrayList<String> listOfStrings = new ArrayList<>();
         ArrayList<Integer> listOfIntegers = new ArrayList<>();
+
+        //if we reset and there are no other combos working
+        if(isReset&&currentMax==0){
+            ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
+            return;
+        }
 
         //if the data is empty, send empty data which the client will recognize as a reset call
         if(updatedComboList.isEmpty()){

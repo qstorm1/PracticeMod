@@ -63,7 +63,7 @@ public class Limitless implements Sorcery {
 
         Limitless playerLimitless = new Limitless();
         //add combo's
-        Combo.build(player,"Limitless Blue").addKey1(100).addKey3(100);
+        Combo.build(player,"Limitless Blue").addKey1(100).addKey3(100).addKey4(60);
 
         limitlessPlayers.put(player.getUUID(),playerLimitless);
 

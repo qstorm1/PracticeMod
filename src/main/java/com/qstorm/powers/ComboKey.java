@@ -105,7 +105,7 @@ public class ComboKey{
                         Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
                     //render server stuff
-                    Combo.handleServerSideComboRendering(context.player(),1);
+                    Combo.handleServerSideComboRendering(context.player(),1,false);
                     for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
                         combo.checkIfContinue(1);
                     }
@@ -124,7 +124,7 @@ public class ComboKey{
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
                     //render server stuff
-                    Combo.handleServerSideComboRendering(context.player(),2);
+                    Combo.handleServerSideComboRendering(context.player(),2,false);
                     for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
                         combo.checkIfContinue(2);
                     }
@@ -142,7 +142,7 @@ public class ComboKey{
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
                     //render server stuff
-                    Combo.handleServerSideComboRendering(context.player(),3);
+                    Combo.handleServerSideComboRendering(context.player(),3,false);
                     for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
                         combo.checkIfContinue(3);
                     }
@@ -160,7 +160,7 @@ public class ComboKey{
                                 Combo.playerCombos.get(context.player().getUUID()).isEmpty())
                 ){
                     //render server stuff
-                    Combo.handleServerSideComboRendering(context.player(),4);
+                    Combo.handleServerSideComboRendering(context.player(),4,false);
                     for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
                         combo.checkIfContinue(4);
                     }
