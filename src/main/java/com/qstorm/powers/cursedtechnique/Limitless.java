@@ -53,21 +53,23 @@ public class Limitless implements Sorcery {
 
 
     /**
-     * MUST HAPPEN ON BOTH SERVER AND CLIENT SIDE
+     * HAPPENS ONLY ON SERVER SIDE
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
-        PracticeMod.LOGGER.info("new instance created");
+        PracticeMod.LOGGER.info("New Limitless player added!");
+        //
         if(limitlessPlayers.get(player.getUUID())!=null) return;
 
         Limitless playerLimitless = new Limitless();
         //add combo's
         Combo.build(player,"Limitless Blue").addKey1(100).addKey3(100);
 
-
         limitlessPlayers.put(player.getUUID(),playerLimitless);
 
+        //this is always true because of the onEffectAdded not including client side
         if(player instanceof ServerPlayer serverPlayer)
+            //initialize client side
             ServerPlayNetworking.send(serverPlayer,new Packet.limitlessInit());
 
     }
