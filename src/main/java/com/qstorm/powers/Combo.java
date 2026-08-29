@@ -1,6 +1,7 @@
 package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -187,11 +188,13 @@ public class Combo {
     public void resetCombo(){
         current=0;
         resetClientRenderFromServer();
+
         PracticeMod.LOGGER.info("reset combo");
     }
 
     public void doComboAction(){
         PracticeMod.LOGGER.info("did combo thing ig");
+        LaserEyes.shootLaser(serverPlayer);
         resetCombo();
     }
 

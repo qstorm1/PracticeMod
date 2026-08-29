@@ -92,7 +92,7 @@ public class ComboClient {
             if(!isRendered){
                 return;
             }
-            //drawWorkingKeybind(graphics);
+
             if(idOfKeysToRender.size()>4){
                 //scroll based
                 drawKeybind(graphics, idOfKeysToRender.get(1),1,false);
@@ -107,6 +107,7 @@ public class ComboClient {
                 }
 
             }
+            drawWorkingKeybind(graphics,idOfKeysToRender.get(1));
         });
     }
 
@@ -119,48 +120,33 @@ public class ComboClient {
      * @param isTransparent is the value transparent (for top of scroll pane)
      */
     private static void drawKeybind(GuiGraphics graphics, int id, int stage, boolean isTransparent){
-        final int black;
+        final int inner;
+        final int border;
         if(isTransparent) {
-            black = 0x80000000;
+            inner = 0x80808080;
         }else{
-            black=0xFF000000;
+            inner=0xAA808080;
         }
-        drawOne(graphics,1);
-        drawTwo(graphics,2);
-        drawThree(graphics,3);
-        drawFour(graphics,4);
+        border=0xFF000000;
         switch (id){
-            //case 1 -> drawImage(graphics,TEXTURECOMBO1,150,15+10*stage,50,170);
-            //case 2 -> drawImage(graphics,TEXTURECOMBO2,150,15+10*stage,100,100);
-            //case 3 -> drawOne(graphics,1);
-//            case 4 -> drawImage(graphics,TEXTURECOMBO4,15,15+10*stage,100,100);
-//            case 1 -> drawResizableImage(graphics,TEXTURECOMBO1,0.03,0.205+stage*0.19,0.04,0.08);
-//
-//            case 2 -> drawResizableImage(graphics,TEXTURECOMBO2,0.03,0.205+stage*0.19,0.04,0.08);
-//
-//            case 3 -> drawResizableImage(graphics,TEXTURECOMBO3,0.03,0.205+stage*0.19,0.04,0.08);
-//
-//            case 4 -> drawResizableImage(graphics,TEXTURECOMBO4,0.03,0.205+stage*0.19,0.04,0.08);
+            case 1 -> drawOne(graphics,stage,inner,border);
+            case 2 -> drawTwo(graphics,stage,inner,border);
+            case 3 -> drawThree(graphics,stage,inner,border);
+            case 4 -> drawFour(graphics,stage,inner,border);
 
         }
-
-        //drawResizableRectangle(graphics,0.015,0.205+stage*0.19,0.04,0.08,black);
-        //drawResizableBorder(graphics,0.015,0.205+stage*0.19,0.04,0.08,1,black);
 
     }
 
-    private static void drawWorkingKeybind(GuiGraphics graphics){
+    private static void drawWorkingKeybind(GuiGraphics graphics,int id){
         if (!isRendered) {
             return;
         }
-        switch (idOfKeysToRender.getFirst()) {
-            case 1 -> drawResizableImage(graphics, TEXTURECOMBO1, 0.015, 0.205, 0.04, 0.08);
-
-            case 2 -> drawResizableImage(graphics, TEXTURECOMBO2, 0.015, 0.205, 0.04, 0.08);
-
-            case 3 -> drawResizableImage(graphics, TEXTURECOMBO3, 0.015, 0.205, 0.04, 0.08);
-
-            case 4 -> drawResizableImage(graphics, TEXTURECOMBO4, 0.015, 0.205, 0.04, 0.08);
+        switch (id) {
+            case 1 -> drawOne(graphics,1,0xFFFFFFFF,0xFF000000);
+            case 2 -> drawTwo(graphics,1,0xFFFFFFFF,0xFF000000);
+            case 3 -> drawThree(graphics,1,0xFFFFFFFF,0xFF000000);
+            case 4 -> drawFour(graphics,1,0xFFFFFFFF,0xFF000000);
         }
 
         //TODO: make a xp bar underneath key representing length of time needed to press
@@ -203,67 +189,67 @@ public class ComboClient {
         );
     }
 
-    private static void drawOne(GuiGraphics graphics, int stage){
-        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,0xAA808080);
-        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,0xFF000000);
+    private static void drawOne(GuiGraphics graphics, int stage,int colorInner,int colorBorder){
+        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,colorInner);
+        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,colorBorder);
         drawResizableLine(graphics,0.03+(0.05)/2,
-                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,colorBorder);
         drawResizableLine(graphics,0.031+(0.05)/2,
-                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,colorBorder);
         drawResizableLine(graphics,0.029+(0.05)/2,
-                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,colorBorder);
 
     }
-    private static void drawTwo(GuiGraphics graphics, int stage){
-        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,0xAA808080);
-        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,0xFF000000);
+    private static void drawTwo(GuiGraphics graphics, int stage,int colorInner,int colorBorder){
+        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,colorInner);
+        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,colorBorder);
         //-
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.055+(0.05)/2,0.21+0.41-(0.1*stage),false,0xFF000000);
+                0.055+(0.05)/2,0.21+0.41-(0.1*stage),false,colorBorder);
 
 
         //  |
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.21+0.435-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+                0.21+0.435-(0.1*stage),0.21+0.41-(0.1*stage),true,colorBorder);
 
         //-
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.055+(0.05)/2,0.21+0.435-(0.1*stage),false,0xFF000000);
+                0.055+(0.05)/2,0.21+0.435-(0.1*stage),false,colorBorder);
 
         //|
         drawResizableLine(graphics,0.017+(0.05)/2,
-                0.21+0.465-(0.1*stage),0.21+0.435-(0.1*stage),true,0xFF000000);
+                0.21+0.465-(0.1*stage),0.21+0.435-(0.1*stage),true,colorBorder);
         //_
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.055+(0.05)/2,0.21+0.46-(0.1*stage),false,0xFF000000);
+                0.055+(0.05)/2,0.21+0.46-(0.1*stage),false,colorBorder);
 
     }
-    private static void drawThree(GuiGraphics graphics, int stage){
-        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,0xAA808080);
-        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,0xFF000000);
+    private static void drawThree(GuiGraphics graphics, int stage,int colorInner, int colorBorder){
+        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,colorInner);
+        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,colorBorder);
 
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,colorBorder);
 
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.055+(0.05)/2,0.21+0.41-(0.1*stage),false,0xFF000000);
+                0.055+(0.05)/2,0.21+0.41-(0.1*stage),false,colorBorder);
 
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.055+(0.05)/2,0.21+0.435-(0.1*stage),false,0xFF000000);
+                0.055+(0.05)/2,0.21+0.435-(0.1*stage),false,colorBorder);
         //_
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.055+(0.05)/2,0.21+0.46-(0.1*stage),false,0xFF000000);
+                0.055+(0.05)/2,0.21+0.46-(0.1*stage),false,colorBorder);
 
     }
-    private static void drawFour(GuiGraphics graphics, int stage){
-        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,0xAA808080);
-        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,0xFF000000);
+    private static void drawFour(GuiGraphics graphics, int stage,int innerColor,int colorBorder){
+        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,innerColor);
+        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,colorBorder);
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,colorBorder);
         drawResizableLine(graphics,0.038+(0.05)/2,
-                0.055+(0.05)/2,0.21+0.435-(0.1*stage),false,0xFF000000);
+                0.055+(0.05)/2,0.21+0.435-(0.1*stage),false,colorBorder);
         drawResizableLine(graphics,0.017+(0.05)/2,
-                0.21+0.435-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+                0.21+0.435-(0.1*stage),0.21+0.41-(0.1*stage),true,colorBorder);
     }
 
     private static void drawImage(GuiGraphics graphics,Identifier texture, int left,int top, int width, int height){
