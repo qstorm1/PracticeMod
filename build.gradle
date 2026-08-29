@@ -18,7 +18,7 @@ repositories {
 	}
 	maven {
 		name = "RedlanceMinecraft"
-		url = "https://repo.redlance.org/public"
+		url = uri("https://repo.redlance.org/public")
 	}
 	maven {
 		name="Modrinth"
