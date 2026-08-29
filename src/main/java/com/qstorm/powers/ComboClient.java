@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class ComboClient {
     public static final Identifier BLACKTEXTURECOMBO3 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/3.png");
     public static final Identifier BLACKTEXTURECOMBO4 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/4.png");
 
+    public static final Identifier TESTIDENTIFIER = Identifier.fromNamespaceAndPath("minecraft", "textures/blocks/deepslate.png");
 
     public static ArrayList<String> comboNames= new ArrayList<>();
     public static ArrayList<Integer> idOfKeysToRender = new ArrayList<>();
@@ -77,7 +79,7 @@ public class ComboClient {
             }
 
             for(int i = 0 ;i<comboNames.size()&&i<5;i++){
-                graphics.drawString(Minecraft.getInstance().font, comboNames.get(i), graphics.guiWidth()/80, (int)(graphics.guiHeight()*3.0/4+i*graphics.guiHeight()/20.0), 0xFF000000);
+                graphics.drawString(Minecraft.getInstance().font, comboNames.get(i), graphics.guiWidth()/80, (int)(graphics.guiHeight()*6.0/9+i*graphics.guiHeight()/20.0), 0xFF000000);
 
             }
         });
@@ -90,7 +92,7 @@ public class ComboClient {
             if(!isRendered){
                 return;
             }
-            drawWorkingKeybind(graphics);
+            //drawWorkingKeybind(graphics);
             if(idOfKeysToRender.size()>4){
                 //scroll based
                 drawKeybind(graphics, idOfKeysToRender.get(1),1,false);
@@ -116,26 +118,34 @@ public class ComboClient {
      * @param stage values 1,2, or 3 which represent the height of the
      * @param isTransparent is the value transparent (for top of scroll pane)
      */
-    private static void drawKeybind(GuiGraphics graphics, final int id, final int stage, final boolean isTransparent){
+    private static void drawKeybind(GuiGraphics graphics, int id, int stage, boolean isTransparent){
         final int black;
         if(isTransparent) {
             black = 0x80000000;
         }else{
             black=0xFF000000;
         }
+        drawOne(graphics,1);
+        drawTwo(graphics,2);
+        drawThree(graphics,3);
+        drawFour(graphics,4);
         switch (id){
-            case 1 -> drawResizableImage(graphics,TEXTURECOMBO1,0.03,0.205+stage*0.19,0.04,0.08);
-
-            case 2 -> drawResizableImage(graphics,TEXTURECOMBO2,0.03,0.205+stage*0.19,0.04,0.08);
-
-            case 3 -> drawResizableImage(graphics,TEXTURECOMBO3,0.03,0.205+stage*0.19,0.04,0.08);
-
-            case 4 -> drawResizableImage(graphics,TEXTURECOMBO4,0.03,0.205+stage*0.19,0.04,0.08);
+            //case 1 -> drawImage(graphics,TEXTURECOMBO1,150,15+10*stage,50,170);
+            //case 2 -> drawImage(graphics,TEXTURECOMBO2,150,15+10*stage,100,100);
+            //case 3 -> drawOne(graphics,1);
+//            case 4 -> drawImage(graphics,TEXTURECOMBO4,15,15+10*stage,100,100);
+//            case 1 -> drawResizableImage(graphics,TEXTURECOMBO1,0.03,0.205+stage*0.19,0.04,0.08);
+//
+//            case 2 -> drawResizableImage(graphics,TEXTURECOMBO2,0.03,0.205+stage*0.19,0.04,0.08);
+//
+//            case 3 -> drawResizableImage(graphics,TEXTURECOMBO3,0.03,0.205+stage*0.19,0.04,0.08);
+//
+//            case 4 -> drawResizableImage(graphics,TEXTURECOMBO4,0.03,0.205+stage*0.19,0.04,0.08);
 
         }
 
-        drawResizableRectangle(graphics,0.015,0.205+stage*0.19,0.04,0.08,black);
-        drawResizableBorder(graphics,0.015,0.205+stage*0.19,0.04,0.08,1,black);
+        //drawResizableRectangle(graphics,0.015,0.205+stage*0.19,0.04,0.08,black);
+        //drawResizableBorder(graphics,0.015,0.205+stage*0.19,0.04,0.08,1,black);
 
     }
 
@@ -165,8 +175,8 @@ public class ComboClient {
             if(!isRendered){
                 return;
             }
-            drawResizableRectangle(graphics,0.01,0.2,0.05,0.4,transparent_middle);
-            drawResizableBorder(graphics,0.01,0.2,0.05,0.4,1,border_color);
+            drawResizableRectangle(graphics,0.01,0.2,0.09,0.4,transparent_middle);
+            drawResizableBorder(graphics,0.01,0.2,0.09,0.4,1,border_color);
         });
 
 
@@ -176,6 +186,11 @@ public class ComboClient {
 
 
     private static void drawResizableImage(GuiGraphics graphics,Identifier texture, double percentFromLeft,double percentFromTop, double percentWidth, double percentHeight){
+        //texture
+        // x and y
+        // image offset
+        // x2 y2 (or width/height idk
+        // width and height of image
         graphics.blit(
                 texture,
                 (int)(graphics.guiWidth()*percentFromLeft),
@@ -186,6 +201,90 @@ public class ComboClient {
                 (int)(graphics.guiWidth()*percentFromLeft+graphics.guiWidth()*percentWidth)+1,
                 (int)(graphics.guiHeight()*percentFromTop+graphics.guiHeight()*percentHeight)+1
         );
+    }
+
+    private static void drawOne(GuiGraphics graphics, int stage){
+        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,0xAA808080);
+        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,0xFF000000);
+        drawResizableLine(graphics,0.03+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+        drawResizableLine(graphics,0.031+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+        drawResizableLine(graphics,0.029+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+
+    }
+    private static void drawTwo(GuiGraphics graphics, int stage){
+        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,0xAA808080);
+        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,0xFF000000);
+        drawResizableLine(graphics,0.03+(0.05)/2,
+                0.21+0.44-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+//        drawResizableLine(graphics,0.031+(0.05)/2,
+//                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+//        drawResizableLine(graphics,0.029+(0.05)/2,
+//                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+
+        drawResizableLine(graphics,0.03+(0.05)/2,
+                0.05+(0.05)/2,0.21+0.41-(0.1*stage),false,0xFF000000);
+
+        drawResizableLine(graphics,0.03+(0.05)/2,
+                0.05+(0.05)/2,0.21+0.41-(0.1*stage),false,0xFF000000);
+
+    }
+
+    private static void drawThree(GuiGraphics graphics, int stage){
+        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,0xAA808080);
+        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,0xFF000000);
+        drawResizableLine(graphics,0.03+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+        drawResizableLine(graphics,0.031+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+        drawResizableLine(graphics,0.029+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+
+    }
+
+    private static void drawFour(GuiGraphics graphics, int stage){
+        drawResizableRectangle(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,0xAA808080);
+        drawResizableBorder(graphics,0.03,0.21+0.4-(0.1*stage),0.05,0.07,1,0xFF000000);
+        drawResizableLine(graphics,0.03+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+        drawResizableLine(graphics,0.031+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+        drawResizableLine(graphics,0.029+(0.05)/2,
+                0.21+0.46-(0.1*stage),0.21+0.41-(0.1*stage),true,0xFF000000);
+
+    }
+
+    private static void drawImage(GuiGraphics graphics,Identifier texture, int left,int top, int width, int height){
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, left, top, 0, 0, width, height, 1, 1);
+//        graphics.blit(
+//                RenderPipelines.GUI_TEXTURED,
+//                TEXTURECOMBO1,
+//                (int)(graphics.guiWidth()*0.01),//x1 y1
+//                (int)(graphics.guiHeight()*0.2),
+//                (int)(graphics.guiWidth()*0.1),
+//                (int)(graphics.guiHeight()*0.5),//x2 y2
+//                16,//image x1 y1
+//                16,
+//                (int)(graphics.guiWidth()*0.1),
+//                (int)(graphics.guiHeight()*0.5)//image x2 y2
+//        );
+    }
+
+    //TODO: make verticle line
+    private static void drawResizableLine(GuiGraphics graphics, double percent1,double percent2,double percent3,boolean isVerticle,int color){
+
+        if(isVerticle){
+            graphics.vLine((int)(graphics.guiWidth()*percent1),
+                    (int)(graphics.guiHeight()*percent2),(int)( graphics.guiHeight()*percent3),
+                    color);
+        }
+        else{
+            graphics.hLine((int)(graphics.guiWidth()*percent1),
+                    (int)(graphics.guiHeight()*percent2), (int)(graphics.guiHeight()*percent3),
+                    color);
+        }
     }
 
     private static void drawResizableRectangle(GuiGraphics graphics,double percentFromLeft,double percentFromTop,double percentWidth,double percentHeight, int color){
