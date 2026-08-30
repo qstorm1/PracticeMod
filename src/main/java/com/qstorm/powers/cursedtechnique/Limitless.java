@@ -44,7 +44,7 @@ public class Limitless extends Sorcery {
 
     //generate a limitless technique
     private Limitless(){
-
+        super();
     }
 
 
