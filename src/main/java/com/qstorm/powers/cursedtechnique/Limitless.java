@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * A limitless instance is created for every single player with the tag of Limitless
  */
-public class Limitless implements Sorcery {
+public class Limitless extends Sorcery {
 
     public static HashMap<UUID,Limitless> limitlessPlayers = new HashMap<>();
     public static String tag= "Limitless User";
