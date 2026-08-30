@@ -1,6 +1,7 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.Sorcery;
@@ -62,11 +63,14 @@ public class Limitless implements Sorcery {
         if(limitlessPlayers.get(player.getUUID())!=null) return;
 
         Limitless playerLimitless = new Limitless();
-        //add combo's
-        Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60);
-        Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50);
-
         limitlessPlayers.put(player.getUUID(),playerLimitless);
+
+        //add combo's
+        playerLimitless.blueCombo = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
+                .setAction(playerLimitless::ability1);
+        playerLimitless.redCombo = Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
+                .setAction(playerLimitless::ability2);
+
 
         //this is always true because of the onEffectAdded not including client side
         if(player instanceof ServerPlayer serverPlayer)
@@ -78,32 +82,47 @@ public class Limitless implements Sorcery {
 
 
 
-
-    //TODO: maybe replace with runnable classes so you can implement methods (like a parent method with combo)
+    //Does the action of the player running
+    //These could in theory be replaced with statics because origianlly they were meant to get the attacker variable from inside the limitless class during initialization
     //two times as much cursed energy as blue
-    public void triggerRed(){
+    public void ability1(ServerPlayer attacker){
+        LaserEyes.shootLaser(attacker);
+        PracticeMod.LOGGER.info("Ablility 1 fired");
+    }
+
+
+
+
+    public void ability2(ServerPlayer attacker){
+        PracticeMod.LOGGER.info("Ablility 2 fired");
 
     }
 
-    public void triggerBlue(){
+    public void ability3(ServerPlayer attacker){
+        PracticeMod.LOGGER.info("Ablility 3 fired");
 
     }
 
-    public void triggerPurple(){
+
+    public void ability4(ServerPlayer attacker) {
+        PracticeMod.LOGGER.info("Ablility 4 fired");
 
     }
+
+
+
 
     //requires constant cursed energy output
-    public void infinityOn(){
+    public void innateTechniqueOn(ServerPlayer attacker){
 
     }
 
-    public void infinityOff(){
+    public void innateTechniqueOff(ServerPlayer attacker){
 
     }
 
 
-    public void domain(){
+    public void domain(ServerPlayer attacker){
 
         // Animation is played
         // While playing(){

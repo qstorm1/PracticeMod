@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Combo {
 
@@ -39,11 +40,13 @@ public class Combo {
     //server side only
     public static HashMap<UUID,ArrayList<Combo>> playerCombos = new HashMap<>();
 
+    Sorcery attachment;
 
     //the player this combo is attached to (used to detect ComboKey's)
     UUID playerUUID;
     ServerPlayer serverPlayer;
 
+    Consumer<ServerPlayer> action;
 
 
     /**
@@ -105,6 +108,10 @@ public class Combo {
     public Combo addKey4(int ticksForContinue){
         comboKeys.add(ComboKey.key4.get(playerUUID));
         timeRequiredToContinue.add(ticksForContinue);
+        return this;
+    }
+    public Combo setAction(Consumer<ServerPlayer> runnable){
+        this.action=runnable;
         return this;
     }
 
@@ -193,8 +200,7 @@ public class Combo {
     }
 
     public void doComboAction(){
-        PracticeMod.LOGGER.info("did combo thing ig");
-        LaserEyes.shootLaser(serverPlayer);
+        action.accept(serverPlayer);
         resetCombo();
     }
 
