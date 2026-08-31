@@ -5,8 +5,11 @@ import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.Sorcery;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -20,31 +23,34 @@ public class Limitless extends Sorcery {
 
     public static HashMap<UUID,Limitless> limitlessPlayers = new HashMap<>();
     public static String tag= "Limitless User";
-
-    //I know i'm eventually gonna have to deal with player data and storing but for now i'll use these
-    public final int cursedEnergy=999999;
-    public final int maxCursedOutput=99;
-    public final int cursedOutput=0;
-
-
-//    public Limitless(Player player){
-//        if(!player.getTags().contains(tag)) {
-//            for(Limitless ls: limitlessPlayers) {
-//                if(ls.player.equals(player)) {
-//                    PracticeMod.LOGGER.info("Player was cast to limitless a second time");
-//                    return;
-//                }
-//            }
-//            this.player = player;
-//        }
-//
-//        PracticeMod.LOGGER.info("Player was cast to limitless a second time");
-//
-//    }
+    public int innateTechniquePower=10;
 
     //generate a limitless technique
-    private Limitless(){
-        super();
+    private Limitless(ServerPlayer player){
+        super(player,0,0,5,1000000);
+
+        //add combo's
+        blueCombo = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
+                .setAction(this::ability1);
+        redCombo = Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
+                .setAction(this::ability2);
+        purpleCombo = Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
+                .setAction(this::ability3);
+
+
+        //cursedOutput is a percentage
+
+        //limitless innate technique
+        ServerTickEvents.END_SERVER_TICK.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"innate-technique"), (context)-> {
+            if(innateOn){
+                player.level().getAllEntities().forEach((entity) -> {
+                    if (entity.getPosition(0).distanceTo(player.getPosition(0)) <= innateTechniquePower*(cursedOutput/100.0)) {
+                        if (entity != player)
+                            entity.setDeltaMovement(0, 0, 0);
+                    }
+                });
+            }
+        });
     }
 
 
@@ -58,24 +64,24 @@ public class Limitless extends Sorcery {
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
+        if(
+                (!(player instanceof ServerPlayer))||
+                limitlessPlayers.get(player.getUUID())!=null){
+            return;
+        }
+
         PracticeMod.LOGGER.info("New Limitless player added!");
         //
-        if(limitlessPlayers.get(player.getUUID())!=null) return;
 
-        Limitless playerLimitless = new Limitless();
+        Limitless playerLimitless = new Limitless((ServerPlayer)player);
         limitlessPlayers.put(player.getUUID(),playerLimitless);
 
-        //add combo's
-        playerLimitless.blueCombo = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
-                .setAction(playerLimitless::ability1);
-        playerLimitless.redCombo = Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
-                .setAction(playerLimitless::ability2);
 
 
-        //this is always true because of the onEffectAdded not including client side
-        if(player instanceof ServerPlayer serverPlayer)
-            //initialize client side
-            ServerPlayNetworking.send(serverPlayer,new Packet.limitlessInit());
+
+        ServerPlayNetworking.send((ServerPlayer) player,new Packet.limitlessInit());
+
+
 
     }
 
@@ -112,14 +118,14 @@ public class Limitless extends Sorcery {
 
 
 
+    public boolean innateOn = false;
+
     //requires constant cursed energy output
-    public void innateTechniqueOn(ServerPlayer attacker){
+    public void innateTechniqueChange(){
+        innateOn=!innateOn;
 
     }
 
-    public void innateTechniqueOff(ServerPlayer attacker){
-
-    }
 
 
     public void domain(ServerPlayer attacker){
@@ -162,5 +168,9 @@ public class Limitless extends Sorcery {
         // on break():
         // all players are paused and their screens get cracked (take whatever image was at the last it is then cracked) until all players are loaded back into the world
         // after which onDomainEnd() is run
+    }
+
+    public void changeReversed() {
+        reversedOn=!reversedOn;
     }
 }

@@ -4,6 +4,7 @@ import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.ComboKey;
+import com.qstorm.powers.cursedtechnique.Limitless;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -23,6 +24,9 @@ public class HandleKeybinds {
         //packets have two types of "phases", play and configure
         //playC2S() happens during gameplay while configureC2S() happens during initial connection
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.LaserKeyServer.TYPE,HandleKeybinds.LaserKeyServer.CODEC);
+        PayloadTypeRegistry.playC2S().register(EnableInnateTechnique.TYPE,EnableInnateTechnique.CODEC);
+        PayloadTypeRegistry.playC2S().register(ActivateReversed.TYPE,ActivateReversed.CODEC);
+
 
         PayloadTypeRegistry.playS2C().register(Packet.ComboRenderInfoS2C.TYPE,Packet.ComboRenderInfoS2C.CODEC);
 
@@ -46,6 +50,21 @@ public class HandleKeybinds {
             });
         });
 
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.ActivateReversed.TYPE, (payload, context) -> {
+            //says to run it on server
+            context.server().execute(() -> {
+                Limitless.limitlessPlayers.get(context.player().getUUID()).changeReversed();
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnableInnateTechnique.TYPE, (payload, context) -> {
+            //says to run it on server
+            context.server().execute(() -> {
+                //if the player is wearing a laser eye
+                Limitless.limitlessPlayers.get(context.player().getUUID()).innateTechniqueChange();
+            });
+        });
+
 
 
 
@@ -65,6 +84,34 @@ public class HandleKeybinds {
             return TYPE;
         }
     }
+
+    public record EnableInnateTechnique() implements CustomPacketPayload{
+        //just an identifier
+        public static final Type<EnableInnateTechnique> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"innate-techinque-packet"));
+
+        public static final StreamCodec<Object,EnableInnateTechnique> CODEC = StreamCodec.unit(new EnableInnateTechnique());
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public record ActivateReversed() implements CustomPacketPayload{
+        //just an identifier
+        public static final Type<ActivateReversed> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"innate-techinque-packet"));
+
+        public static final StreamCodec<Object,ActivateReversed> CODEC = StreamCodec.unit(new ActivateReversed());
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+
 
 
     public record AttackJJK1() implements CustomPacketPayload{

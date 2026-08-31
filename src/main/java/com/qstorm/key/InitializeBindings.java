@@ -28,6 +28,7 @@ public class InitializeBindings {
     public static KeyMapping attack4;
     public static KeyMapping domainKey;
     public static KeyMapping innateTechnique;
+    public static KeyMapping activateReversed;
     public static KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"custom_mod_controls"));
 
     //a hash map, each map represents a player and weather their attack key was down
@@ -36,6 +37,7 @@ public class InitializeBindings {
     static HashMap<UUID,Boolean> attack3WasDown=new HashMap<>();
     static HashMap<UUID,Boolean> attack4WasDown=new HashMap<>();
     static HashMap<UUID,Boolean> domainKeyWasDown=new HashMap<>();
+    static HashMap<UUID,Boolean> activateReversedWasDown=new HashMap<>();
     static HashMap<UUID,Boolean> innateTechniqueWasDown=new HashMap<>();
 
     public static void init(){
@@ -79,6 +81,14 @@ public class InitializeBindings {
                 )
         );
 
+        activateReversed = KeyBindingHelper.registerKeyBinding(
+                new KeyMapping(
+                        "reversed",InputConstants.KEY_LALT,CATEGORY
+                )
+        );
+
+
+
 
 
 
@@ -88,7 +98,10 @@ public class InitializeBindings {
                     ClientPlayNetworking.send(new HandleKeybinds.LaserKeyServer());
                 }
             }
+
         });
+
+
 
 
         //combo key handler
@@ -161,8 +174,17 @@ public class InitializeBindings {
 
             if(innateTechnique.isDown()){
                 if(!InitializeBindings.innateTechniqueWasDown.get(client.player.getUUID())) {
-                    ClientPlayNetworking.send(new HandleKeybinds.Innate());
+                    ClientPlayNetworking.send(new HandleKeybinds.EnableInnateTechnique());
                     InitializeBindings.innateTechniqueWasDown.put(client.player.getUUID(), true);
+
+                }
+            }
+            else InitializeBindings.innateTechniqueWasDown.put(client.player.getUUID(),false);
+
+            if(activateReversed.isDown()){
+                if(!InitializeBindings.activateReversedWasDown.get(client.player.getUUID())) {
+                    ClientPlayNetworking.send(new HandleKeybinds.EnableInnateTechnique());
+                    InitializeBindings.activateReversedWasDown.put(client.player.getUUID(), true);
 
                 }
             }
