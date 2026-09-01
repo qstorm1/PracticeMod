@@ -29,6 +29,7 @@ public class InitializeBindings {
     public static KeyMapping domainKey;
     public static KeyMapping innateTechnique;
     public static KeyMapping activateReversed;
+    public static KeyMapping energyKey;
     public static KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"custom_mod_controls"));
 
     //a hash map, each map represents a player and weather their attack key was down
@@ -87,6 +88,13 @@ public class InitializeBindings {
                 )
         );
 
+        energyKey = KeyBindingHelper.registerKeyBinding(
+                new KeyMapping(
+                        "energy",InputConstants.KEY_Y,CATEGORY
+                )
+        );
+
+
 
 
 
@@ -122,6 +130,7 @@ public class InitializeBindings {
             // set before to true
             //if attack1 was down previously, don't do this
             //if true don't do this
+
 
             //if attack is sent, refresh render data
             if(attack1.isDown()){
@@ -189,6 +198,10 @@ public class InitializeBindings {
                 }
             }
             else InitializeBindings.innateTechniqueWasDown.put(client.player.getUUID(),false);
+
+            if(energyKey.isDown()){
+                //if()
+            }
 
         });
 

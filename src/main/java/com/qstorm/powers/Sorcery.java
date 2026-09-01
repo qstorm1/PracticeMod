@@ -20,6 +20,8 @@ public class Sorcery {
     public int domainEnergyCost=0;//use for innate domain as well
     int innateTickCost =0;
 
+    public static HashMap<UUID,Sorcery> cursedUsers = new HashMap<>();
+
     public static HashMap<UUID,Sorcery> playerValues = new HashMap<>();
 
     private Sorcery(int cursedEnergyReserve, double maxCursedOutput, int domainEnergyCost,int innateTickCost){

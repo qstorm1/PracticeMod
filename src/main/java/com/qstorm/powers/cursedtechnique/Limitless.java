@@ -5,8 +5,6 @@ import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.Sorcery;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
@@ -21,7 +19,7 @@ import java.util.UUID;
  */
 public class Limitless extends Sorcery {
 
-    public static HashMap<UUID,Limitless> limitlessPlayers = new HashMap<>();
+
     public static String tag= "Limitless User";
     public int innateTechniquePower=10;
 
@@ -66,7 +64,7 @@ public class Limitless extends Sorcery {
     public static void initLimitlessPlayer(Player player){
         if(
                 (!(player instanceof ServerPlayer))||
-                limitlessPlayers.get(player.getUUID())!=null){
+                cursedUsers.get(player.getUUID())!=null){
             return;
         }
 
@@ -74,7 +72,7 @@ public class Limitless extends Sorcery {
         //
 
         Limitless playerLimitless = new Limitless((ServerPlayer)player);
-        limitlessPlayers.put(player.getUUID(),playerLimitless);
+        cursedUsers.put(player.getUUID(),playerLimitless);
 
 
 
