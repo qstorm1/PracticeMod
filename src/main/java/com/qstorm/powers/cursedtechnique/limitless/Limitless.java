@@ -5,6 +5,9 @@ import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
+import com.qstorm.powers.cursedtechnique.limitless.power.BlueAndRed;
+import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
+import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
@@ -20,9 +23,12 @@ public class Limitless extends Sorcery {
     public static String tag= "Limitless User";
     public int innateTechniquePower=10;
 
+    BlueAndRed blue = new BlueAndRed(1);
+    Purple purple = new Purple(2);
+
     //generate a limitless technique
     private Limitless(ServerPlayer player){
-        super(player);
+        super(new LimitlessInnate(0),player,10000,100);
 
         //add combo's
         Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)

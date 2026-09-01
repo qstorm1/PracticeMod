@@ -24,29 +24,29 @@ public class Sorcery {
      */
     int constantAbilityTickCost =0;
 
+
+
     /**
-     * Abilities of player,
-     * In general:
-     * 1= Innate technique
-     * 2=
-     * 3= Domain
+     * Abilities of player
+     * get(0) = Innate technique
      */
     public ArrayList<Ability> abilities = new ArrayList<>();
 
 
     public PlayerInfo playerInfo;
 
+    //The domain of this ability
+    public Domain domain;
+
+
     //a global list of each players sorcery data
     public static HashMap<UUID,Sorcery> sorcerers = new HashMap<>();
 
-    //NOT RECOMMENDED TO USE
-    @Deprecated
-    public ServerPlayer player;
 
 
     //born luck is a percentage that represents how lucky are your initial stat growths
     //increase luck represents and increase in luck
-    public Sorcery(Ability innate, Ability domain,ServerPlayer player,int domainEnergyCost,int constantAbilityTickCost){
+    public Sorcery(Ability innate,ServerPlayer player,int domainEnergyCost,int constantAbilityTickCost){
 
         //sets all the important values
         this.player=player;
@@ -54,11 +54,13 @@ public class Sorcery {
         this.constantAbilityTickCost = constantAbilityTickCost;
 
 
-        //adds cursed user to the list if absent
-        sorcerers.put(player.getUUID(),this);
 
-        initAbilities(innate,domain);
+        initAbilities(innate);
         //player.addTag("Cursed Energy: "+sorcery.cursedEnergy+"Cursed Output "+ sorcery.maxCursedOutput +"Cursed Energy Reserve "+sorcery.cursedEnergyReserve);
+
+
+
+        sorcerers.put(player.getUUID(),this);
     }
 
     /**
@@ -73,12 +75,11 @@ public class Sorcery {
     /**
      * inits starter abilities in the correct order
      */
-    public void initAbilities(Ability innate, Ability domain){
-        if(abilities.size()>2){
+    public void initAbilities(Ability innate){
+        if(abilities.size()>1){
             abilities =new ArrayList<>();
         }
         abilities.add(innate);
-        abilities.add(domain);
     }
 
 
@@ -125,6 +126,16 @@ public class Sorcery {
     static void sorceryClientInit(AbstractClientPlayer player){
 
     }
+
+
+
+
+
+
+    //NOT RECOMMENDED TO USE
+    @Deprecated
+    public ServerPlayer player;
+
 
 
 }
