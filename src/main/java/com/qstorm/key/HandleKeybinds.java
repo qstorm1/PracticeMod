@@ -4,7 +4,7 @@ import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.ComboKey;
-import com.qstorm.powers.cursedtechnique.Limitless;
+import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.codec.StreamCodec;
@@ -51,7 +51,7 @@ public class HandleKeybinds {
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.ActivateReversed.TYPE, (payload, context) -> {
             //says to run it on server
             context.server().execute(() -> {
-                if(Limitless.cursedUsers.get(context.player().getUUID()) instanceof Limitless limitless)
+                if(Limitless.sorcerers.get(context.player().getUUID()) instanceof Limitless limitless)
                     limitless.changeReversed();
             });
         });
@@ -60,7 +60,7 @@ public class HandleKeybinds {
             //says to run it on server
             context.server().execute(() -> {
                 //if the player is wearing a laser eye
-                if(Limitless.cursedUsers.get(context.player().getUUID()) instanceof Limitless limitless)
+                if(Limitless.sorcerers.get(context.player().getUUID()) instanceof Limitless limitless)
                     limitless.innateTechniqueChange();
             });
         });

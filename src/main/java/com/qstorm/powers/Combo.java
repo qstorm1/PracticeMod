@@ -1,8 +1,8 @@
 package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;

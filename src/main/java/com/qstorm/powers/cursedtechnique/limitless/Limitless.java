@@ -1,18 +1,15 @@
-package com.qstorm.powers.cursedtechnique;
+package com.qstorm.powers.cursedtechnique.limitless;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
-import com.qstorm.powers.Sorcery;
+import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * A limitless instance is created for every single player with the tag of Limitless
@@ -25,15 +22,15 @@ public class Limitless extends Sorcery {
 
     //generate a limitless technique
     private Limitless(ServerPlayer player){
-        super(player,0,0,5,1000000);
+        super(player);
 
         //add combo's
-        blueCombo = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
-                .setAction(this::ability1);
-        redCombo = Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
-                .setAction(this::ability2);
-        purpleCombo = Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
-                .setAction(this::ability3);
+        Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
+                .setAction((serverPlayer)-> abilities.get(3).Do(serverPlayer,reversedOn));
+        Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
+                .setAction((serverPlayer)-> abilities.get(4).Do(serverPlayer,reversedOn));
+        Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
+                .setAction((serverPlayer)-> abilities.get(5).Do(serverPlayer,reversedOn));
 
 
         //cursedOutput is a percentage
@@ -42,19 +39,11 @@ public class Limitless extends Sorcery {
         ServerTickEvents.END_SERVER_TICK.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"innate-technique"), (context)-> {
             if(innateOn){
                 player.level().getAllEntities().forEach((entity) -> {
-                    if (entity.getPosition(0).distanceTo(player.getPosition(0)) <= innateTechniquePower*(cursedOutput/100.0)) {
-                        if (entity != player)
-                            entity.setDeltaMovement(0, 0, 0);
-                    }
+
                 });
             }
         });
     }
-
-
-    public Combo redCombo;
-    public Combo blueCombo;
-    public Combo purpleCombo;
 
 
     /**
@@ -64,7 +53,7 @@ public class Limitless extends Sorcery {
     public static void initLimitlessPlayer(Player player){
         if(
                 (!(player instanceof ServerPlayer))||
-                cursedUsers.get(player.getUUID())!=null){
+                sorcerers.get(player.getUUID())!=null){
             return;
         }
 
@@ -72,7 +61,7 @@ public class Limitless extends Sorcery {
         //
 
         Limitless playerLimitless = new Limitless((ServerPlayer)player);
-        cursedUsers.put(player.getUUID(),playerLimitless);
+        sorcerers.put(player.getUUID(),playerLimitless);
 
 
 
@@ -97,25 +86,6 @@ public class Limitless extends Sorcery {
 
 
 
-    public void ability2(ServerPlayer attacker){
-        PracticeMod.LOGGER.info("Ablility 2 fired");
-
-    }
-
-    public void ability3(ServerPlayer attacker){
-        PracticeMod.LOGGER.info("Ablility 3 fired");
-
-    }
-
-
-    public void ability4(ServerPlayer attacker) {
-        PracticeMod.LOGGER.info("Ablility 4 fired");
-
-    }
-
-
-
-
     public boolean innateOn = false;
 
     //requires constant cursed energy output
@@ -125,7 +95,7 @@ public class Limitless extends Sorcery {
     }
 
 
-
+    @Override
     public void domain(ServerPlayer attacker){
 
         // Animation is played
