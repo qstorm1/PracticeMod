@@ -4,9 +4,10 @@ import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.ComboKey;
-import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -24,6 +25,8 @@ public class HandleKeybinds {
         PayloadTypeRegistry.playC2S().register(HandleKeybinds.LaserKeyServer.TYPE,HandleKeybinds.LaserKeyServer.CODEC);
         PayloadTypeRegistry.playC2S().register(EnableInnateTechnique.TYPE,EnableInnateTechnique.CODEC);
         PayloadTypeRegistry.playC2S().register(ActivateReversed.TYPE,ActivateReversed.CODEC);
+        PayloadTypeRegistry.playC2S().register(HandleScroll.TYPE, HandleScroll.CODEC);
+        PayloadTypeRegistry.playC2S().register(EnergyKey.TYPE,EnergyKey.CODEC);
 
 
         PayloadTypeRegistry.playS2C().register(Packet.ComboRenderInfoS2C.TYPE,Packet.ComboRenderInfoS2C.CODEC);
@@ -33,11 +36,13 @@ public class HandleKeybinds {
 
 
 
+        ComboKey.setupServersideManagement();
 
+        initiateOtherServerNetworking();
+    }
 
-
-
-        //tells the server that if it recieves packet data of the given type, run the following
+    public static void initiateOtherServerNetworking(){
+        //tells the server that if it receives packet data of the given type, run the following
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.LaserKeyServer.TYPE, (payload, context) -> {
             //says to run it on server
             context.server().execute(() -> {
@@ -47,28 +52,6 @@ public class HandleKeybinds {
                 }
             });
         });
-
-        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.ActivateReversed.TYPE, (payload, context) -> {
-            //says to run it on server
-            context.server().execute(() -> {
-                if(Limitless.sorcerers.get(context.player().getUUID()) instanceof Limitless limitless)
-                    limitless.changeReversed();
-            });
-        });
-
-        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnableInnateTechnique.TYPE, (payload, context) -> {
-            //says to run it on server
-            context.server().execute(() -> {
-                //if the player is wearing a laser eye
-                if(Limitless.sorcerers.get(context.player().getUUID()) instanceof Limitless limitless)
-                    limitless.innateTechniqueChange();
-            });
-        });
-
-
-
-
-        ComboKey.setupServersideManagement();
     }
 
     //This is a packet that is sent to the server when the keybind is pressed
@@ -84,6 +67,10 @@ public class HandleKeybinds {
             return TYPE;
         }
     }
+
+
+
+
 
     public record EnableInnateTechnique() implements CustomPacketPayload{
         //just an identifier
@@ -101,7 +88,7 @@ public class HandleKeybinds {
     public record ActivateReversed() implements CustomPacketPayload{
         //just an identifier
         public static final Type<ActivateReversed> TYPE =
-                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"innate-techinque-packet"));
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"activate-reversed-packet"));
 
         public static final StreamCodec<Object,ActivateReversed> CODEC = StreamCodec.unit(new ActivateReversed());
 
@@ -110,6 +97,45 @@ public class HandleKeybinds {
             return TYPE;
         }
     }
+
+    public record EnergyKey() implements CustomPacketPayload{
+        //just an identifier
+        public static final Type<EnergyKey> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"energy-key-packet"));
+
+        public static final StreamCodec<Object,EnergyKey> CODEC = StreamCodec.unit(new EnergyKey());
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+
+
+
+
+    public record HandleScroll(double scrollAmount) implements CustomPacketPayload{
+        //just an identifier
+        public static final Type<HandleScroll> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"increase-output-packet"));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, HandleScroll> CODEC = StreamCodec.composite(
+                ByteBufCodecs.DOUBLE,
+                HandleScroll::scrollAmount,
+
+                HandleScroll::new
+        );
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+
+
+
 
 
 
@@ -171,19 +197,6 @@ public class HandleKeybinds {
         //just an identifier
         public static final Type<Domain> TYPE =
                 new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "domain-packet"));
-
-        public static final StreamCodec<Object, Domain> CODEC = StreamCodec.unit(new Domain());
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
-    }
-
-    public record Innate() implements CustomPacketPayload {
-        //just an identifier
-        public static final Type<Domain> TYPE =
-                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "innate-packet"));
 
         public static final StreamCodec<Object, Domain> CODEC = StreamCodec.unit(new Domain());
 

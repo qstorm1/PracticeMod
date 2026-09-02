@@ -115,6 +115,11 @@ public class Combo {
         return this;
     }
 
+    public Combo setAction(Ability ability){
+        this.action=ability::Do;
+        return this;
+    }
+
 
 
     public void tick(){

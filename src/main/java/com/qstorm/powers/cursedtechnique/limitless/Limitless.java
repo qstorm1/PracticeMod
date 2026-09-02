@@ -1,13 +1,13 @@
 package com.qstorm.powers.cursedtechnique.limitless;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
-import com.qstorm.powers.cursedtechnique.limitless.power.BlueAndRed;
+import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
+import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
@@ -23,20 +23,34 @@ public class Limitless extends Sorcery {
     public static String tag= "Limitless User";
     public int innateTechniquePower=10;
 
-    BlueAndRed blue = new BlueAndRed(1);
-    Purple purple = new Purple(2);
+
 
     //generate a limitless technique
     private Limitless(ServerPlayer player){
-        super(new LimitlessInnate(0),player,10000,100);
+        super(new LimitlessInnate(0),player,10000,10);
 
-        //add combo's
-        Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
-                .setAction((serverPlayer)-> abilities.get(3).Do(serverPlayer,reversedOn));
-        Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
-                .setAction((serverPlayer)-> abilities.get(4).Do(serverPlayer,reversedOn));
-        Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
-                .setAction((serverPlayer)-> abilities.get(5).Do(serverPlayer,reversedOn));
+
+        abilities.add(new Blue(1));
+        Combo blue = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
+                .setAction(abilities.get(2));
+        abilities.get(1).setCombo(blue);
+
+
+        abilities.add(new Red(2));
+        Combo red = Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
+                .setAction((serverPlayer)-> abilities.get(3).Do(serverPlayer));
+        abilities.get(2).setCombo(red);
+
+        abilities.add(new Purple(3));
+        Combo purple = Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
+                .setAction((serverPlayer)-> abilities.get(5).Do(serverPlayer));
+        abilities.get(3).setCombo(purple);
+
+
+
+
+
+
 
 
         //cursedOutput is a percentage
@@ -84,21 +98,12 @@ public class Limitless extends Sorcery {
     //Does the action of the player running
     //These could in theory be replaced with statics because origianlly they were meant to get the attacker variable from inside the limitless class during initialization
     //two times as much cursed energy as blue
-    public void ability1(ServerPlayer attacker){
-        LaserEyes.shootLaser(attacker);
-        PracticeMod.LOGGER.info("Ablility 1 fired");
-    }
 
 
 
 
-    public boolean innateOn = false;
 
-    //requires constant cursed energy output
-    public void innateTechniqueChange(){
-        innateOn=!innateOn;
 
-    }
 
 
     @Override
@@ -142,9 +147,5 @@ public class Limitless extends Sorcery {
         // on break():
         // all players are paused and their screens get cracked (take whatever image was at the last it is then cracked) until all players are loaded back into the world
         // after which onDomainEnd() is run
-    }
-
-    public void changeReversed() {
-        reversedOn=!reversedOn;
     }
 }

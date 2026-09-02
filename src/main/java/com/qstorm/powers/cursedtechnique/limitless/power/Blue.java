@@ -1,18 +1,20 @@
 package com.qstorm.powers.cursedtechnique.limitless.power;
 
-import com.qstorm.powers.Combo;
+import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.powers.Ability;
 import net.minecraft.server.level.ServerPlayer;
 
-public class Purple extends Ability {
+public class Blue extends Ability {
 
 
-    public Purple(int id) {
+    public Blue(int id) {
         super(id);
     }
 
     @Override
-    public void run(ServerPlayer player) {
-
+    protected void run(ServerPlayer player) {
+        LaserEyes.shootLaser(player);
     }
+
+
 }

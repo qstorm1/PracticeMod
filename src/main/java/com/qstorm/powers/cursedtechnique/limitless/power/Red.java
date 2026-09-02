@@ -4,10 +4,8 @@ import com.qstorm.powers.Combo;
 import com.qstorm.powers.Ability;
 import net.minecraft.server.level.ServerPlayer;
 
-public class Purple extends Ability {
-
-
-    public Purple(int id) {
+public class Red extends Ability {
+    public Red(int id) {
         super(id);
     }
 

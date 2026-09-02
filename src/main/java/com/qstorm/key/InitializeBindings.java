@@ -38,8 +38,8 @@ public class InitializeBindings {
     static HashMap<UUID,Boolean> attack3WasDown=new HashMap<>();
     static HashMap<UUID,Boolean> attack4WasDown=new HashMap<>();
     static HashMap<UUID,Boolean> domainKeyWasDown=new HashMap<>();
-    static HashMap<UUID,Boolean> activateReversedWasDown=new HashMap<>();
     static HashMap<UUID,Boolean> innateTechniqueWasDown=new HashMap<>();
+    static HashMap<UUID,Boolean> activateReversedWasDown=new HashMap<>();
 
     public static void init(){
         laserKey = KeyBindingHelper.registerKeyBinding(
@@ -199,9 +199,12 @@ public class InitializeBindings {
             }
             else InitializeBindings.innateTechniqueWasDown.put(client.player.getUUID(),false);
 
+
+
             if(energyKey.isDown()){
-                //if()
+                ClientPlayNetworking.send(new HandleKeybinds.EnergyKey());
             }
+
 
         });
 
@@ -216,6 +219,9 @@ public class InitializeBindings {
         attack2WasDown.put(player.getUUID(), false);
         attack3WasDown.put(player.getUUID(), false);
         attack4WasDown.put(player.getUUID(), false);
+        domainKeyWasDown.put(player.getUUID(), false);
+        innateTechniqueWasDown.put(player.getUUID(), false);
+        activateReversedWasDown.put(player.getUUID(), false);
     }
 
 
@@ -225,6 +231,10 @@ public class InitializeBindings {
         attack2WasDown.remove(player.getUUID());
         attack3WasDown.remove(player.getUUID());
         attack4WasDown.remove(player.getUUID());
+        domainKeyWasDown.remove(player.getUUID());
+        innateTechniqueWasDown.remove(player.getUUID());
+        activateReversedWasDown.remove(player.getUUID());
+
     }
 
 

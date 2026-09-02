@@ -9,6 +9,7 @@ import com.qstorm.key.InitializeBindings;
 import com.qstorm.potion.ModPotions;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.ComboKey;
+import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -70,9 +71,11 @@ public class PracticeMod implements ModInitializer {
 
 
 
-
 		//handle serverside keybinding management
 		HandleKeybinds.handle();
+
+		//init (mostly the keybind stuff) for sorcery users
+		Sorcery.init();
 
 	}
 	public static void test(){

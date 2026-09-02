@@ -1,29 +1,35 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.key.HandleKeybinds;
+import com.qstorm.powers.Ability;
+import com.qstorm.powers.cursedtechnique.limitless.Limitless;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.UUID;
 
 //player specific
 //any players that can use cursed energy is added to the list of players
 public class Sorcery {
 
-    public boolean reversedOn=false;
+    //data on weather the player can use things
     public boolean canUseInnateDomain=false;
     public boolean canUseDomain=false;
-    public int domainEnergyCost=0;//use for innate domain as well
 
+    //Sorcery specific data
+    public int domainEnergyCost=0;//use for innate domain as well
     /**
      * the cursed energy used per tick innate techinque is active
      */
     int constantAbilityTickCost =0;
 
+
+    //data regarding the players sorcery stats that they are born with
+    public PlayerInfo playerInfo;
 
 
     /**
@@ -33,13 +39,13 @@ public class Sorcery {
     public ArrayList<Ability> abilities = new ArrayList<>();
 
 
-    public PlayerInfo playerInfo;
-
     //The domain of this ability
     public Domain domain;
 
 
-    //a global list of each players sorcery data
+
+
+    //a global list of each player's sorcery data (All sorcery objects)
     public static HashMap<UUID,Sorcery> sorcerers = new HashMap<>();
 
 
@@ -58,7 +64,7 @@ public class Sorcery {
         initAbilities(innate);
         //player.addTag("Cursed Energy: "+sorcery.cursedEnergy+"Cursed Output "+ sorcery.maxCursedOutput +"Cursed Energy Reserve "+sorcery.cursedEnergyReserve);
 
-
+        registerServerNetworking();
 
         sorcerers.put(player.getUUID(),this);
     }
@@ -70,6 +76,72 @@ public class Sorcery {
         sorcerers.putIfAbsent(player.getUUID(),this);
     }
 
+
+
+
+
+
+
+
+    public static void init(){
+        registerServerNetworking();
+    }
+
+
+    public boolean innateOn =false;
+    public boolean reversedOn=false;
+    public boolean energyKeyOn=false;
+
+
+    /**
+     * if a key is gotten from the client, it will activate the function associated with the key on the server
+     */
+    public static void registerServerNetworking(){
+
+        //make all techniques reversed
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.ActivateReversed.TYPE, (payload, context) -> {
+            //says to run it on server
+            context.server().execute(() -> {
+                if(Limitless.sorcerers.get(context.player().getUUID())!=null)
+                    Limitless.sorcerers.get(context.player().getUUID()).changeReversed();
+            });
+        });
+
+
+        //Enable Innate Technique
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnableInnateTechnique.TYPE, (payload, context) -> {
+            //says to run it on server
+            context.server().execute(() -> {
+
+                //if the player changes the state of their innate technique
+                if(Limitless.sorcerers.get(context.player().getUUID()) !=null)
+                    Limitless.sorcerers.get(context.player().getUUID()).activateInnate();
+            });
+        });
+
+        //when a player scrolls
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.HandleScroll.TYPE,(payload, context)->{
+            context.server().execute(()->{
+                Sorcery sorcery =Limitless.sorcerers.get(context.player().getUUID());
+                if(sorcery==null) return;
+                if(sorcery.energyKeyOn){
+                    sorcery.changeOutput(payload.scrollAmount());
+                }
+
+                if(sorcery.innateOn){
+                    sorcery.changeInnateAmount(payload.scrollAmount());
+                }
+            });
+        });
+
+        //when the energy key is pressed, handle that
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKey.TYPE,(payload, context)->{
+            context.server().execute(()->{
+                if(Limitless.sorcerers.get(context.player().getUUID())==null) return;;
+                Limitless.sorcerers.get(context.player().getUUID()).energyKeyOn=!Limitless.sorcerers.get(context.player().getUUID()).energyKeyOn;
+            });
+        });
+    }
 
 
     /**
@@ -101,27 +173,43 @@ public class Sorcery {
         PracticeMod.LOGGER.info("Used domain");
     }
 
-    public void onChangeOutput(double percentAmount){
+    public void changeOutput(double percentAmount){
+        PracticeMod.LOGGER.info("changed output: {} by {}", playerInfo.cursedOutput, percentAmount);
         playerInfo.cursedOutput+=playerInfo.maxCursedOutput*percentAmount;
-        PracticeMod.LOGGER.info("changed output: "+playerInfo.cursedOutput);
     }
 
 
     public void activateInnate(){
+        PracticeMod.LOGGER.info("Activated innate");
+        innateOn=!innateOn;
+    }
+
+
+    public void changeInnateAmount(double amountIncrease){
+        PracticeMod.LOGGER.info("Changed Innate Amount by {}", amountIncrease);
+    }
+
+
+
+    public void changeReversed() {
+        PracticeMod.LOGGER.info("Activated reversed");
+        reversedOn=!reversedOn;
+    }
+
+
+    public void changeOutput(int amount){
+        PracticeMod.LOGGER.info("change amount by {}", amount);
 
     }
 
-    public void deactivateInnate(){
 
-    }
 
-    public void onIncreaseInnate(int amountIncrease){
 
-    }
 
-    public void onDecreaseInnate(int amountDecrease){
 
-    }
+
+
+
 
     static void sorceryClientInit(AbstractClientPlayer player){
 
@@ -130,12 +218,9 @@ public class Sorcery {
 
 
 
-
-
     //NOT RECOMMENDED TO USE
     @Deprecated
     public ServerPlayer player;
-
 
 
 }
