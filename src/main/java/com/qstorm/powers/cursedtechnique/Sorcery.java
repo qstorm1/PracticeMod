@@ -3,6 +3,7 @@ package com.qstorm.powers.cursedtechnique;
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.powers.Ability;
+import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -102,8 +103,8 @@ public class Sorcery {
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.ActivateReversed.TYPE, (payload, context) -> {
             //says to run it on server
             context.server().execute(() -> {
-                if(Limitless.sorcerers.get(context.player().getUUID())!=null)
-                    Limitless.sorcerers.get(context.player().getUUID()).changeReversed();
+                if(sorcerers.get(context.player().getUUID())!=null)
+                    sorcerers.get(context.player().getUUID()).changeReversed();
             });
         });
 
@@ -114,8 +115,8 @@ public class Sorcery {
             context.server().execute(() -> {
 
                 //if the player changes the state of their innate technique
-                if(Limitless.sorcerers.get(context.player().getUUID()) !=null)
-                    Limitless.sorcerers.get(context.player().getUUID()).activateInnate();
+                if(sorcerers.get(context.player().getUUID()) !=null)
+                    sorcerers.get(context.player().getUUID()).activateInnate();
             });
         });
 
@@ -137,8 +138,8 @@ public class Sorcery {
         //when the energy key is pressed, handle that
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKey.TYPE,(payload, context)->{
             context.server().execute(()->{
-                if(Limitless.sorcerers.get(context.player().getUUID())==null) return;;
-                Limitless.sorcerers.get(context.player().getUUID()).energyKeyOn=!Limitless.sorcerers.get(context.player().getUUID()).energyKeyOn;
+                if(sorcerers.get(context.player().getUUID())==null) return;
+                sorcerers.get(context.player().getUUID()).energyKeyOn=!sorcerers.get(context.player().getUUID()).energyKeyOn;
             });
         });
     }

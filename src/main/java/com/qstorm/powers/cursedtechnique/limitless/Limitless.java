@@ -32,7 +32,7 @@ public class Limitless extends Sorcery {
 
         abilities.add(new Blue(1));
         Combo blue = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
-                .setAction(abilities.get(2));
+                .setAction(abilities.get(1));
         abilities.get(1).setCombo(blue);
 
 

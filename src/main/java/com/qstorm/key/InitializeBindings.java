@@ -192,7 +192,7 @@ public class InitializeBindings {
 
             if(activateReversed.isDown()){
                 if(!InitializeBindings.activateReversedWasDown.get(client.player.getUUID())) {
-                    ClientPlayNetworking.send(new HandleKeybinds.EnableInnateTechnique());
+                    ClientPlayNetworking.send(new HandleKeybinds.ActivateReversed());
                     InitializeBindings.activateReversedWasDown.put(client.player.getUUID(), true);
 
                 }

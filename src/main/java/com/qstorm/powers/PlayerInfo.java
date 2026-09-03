@@ -1,4 +1,4 @@
-package com.qstorm.powers.cursedtechnique;
+package com.qstorm.powers;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -24,11 +24,11 @@ public class PlayerInfo {
 
 
     public static void initNewPlayer(UUID playerUUID){
-        playerInfoHashMap.put(playerUUID,new PlayerInfo(0,0));
+        playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(0,0));
     }
 
     public static void initNewPlayer(UUID playerUUID,int bornLuck,int increaseLuck){
-        playerInfoHashMap.put(playerUUID,new PlayerInfo(bornLuck,increaseLuck));
+        playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(bornLuck,increaseLuck));
     }
 
 

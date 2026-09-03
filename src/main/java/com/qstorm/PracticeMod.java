@@ -9,6 +9,7 @@ import com.qstorm.key.InitializeBindings;
 import com.qstorm.potion.ModPotions;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.ComboKey;
+import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -91,6 +92,7 @@ public class PracticeMod implements ModInitializer {
 	public static void onPlayerJoin(Player player){
 		InitializeBindings.onPlayerJoin(player);
 		ComboKey.registerPlayer(player.getUUID());
+		PlayerInfo.initNewPlayer(player.getUUID());
 	}
 
 	public static void onPlayerLeave(Player player){
