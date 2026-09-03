@@ -69,6 +69,7 @@ public class Sorcery {
         registerServerNetworking();
 
         sorcerers.put(player.getUUID(),this);
+        this.playerInfo=PlayerInfo.playerInfoHashMap.get(player.getUUID());
     }
 
     /**
@@ -76,6 +77,8 @@ public class Sorcery {
      */
     public Sorcery(ServerPlayer player){
         sorcerers.putIfAbsent(player.getUUID(),this);
+        this.playerInfo=PlayerInfo.playerInfoHashMap.get(player.getUUID());
+
     }
 
 
@@ -185,14 +188,15 @@ public class Sorcery {
     }
 
     public void changeOutput(double percentAmount){
-        PracticeMod.LOGGER.info("changed output: {} by {}", playerInfo.cursedOutput, percentAmount);
+        PracticeMod.LOGGER.info("changed output: {} by {} making {}", playerInfo.cursedOutput, percentAmount,playerInfo.maxCursedOutput*percentAmount);
         playerInfo.cursedOutput+=playerInfo.maxCursedOutput*percentAmount;
     }
 
 
+
     public void activateInnate(){
-        PracticeMod.LOGGER.info("Activated innate");
         innateOn=!innateOn;
+        PracticeMod.LOGGER.info("Activated innate {}", innateOn);
     }
 
 
