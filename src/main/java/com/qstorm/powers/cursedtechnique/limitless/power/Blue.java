@@ -4,11 +4,13 @@ import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.powers.Ability;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.UUID;
+
 public class Blue extends Ability {
 
 
-    public Blue(int id) {
-        super(id);
+    public Blue(UUID playerUUID, int id) {
+        super(playerUUID,id);
     }
 
     @Override

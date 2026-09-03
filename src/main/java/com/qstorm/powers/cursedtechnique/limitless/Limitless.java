@@ -11,6 +11,7 @@ import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -27,24 +28,24 @@ public class Limitless extends Sorcery {
 
     //generate a limitless technique
     private Limitless(ServerPlayer player){
-        super(new LimitlessInnate(0),player,100000,10);
+        super(new LimitlessInnate(player.getUUID(),0),player,100000,10);
 
 
-        abilities.add(new Blue(1));
+        abilities.add(new Blue(player.getUUID(),1));
         Combo blue = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
-                .setAction(abilities.get(1));
-        abilities.get(1).setCombo(blue);
+                .setAction(abilities.getLast());
+        abilities.getLast().setCombo(blue);
 
 
-        abilities.add(new Red(2));
+        abilities.add(new Red(player.getUUID(),2));
         Combo red = Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
-                .setAction((serverPlayer)-> abilities.get(3).Do(serverPlayer));
-        abilities.get(2).setCombo(red);
+                .setAction(abilities.getLast());
+        abilities.getLast().setCombo(red);
 
-        abilities.add(new Purple(3));
+        abilities.add(new Purple(player.getUUID(),3));
         Combo purple = Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
-                .setAction((serverPlayer)-> abilities.get(5).Do(serverPlayer));
-        abilities.get(3).setCombo(purple);
+                .setAction(abilities.getLast());
+        abilities.getLast().setCombo(purple);
 
 
 
@@ -99,11 +100,10 @@ public class Limitless extends Sorcery {
     //These could in theory be replaced with statics because origianlly they were meant to get the attacker variable from inside the limitless class during initialization
     //two times as much cursed energy as blue
 
-
-
-
-
-
+    @Override
+    public void tick(MinecraftServer context){
+        super.tick(context);
+    }
 
 
     @Override

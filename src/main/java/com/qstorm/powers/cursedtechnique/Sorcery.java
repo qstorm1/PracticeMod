@@ -6,9 +6,11 @@ import com.qstorm.powers.Ability;
 import com.qstorm.powers.EffectsCursedEnergyUsage;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
@@ -53,6 +55,7 @@ public class Sorcery {
     //born luck is a percentage that represents how lucky are your initial stat growths
     //increase luck represents and increase in luck
     public Sorcery(Ability innate,ServerPlayer player,int domainEnergyCost,int constantAbilityTickCost){
+        this(player);
 
         //sets all the important values
         this.player=player;
@@ -61,19 +64,26 @@ public class Sorcery {
 
 
 
-        initAbilities(innate);
+        if(abilities.size()>1){
+            abilities =new ArrayList<>();
+        }
+        abilities.add(innate);
+
         //player.addTag("Cursed Energy: "+sorcery.cursedEnergy+"Cursed Output "+ sorcery.maxCursedOutput +"Cursed Energy Reserve "+sorcery.cursedEnergyReserve);
 
-        registerServerNetworking();
 
-        sorcerers.put(player.getUUID(),this);
+
+
     }
 
-    /**
-     * create a player with no technique
-     */
-    public Sorcery(ServerPlayer player){
+
+
+    private Sorcery(ServerPlayer player){
         sorcerers.putIfAbsent(player.getUUID(),this);
+
+        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,(context)->{
+            tick(context);
+        });
     }
 
 
@@ -81,11 +91,6 @@ public class Sorcery {
 
 
 
-
-
-    public static void init(){
-        registerServerNetworking();
-    }
 
 
     public boolean innateOn =false;
@@ -112,7 +117,6 @@ public class Sorcery {
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnableInnateTechnique.TYPE, (payload, context) -> {
             //says to run it on server
             context.server().execute(() -> {
-
                 //if the player changes the state of their innate technique
                 if(sorcerers.get(context.player().getUUID()) !=null)
                     sorcerers.get(context.player().getUUID()).activateInnate();
@@ -153,16 +157,17 @@ public class Sorcery {
     }
 
 
-    /**
-     * inits starter abilities in the correct order
-     */
-    public void initAbilities(Ability innate){
-        if(abilities.size()>1){
-            abilities =new ArrayList<>();
-        }
-        abilities.add(innate);
-    }
 
+    public void tick(MinecraftServer context){
+        if(innateOn){
+            abilities.getFirst().isTicked=true;
+        }
+        for (Ability ability:abilities){
+            if(ability.isTicked){
+                ability.tick(context);
+            }
+        }
+    }
 
 
 
@@ -263,6 +268,9 @@ public class Sorcery {
     }
 
 
+    public static void init(){
+        registerServerNetworking();
+    }
 
 
     //NOT RECOMMENDED TO USE

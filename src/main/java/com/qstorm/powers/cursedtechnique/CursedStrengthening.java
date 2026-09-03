@@ -9,7 +9,7 @@ import java.util.UUID;
 public class CursedStrengthening extends Ability {
 
     public CursedStrengthening(ServerPlayer player, int id) {
-        super(id);
+        super(player.getUUID(),id);
         this.setCombo(Combo.build(player,"strengthen").addKey4(5).addKey4(3));
     }
 

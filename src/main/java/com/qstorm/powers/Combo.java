@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Combo {
@@ -39,6 +40,7 @@ public class Combo {
 
     //server side only
     public static HashMap<UUID,ArrayList<Combo>> playerCombos = new HashMap<>();
+    ArrayList<Integer> times = new ArrayList<>();
 
     Sorcery attachment;
 
@@ -46,7 +48,8 @@ public class Combo {
     UUID playerUUID;
     ServerPlayer serverPlayer;
 
-    Consumer<ServerPlayer> action;
+    BiConsumer<ArrayList<Integer>,ServerPlayer> action;
+
 
 
     /**
@@ -86,10 +89,21 @@ public class Combo {
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
+    public Combo addDetectedKey1(int ticksForContinue){
+        comboKeys.add(ComboKey.key1.get(playerUUID));
+        timeRequiredToContinue.add(ticksForContinue);
+        return this;
+    }
     /**
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
     public Combo addKey2(int ticksForContinue){
+        comboKeys.add(ComboKey.key2.get(playerUUID));
+        timeRequiredToContinue.add(ticksForContinue);
+        return this;
+    }
+
+    public Combo addDetectedKey2(int ticksForContinue){
         comboKeys.add(ComboKey.key2.get(playerUUID));
         timeRequiredToContinue.add(ticksForContinue);
         return this;
@@ -102,6 +116,12 @@ public class Combo {
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
+
+    public Combo addDetectedKey3(int ticksForContinue){
+        comboKeys.add(ComboKey.key3.get(playerUUID));
+        timeRequiredToContinue.add(ticksForContinue);
+        return this;
+    }
     /**
      * @param ticksForContinue the required ticks of waiting it takes for the combo to end before the combo fails
      */
@@ -110,13 +130,36 @@ public class Combo {
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
+
+    public Combo addDetectedKey4(int ticksForContinue){
+        comboKeys.add(ComboKey.key4.get(playerUUID));
+        timeRequiredToContinue.add(ticksForContinue);
+        return this;
+    }
+
+    public Combo addWaitKey(int ticksForContinue){
+        return this;
+    }
+    public Combo addDetectedWaitKey(int ticksForContinue){
+        return this;
+    }
+
+
     public Combo setAction(Consumer<ServerPlayer> runnable){
+        this.action= (integers, player) -> {
+            runnable.accept(player);
+        };
+        return this;
+    }
+
+    public Combo setAction(BiConsumer<ArrayList<Integer>,ServerPlayer> runnable){
         this.action=runnable;
         return this;
     }
 
+
     public Combo setAction(Ability ability){
-        this.action=ability::Do;
+        this.setAction(ability::Do);
         return this;
     }
 
@@ -205,7 +248,7 @@ public class Combo {
     }
 
     public void doComboAction(){
-        action.accept(serverPlayer);
+        action.accept(times,serverPlayer);
         resetCombo();
     }
 

@@ -4,11 +4,13 @@ import com.qstorm.powers.Combo;
 import com.qstorm.powers.Ability;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.UUID;
+
 public class Purple extends Ability {
 
 
-    public Purple(int id) {
-        super(id);
+    public Purple(UUID playerUUID, int id) {
+        super(playerUUID,id);
     }
 
     @Override
