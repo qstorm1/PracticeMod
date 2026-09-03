@@ -5,15 +5,24 @@ import java.util.Random;
 import java.util.UUID;
 
 public class PlayerInfo {
+
+    //you can only train up to this value of cursed efficiency (items and abilities like six eyes can further improve this value)
+    public static final int maxCursedEfficiency = 50;
+
     //basic information
     public int cursedEnergy = 0;
     public int cursedEnergyReserve=0;
     public int cursedOutput = 0;
     public int maxCursedOutput = 0;
 
+    //concentration: decreases as you move around and do things (this decrease is removed if hit a black flash or a pet dies)
+    public int concentration = 0;
+
+
+    // Energy Used = Total Energy - cursedEfficiency/100.0 *Total Energy
+    public int cursedEfficiency = 0;
+
     public boolean canUseReversed=false;
-
-
 
 
 
@@ -48,9 +57,8 @@ public class PlayerInfo {
      */
     public void cheatMode(){
         this.cursedEnergyReserve=Integer.MAX_VALUE;
-        this.cursedEnergy=99999;
+        this.cursedEnergy=9999999;
     }
-
 
 
 

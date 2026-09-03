@@ -27,7 +27,7 @@ public class Limitless extends Sorcery {
 
     //generate a limitless technique
     private Limitless(ServerPlayer player){
-        super(new LimitlessInnate(0),player,10000,10);
+        super(new LimitlessInnate(0),player,100000,10);
 
 
         abilities.add(new Blue(1));

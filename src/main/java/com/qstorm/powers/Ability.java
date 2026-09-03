@@ -19,6 +19,7 @@ public abstract class Ability {
     }
 
 
+
     protected abstract void run(ServerPlayer player);
 
 }
