@@ -1,32 +1,19 @@
 package com.qstorm;
 
 
+import com.qstorm.commands.JJKCommands;
 import com.qstorm.effects.CustomEffects;
 import com.qstorm.item.ModItems;
-import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.potion.ModPotions;
-import com.qstorm.powers.Combo;
 import com.qstorm.powers.ComboKey;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +47,8 @@ public class PracticeMod implements ModInitializer {
 
 
 		ComboKey.init();
+
+		JJKCommands.init();
 
 		//if player joins/leaves checks
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

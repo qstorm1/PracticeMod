@@ -8,8 +8,8 @@ public class PlayerInfo {
     //basic information
     public int cursedEnergy = 0;
     public int cursedEnergyReserve=0;
-    public double cursedOutput = 0;
-    public double maxCursedOutput = 0;
+    public int cursedOutput = 0;
+    public int maxCursedOutput = 0;
 
     public boolean canUseReversed=false;
 
@@ -31,6 +31,16 @@ public class PlayerInfo {
         playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(bornLuck,increaseLuck));
     }
 
+    public static void regenPlayerInfo(UUID playerUUID){
+        if(playerInfoHashMap.get(playerUUID)==null) return;
+        playerInfoHashMap.put(playerUUID,new PlayerInfo(0,0));
+    }
+
+    public static void regenPlayerInfo(UUID playerUUID,int bornLuck, int increaseLuck){
+        if(playerInfoHashMap.get(playerUUID)==null) return;
+        playerInfoHashMap.put(playerUUID,new PlayerInfo(bornLuck,increaseLuck));
+    }
+
 
 
     /**
@@ -47,19 +57,29 @@ public class PlayerInfo {
 
     public PlayerInfo(int bornLuck, int increaseLuck){
 
-        //a random number bettween 0-1 with a higher chance of being close to one based on bornLuck stat
+        //a random number between 0-1 with a higher chance of being close to one based on bornLuck stat
         //tbh this is kinda more vibes based
         Random random = new Random();
+        int i = 0;
+
 
 
         //how much cursed energy the player has
-        this.cursedEnergyReserve= (int)Math.abs(((random.nextGaussian()*10)+5+bornLuck)*(20000+increaseLuck));
+        this.cursedEnergyReserve = (int)(Math.abs(random.nextGaussian(500000+bornLuck,200000))*(1+increaseLuck/100.0));
         this.cursedEnergy=cursedEnergyReserve;
 
-        //how much cursed energy the player can output (0-100%) default to 0.1% its realisticly impossible to go past 5%
+        //how much cursed energy the player can output (0-100%) default to 0.1% its realistically impossible to go past 5%
         // (you can run a thing that costs a default of 1/1000 of maxed cursed energy 1000 times)
         // I might change this from a percentage to an amount (ie you use scroll bar to output 1 energy-10000 energy)
-        this.maxCursedOutput = (int)Math.abs(random.nextGaussian(0.05,0.30));
+        double tempMaxCursedOutput;
+        do {
+            tempMaxCursedOutput = Math.abs(random.nextGaussian(0.2,0.05));
+            i++;
+        }
+        while(tempMaxCursedOutput>=1&&i<99);
+
+
+        maxCursedOutput=(int)(cursedEnergyReserve*tempMaxCursedOutput);
         this.cursedOutput=maxCursedOutput;
 
     }
