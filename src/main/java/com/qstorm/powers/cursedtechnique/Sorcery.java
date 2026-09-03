@@ -30,9 +30,6 @@ public class Sorcery {
     int constantAbilityTickCost =0;
 
 
-    //data regarding the players sorcery stats that they are born with
-    public PlayerInfo playerInfo;
-
 
     /**
      * Abilities of player
@@ -69,7 +66,6 @@ public class Sorcery {
         registerServerNetworking();
 
         sorcerers.put(player.getUUID(),this);
-        this.playerInfo=PlayerInfo.playerInfoHashMap.get(player.getUUID());
     }
 
     /**
@@ -77,8 +73,6 @@ public class Sorcery {
      */
     public Sorcery(ServerPlayer player){
         sorcerers.putIfAbsent(player.getUUID(),this);
-        this.playerInfo=PlayerInfo.playerInfoHashMap.get(player.getUUID());
-
     }
 
 
@@ -187,9 +181,12 @@ public class Sorcery {
         PracticeMod.LOGGER.info("Used domain");
     }
 
+    public void changeOutputPercent(double percentAmount){
+        changeOutput((int)(percentAmount*PlayerInfo.playerInfoHashMap.get(player.getUUID()).maxCursedOutput));
+    }
+
     public void changeOutput(double percentAmount){
-        PracticeMod.LOGGER.info("changed output: {} by {} making {}", playerInfo.cursedOutput, percentAmount,playerInfo.maxCursedOutput*percentAmount);
-        playerInfo.cursedOutput+=playerInfo.maxCursedOutput*percentAmount;
+        changeOutput((int)((percentAmount/20.0F)*PlayerInfo.playerInfoHashMap.get(player.getUUID()).maxCursedOutput));
     }
 
 
@@ -212,9 +209,19 @@ public class Sorcery {
     }
 
 
-    public void changeOutput(int amount){
-        PracticeMod.LOGGER.info("change amount by {}", amount);
+    private void changeOutput(int amount){
+        PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(player.getUUID());
 
+        if(playerInfo.cursedOutput+amount>=playerInfo.maxCursedOutput){
+            playerInfo.cursedOutput= playerInfo.maxCursedOutput;
+        }
+        else if(playerInfo.cursedOutput+amount<0){
+            playerInfo.cursedOutput=0;
+        }
+        else {
+            playerInfo.cursedOutput += amount;
+        }
+        PracticeMod.LOGGER.info("Amount {}", playerInfo.cursedOutput);
     }
 
 
