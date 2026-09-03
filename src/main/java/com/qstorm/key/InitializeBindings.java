@@ -5,12 +5,8 @@ import com.qstorm.PracticeMod;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -40,6 +36,8 @@ public class InitializeBindings {
     static HashMap<UUID,Boolean> domainKeyWasDown=new HashMap<>();
     static HashMap<UUID,Boolean> innateTechniqueWasDown=new HashMap<>();
     static HashMap<UUID,Boolean> activateReversedWasDown=new HashMap<>();
+    static HashMap<UUID,Boolean> energyKeyWasDown=new HashMap<>();
+
 
     public static void init(){
         laserKey = KeyBindingHelper.registerKeyBinding(
@@ -197,12 +195,17 @@ public class InitializeBindings {
 
                 }
             }
-            else InitializeBindings.innateTechniqueWasDown.put(client.player.getUUID(),false);
+            else InitializeBindings.activateReversedWasDown.put(client.player.getUUID(),false);
 
 
 
-            if(energyKey.isDown()){
-                ClientPlayNetworking.send(new HandleKeybinds.EnergyKey());
+            if(energyKey.isDown()&&!energyKeyWasDown.get(client.player.getUUID())){
+                ClientPlayNetworking.send(new HandleKeybinds.EnergyKeyOn());
+                energyKeyWasDown.put(client.player.getUUID(),true);
+            }
+            if(energyKeyWasDown.get(client.player.getUUID())&&!energyKey.isDown()){
+                ClientPlayNetworking.send(new HandleKeybinds.EnergyKeyOff());
+                energyKeyWasDown.put(client.player.getUUID(),false);
             }
 
 
@@ -222,6 +225,7 @@ public class InitializeBindings {
         domainKeyWasDown.put(player.getUUID(), false);
         innateTechniqueWasDown.put(player.getUUID(), false);
         activateReversedWasDown.put(player.getUUID(), false);
+        energyKeyWasDown.put(player.getUUID(), false);
     }
 
 
@@ -234,6 +238,7 @@ public class InitializeBindings {
         domainKeyWasDown.remove(player.getUUID());
         innateTechniqueWasDown.remove(player.getUUID());
         activateReversedWasDown.remove(player.getUUID());
+        energyKeyWasDown.remove(player.getUUID());
 
     }
 

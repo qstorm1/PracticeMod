@@ -7,6 +7,7 @@ import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
@@ -136,12 +137,21 @@ public class Sorcery {
         });
 
         //when the energy key is pressed, handle that
-        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKey.TYPE,(payload, context)->{
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKeyOn.TYPE,(payload, context)->{
             context.server().execute(()->{
                 if(sorcerers.get(context.player().getUUID())==null) return;
-                sorcerers.get(context.player().getUUID()).energyKeyOn=!sorcerers.get(context.player().getUUID()).energyKeyOn;
+                sorcerers.get(context.player().getUUID()).energyKeyOn=true;
+                PracticeMod.LOGGER.info("Energy Key: {}" ,sorcerers.get(context.player().getUUID()).energyKeyOn);
             });
         });
+
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKeyOff.TYPE,((payload, context) -> {
+            context.server().execute(()->{
+                if(sorcerers.get(context.player().getUUID())==null) return;
+                sorcerers.get(context.player().getUUID()).energyKeyOn=false;
+                PracticeMod.LOGGER.info("Energy Key: {}" ,sorcerers.get(context.player().getUUID()).energyKeyOn);
+            });
+        }));
     }
 
 

@@ -26,7 +26,9 @@ public class HandleKeybinds {
         PayloadTypeRegistry.playC2S().register(EnableInnateTechnique.TYPE,EnableInnateTechnique.CODEC);
         PayloadTypeRegistry.playC2S().register(ActivateReversed.TYPE,ActivateReversed.CODEC);
         PayloadTypeRegistry.playC2S().register(HandleScroll.TYPE, HandleScroll.CODEC);
-        PayloadTypeRegistry.playC2S().register(EnergyKey.TYPE,EnergyKey.CODEC);
+        PayloadTypeRegistry.playC2S().register(EnergyKeyOn.TYPE, EnergyKeyOn.CODEC);
+        PayloadTypeRegistry.playC2S().register(EnergyKeyOff.TYPE, EnergyKeyOff.CODEC);
+
 
 
         PayloadTypeRegistry.playS2C().register(Packet.ComboRenderInfoS2C.TYPE,Packet.ComboRenderInfoS2C.CODEC);
@@ -98,12 +100,24 @@ public class HandleKeybinds {
         }
     }
 
-    public record EnergyKey() implements CustomPacketPayload{
+    public record EnergyKeyOn() implements CustomPacketPayload{
         //just an identifier
-        public static final Type<EnergyKey> TYPE =
-                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"energy-key-packet"));
+        public static final Type<EnergyKeyOn> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"energy-key-on-packet"));
 
-        public static final StreamCodec<Object,EnergyKey> CODEC = StreamCodec.unit(new EnergyKey());
+        public static final StreamCodec<Object, EnergyKeyOn> CODEC = StreamCodec.unit(new EnergyKeyOn());
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+    public record EnergyKeyOff() implements CustomPacketPayload{
+        //just an identifier
+        public static final Type<EnergyKeyOff> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"energy-key-off-packet"));
+
+        public static final StreamCodec<Object, EnergyKeyOff> CODEC = StreamCodec.unit(new EnergyKeyOff());
 
         @Override
         public Type<? extends CustomPacketPayload> type() {
