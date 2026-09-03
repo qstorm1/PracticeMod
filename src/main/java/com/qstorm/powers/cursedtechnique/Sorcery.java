@@ -227,7 +227,6 @@ public class Sorcery {
 
 
 
-
     public void onUseEnergy(UUID playerUUID,int energyUsed){
         PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(player.getUUID());
         int addedValue=0;
