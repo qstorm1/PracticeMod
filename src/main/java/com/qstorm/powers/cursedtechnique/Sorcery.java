@@ -161,6 +161,8 @@ public class Sorcery {
     public void tick(MinecraftServer context){
         if(innateOn){
             abilities.getFirst().isTicked=true;
+        }else{
+            abilities.getFirst().isTicked=false;
         }
         for (Ability ability:abilities){
             if(ability.isTicked){
