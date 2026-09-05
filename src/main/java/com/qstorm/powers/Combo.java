@@ -237,7 +237,6 @@ public class Combo {
 
     public void nextKey(){
         current++;
-
     }
 
     public void resetCombo(){

@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class Scroll {
     @Inject(method = "onScroll",at=@At("HEAD"))
     private void onScroll(long windowPointer, double xOffset, double yOffset, CallbackInfo ci){
-        if(yOffset!=0){
+        if(yOffset!=0&&Minecraft.getInstance().screen==null){
             Minecraft.getInstance().execute(()->{
                 ClientPlayNetworking.send(new HandleKeybinds.HandleScroll(yOffset));
             });
