@@ -40,6 +40,7 @@ public class Combo {
 
     //server side only
     public static HashMap<UUID,ArrayList<Combo>> playerCombos = new HashMap<>();
+    public static HashMap<UUID, Integer> currentComboValue = new HashMap<>();
     ArrayList<Integer> times = new ArrayList<>();
 
     Sorcery attachment;
@@ -89,6 +90,10 @@ public class Combo {
         timeRequiredToContinue.add(ticksForContinue);
         return this;
     }
+
+    /**
+     * A detected key is a key that does an action when played
+     */
     public Combo addDetectedKey1(int ticksForContinue){
         comboKeys.add(ComboKey.key1.get(playerUUID));
         timeRequiredToContinue.add(ticksForContinue);
@@ -151,6 +156,9 @@ public class Combo {
         };
         return this;
     }
+    public Combo setDetectedAction(){
+        return this;
+    }
 
     public Combo setAction(BiConsumer<ArrayList<Integer>,ServerPlayer> runnable){
         this.action=runnable;
@@ -169,8 +177,11 @@ public class Combo {
         //if the combo ran out of time, reset it
         if(!checkBefore()){
             resetCombo();
+            resetClientHUDFromServer();
         }
     }
+
+
 
 
     //updateCombo
@@ -180,29 +191,25 @@ public class Combo {
     public void checkIfContinue(int keyPressed){
         lastKeyID = keyPressed;
 
-
         //if the comboKey doesn't match the key pressed
         if(comboKeys.get(current).id==keyPressed){
             //TODO: remove if everything works to see if neccessary (I don't think it is)
-            if(checkBefore()){
-
-                //this could be replaced with ==, but >= just in case some wierd thread error
-                //if the current value that was pressed is the last value, do the action
-                if(current>=comboKeys.size()-1){
-                    doComboAction();
-                }
-                else {
-                    //move to the next state of the combo
-                    nextKey();
-                }
+            //this could be replaced with ==, but >= just in case some wierd thread error
+            //if the current value that was pressed is the last value, do the action
+            if(current>=comboKeys.size()-1){
+                PracticeMod.LOGGER.debug("Did action for Combo {}",this.name);
+                doComboAction();
             }
-            else{
-                resetCombo();
+            else {
+                //move to the next state of the combo
+                PracticeMod.LOGGER.debug("Move to next key in Combo {}",this.name);
+                nextKey();
             }
 
         }
         else{
             //reset the combo if the key pressed was wrong
+            PracticeMod.LOGGER.debug("Reset Combo because key pressed was wronge {}",this.name);
             resetCombo();
         }
 
@@ -241,7 +248,7 @@ public class Combo {
 
     public void resetCombo(){
         current=0;
-        resetClientRenderFromServer();
+
 
         PracticeMod.LOGGER.info("reset combo");
     }
@@ -249,11 +256,23 @@ public class Combo {
     public void doComboAction(){
         action.accept(times,serverPlayer);
         resetCombo();
+        resetClientHUDFromServer();
     }
 
-    public void finish(){
-
+    /**
+     * returns the highest current value of this player
+     * @param playerUUID
+     */
+    public static int findLongestCombo(UUID playerUUID){
+        int max = 0;
+        for(Combo combo:playerCombos.get(playerUUID)){
+            if(combo.current>max){
+                max=combo.current;
+            }
+        }
+        return max;
     }
+
 
     public int getCurrentTimeSinceLastPressed() {
         return this.comboKeys.get(current).timeSinceLastPressed;
@@ -273,50 +292,36 @@ public class Combo {
     /**
      * the last key that was pressed on this server?
      */
-    private int lastKeyID=0;
+    private int lastKeyID=1;
 
-    public void resetClientRenderFromServer(){
+    public void resetClientHUDFromServer(){
         Combo.handleServerSideComboRendering(serverPlayer,lastKeyID,true);
     }
 
 
 
     /**
+     * Run whenever a key is pressed or a combo is reset
      * @param player the player that is going to render the HUD
      * @param keyPressed the key that the player pressed
      */
 
     public static void handleServerSideComboRendering(ServerPlayer player, int keyPressed,boolean isReset){
-
+        //at this point current is the value after the one just pressed no?
 
         ArrayList<Combo> combosPlayerHas = playerCombos.get(player.getUUID());
-        ArrayList<Combo> updatedComboList= new ArrayList<>();
+        ArrayList<Combo> combosToRender= new ArrayList<>();
+
+        //data to send to client
+        ArrayList<String> listOfStrings = new ArrayList<>();
+        ArrayList<Integer> listOfIntegers = new ArrayList<>();
 
 
 
         //find the current biggest combo, combos with the highest current will be rendered
         //if this is a reset call, the current of the reset will be 0 therefore not being considered as the main combo
-        int currentMax=0;
-        for(Combo combo:combosPlayerHas) {
-            if (combo.current > currentMax) currentMax = combo.current;
-        }
+        int currentMax=findLongestCombo(player.getUUID());
 
-
-        //make the updated list have all the combos with the highest comboKey
-        for(Combo combo:combosPlayerHas)
-            if(combo.current==currentMax&&combo.comboKeys.get(currentMax).id==keyPressed)
-                updatedComboList.add(combo);
-
-
-
-
-
-        //sort combo list by whatever sorting method (ex alphabetical -> A is the one at the top of the render)
-        updatedComboList.sort(compMode);
-
-        //data to send to client
-        ArrayList<String> listOfStrings = new ArrayList<>();
-        ArrayList<Integer> listOfIntegers = new ArrayList<>();
 
         //if we reset and there are no other combos working
         if(isReset&&currentMax==0){
@@ -324,18 +329,45 @@ public class Combo {
             return;
         }
 
-        //if the data is empty, send empty data which the client will recognize as a reset call
-        if(updatedComboList.isEmpty()){
+
+        if(currentMax==0){
+            //if somehow a reset is called and the max isn't 0 then do this though I think this is unneccessary
+            combosToRender=combosPlayerHas;
+        }
+        else {
+
+            //make the updated list have all the combos with the highest comboKey
+            for (Combo combo : combosPlayerHas)
+                if (combo.current == currentMax && combo.comboKeys.get(currentMax - 1).id == keyPressed)
+                    combosToRender.add(combo);
+
+
+        }
+
+        //if there are no combos that are active, send empty data which the client will recognize as a reset call
+        if(combosToRender.isEmpty()){
             ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
             return;
         }
 
+
+
+        //sort combo list by whatever sorting method (ex alphabetical -> A is the one at the top of the render)
+        combosToRender.sort(compMode);
+
+
+
+
+
+
+
         //update values correctly
-        for(Combo combo:updatedComboList){
+        for(Combo combo:combosToRender){
             listOfStrings.add(combo.name);
         }
-        for(int i = updatedComboList.getFirst().current; i<updatedComboList.getFirst().comboKeys.size();i++){
-            listOfIntegers.add(updatedComboList.getFirst().comboKeys.get(i).id);
+        //all the combo keys
+        for(int i = combosToRender.getFirst().current; i<combosToRender.getFirst().comboKeys.size();i++){
+            listOfIntegers.add(combosToRender.getFirst().comboKeys.get(i).id);
         }
 
 

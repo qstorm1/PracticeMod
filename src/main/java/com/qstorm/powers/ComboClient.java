@@ -55,7 +55,7 @@ public class ComboClient {
 
                         //if the list is empty that means we need to reset (I could do with packets but im lazy af)
                         if(idOfKeysToRender.isEmpty()){
-                            isRendered=false;
+                            clearScreen();
                             return;
                         }
 
@@ -68,6 +68,10 @@ public class ComboClient {
 
                     });
                 });
+    }
+
+    public static void clearScreen(){
+        isRendered=false;
     }
 
 
@@ -95,19 +99,20 @@ public class ComboClient {
 
             if(idOfKeysToRender.size()>4){
                 //scroll based
-                drawKeybind(graphics, idOfKeysToRender.get(1),1,false);
-                drawKeybind(graphics, idOfKeysToRender.get(2),2,false);
-                drawKeybind(graphics, idOfKeysToRender.get(3),3,true);
+                drawKeybind(graphics, idOfKeysToRender.get(0),1,false);
+                drawKeybind(graphics, idOfKeysToRender.get(1),2,false);
+                drawKeybind(graphics, idOfKeysToRender.get(2),3,false);
+                drawKeybind(graphics, idOfKeysToRender.get(3),4,true);
 
             }
             else {
                 //non-scroll based
-                for(int i = 1; i< idOfKeysToRender.size(); i++){
-                    drawKeybind(graphics, idOfKeysToRender.get(i),i,false);
+                for(int i = 0; i< idOfKeysToRender.size(); i++){
+                    drawKeybind(graphics, idOfKeysToRender.get(i),i+1,false);
                 }
 
             }
-            drawWorkingKeybind(graphics,idOfKeysToRender.get(1));
+            drawWorkingKeybind(graphics,idOfKeysToRender.get(0));
         });
     }
 

@@ -5,8 +5,8 @@ import com.qstorm.key.HandleKeybinds;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.level.ServerPlayer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -98,73 +98,25 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
-
-                //if the player is in the list of combos
-                if(
-                        !(Combo.playerCombos.get(context.player().getUUID())==null||
-                        Combo.playerCombos.get(context.player().getUUID()).isEmpty())
-                ){
-                    //render server stuff
-                    Combo.handleServerSideComboRendering(context.player(),1,false);
-                    for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
-                        combo.checkIfContinue(1);
-                    }
-                }
+                handleKey(context.player(),1);
             });
         });
-
-
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key2.get(context.player().getUUID()).keyDown();
-
-                //if the player is in the list of combos
-                if(
-                        !(Combo.playerCombos.get(context.player().getUUID())==null||
-                                Combo.playerCombos.get(context.player().getUUID()).isEmpty())
-                ){
-                    //render server stuff
-                    Combo.handleServerSideComboRendering(context.player(),2,false);
-                    for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
-                        combo.checkIfContinue(2);
-                    }
-                }
+                handleKey(context.player(),2);
             });
         });
-
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK3.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key3.get(context.player().getUUID()).keyDown();
-
-                //if the player is in the list of combos
-                if(
-                        !(Combo.playerCombos.get(context.player().getUUID())==null||
-                                Combo.playerCombos.get(context.player().getUUID()).isEmpty())
-                ){
-                    //render server stuff
-                    Combo.handleServerSideComboRendering(context.player(),3,false);
-                    for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
-                        combo.checkIfContinue(3);
-                    }
-                }
+                handleKey(context.player(),3);
             });
         });
-
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK4.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key4.get(context.player().getUUID()).keyDown();
-
-                //if the player is in the list of combos
-                if(
-                        !(Combo.playerCombos.get(context.player().getUUID())==null||
-                                Combo.playerCombos.get(context.player().getUUID()).isEmpty())
-                ){
-                    //render server stuff
-                    Combo.handleServerSideComboRendering(context.player(),4,false);
-                    for(Combo combo:Combo.playerCombos.get(context.player().getUUID())){
-                        combo.checkIfContinue(4);
-                    }
-                }
+                handleKey(context.player(),4);
             });
         });
 
@@ -181,6 +133,26 @@ public class ComboKey{
 
 
     }
+
+    
+
+    public static void handleKey(ServerPlayer player, int keyPressed){
+        if(
+                !(Combo.playerCombos.get(player.getUUID())==null||
+                        Combo.playerCombos.get(player.getUUID()).isEmpty())
+        ) {
+            int current = Combo.findLongestCombo(player.getUUID());
+            //render server stuff
+            for (Combo combo : Combo.playerCombos.get(player.getUUID())) {
+                if (current == combo.current) {
+                    combo.checkIfContinue(keyPressed);
+                    Combo.handleServerSideComboRendering(player, keyPressed, false);
+                }
+            }
+        }
+    }
+
+
 
     /**
      * when player joins the server
@@ -248,7 +220,7 @@ public class ComboKey{
     //TODO: if you strenthen your hand using combos the tick after you hit somebody you hit a black flash
 
     //a list of combos that this player can render
-    ArrayList<Combo> comboRenderedOptions;
+    //ArrayList<Combo> comboRenderedOptions;
 
 
     //if a key is pressed, a method is run that gets the list of combo's that can be run by that starting key. each key can only have 3 starting combos (any more aren't rendered)

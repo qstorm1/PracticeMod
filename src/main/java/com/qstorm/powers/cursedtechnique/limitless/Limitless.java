@@ -38,7 +38,7 @@ public class Limitless extends Sorcery {
 
 
         abilities.add(new Red(player.getUUID(),2));
-        Combo red = Combo.build(player,"Limitless Red").addKey1(100).addKey1(100).addKey4(60).addKey4(10).addKey2(50)
+        Combo red = Combo.build(player,"Limitless Red").addKey1(100).addKey1(200).addKey4(60).addKey4(10).addKey2(50)
                 .setAction(abilities.getLast());
         abilities.getLast().setCombo(red);
 
@@ -46,24 +46,6 @@ public class Limitless extends Sorcery {
         Combo purple = Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
                 .setAction(abilities.getLast());
         abilities.getLast().setCombo(purple);
-
-
-
-
-
-
-
-
-        //cursedOutput is a percentage
-
-        //limitless innate technique
-        ServerTickEvents.END_SERVER_TICK.register(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"innate-technique"), (context)-> {
-            if(innateOn){
-                player.level().getAllEntities().forEach((entity) -> {
-
-                });
-            }
-        });
     }
 
 

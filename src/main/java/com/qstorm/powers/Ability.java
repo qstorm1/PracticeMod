@@ -29,6 +29,7 @@ public abstract class Ability {
 
     public void setCombo(Combo combo){
         this.abilityCombo=combo;
+        //abilityCombo.setAction(()->Do());
     }
 
 

@@ -1,5 +1,6 @@
 package com.qstorm.powers.cursedtechnique.limitless.power;
 
+import com.qstorm.PracticeMod;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.Ability;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,6 +14,6 @@ public class Red extends Ability {
 
     @Override
     public void run(ServerPlayer player) {
-
+        PracticeMod.LOGGER.info("ran Red");
     }
 }
