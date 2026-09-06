@@ -163,33 +163,32 @@ public class LaserEyes extends Item {
 
         //particle shooter
         //for each player in the world
-        for(Player player: serverLevel.players()){
-            if(player instanceof ServerPlayer serverPlayer) {
-                //if the player is the current player
-                if(serverPlayer==shooter){
-                    for(double i = minNoShoot; i<currentMinBlock;i+=step) {
-                        targetPosition = eyePosition.add(direction.scale(i));
-                        serverPlayer.level().sendParticles(
-                                serverPlayer,
-                                redParticle,
-                                false,true,
-                                targetPosition.x, targetPosition.y, targetPosition.z, 1,
-                                0.0, 0.0, 0.0, 0.0
-                        );
-                    }
-                }else {
-                    for (double i = 0; i < currentMinBlock; i += step) {
-                        targetPosition = eyePosition.add(direction.scale(i));
-                        serverLevel.sendParticles(
-                                serverPlayer,
-                                redParticle,
-                                false,true,
-                                targetPosition.x, targetPosition.y, targetPosition.z, 1,
-                                0.0, 0.0, 0.0, 0.0
-                        );
-                    }
+        for(ServerPlayer serverPlayer: serverLevel.players()){
+            //if the player is the current player
+            if(serverPlayer==shooter){
+                for(double i = minNoShoot; i<currentMinBlock;i+=step) {
+                    targetPosition = eyePosition.add(direction.scale(i));
+                    serverPlayer.level().sendParticles(
+                            serverPlayer,
+                            redParticle,
+                            false,true,
+                            targetPosition.x, targetPosition.y, targetPosition.z, 1,
+                            0.0, 0.0, 0.0, 0.0
+                    );
+                }
+            }else {
+                for (double i = 0; i < currentMinBlock; i += step) {
+                    targetPosition = eyePosition.add(direction.scale(i));
+                    serverLevel.sendParticles(
+                            serverPlayer,
+                            redParticle,
+                            false,true,
+                            targetPosition.x, targetPosition.y, targetPosition.z, 1,
+                            0.0, 0.0, 0.0, 0.0
+                    );
                 }
             }
+
 
         }
 

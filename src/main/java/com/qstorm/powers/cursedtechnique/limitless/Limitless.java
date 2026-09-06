@@ -3,14 +3,13 @@ package com.qstorm.powers.cursedtechnique.limitless;
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
+import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +31,7 @@ public class Limitless extends Sorcery {
 
 
         abilities.add(new Blue(player.getUUID(),1));
-        Combo blue = Combo.build(player,"Limitless Blue").addDetectedKey1(10).addDetectedKey3(100).addDetectedKey4(60)
+        Combo blue = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
                 .setAction(abilities.getLast());
         abilities.getLast().setCombo(blue);
 
@@ -69,7 +68,7 @@ public class Limitless extends Sorcery {
 
 
 
-        ServerPlayNetworking.send((ServerPlayer) player,new Packet.limitlessInit());
+        ServerPlayNetworking.send((ServerPlayer) player,new Packet.LimitlessInit());
 
 
 

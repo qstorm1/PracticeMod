@@ -1,7 +1,6 @@
 package com.qstorm.packets;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.key.HandleKeybinds;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -37,12 +36,33 @@ public class Packet {
         }
     }
 
-    public record limitlessInit() implements CustomPacketPayload {
+    public record RenderBlueToClient(ArrayList<Double> position, Double radius) implements CustomPacketPayload {
+        //TODO: six eyes or advance sorcery can automatically detect which combo's a player is doing so this info shared to them as well
+        public static final Type<RenderBlueToClient> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "blue-render-packet"));
 
-        public static final Type<Packet.limitlessInit> TYPE =
-                new limitlessInit.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"limitless-packet"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, RenderBlueToClient> CODEC = StreamCodec.composite(
+                ByteBufCodecs.collection(ArrayList::new,ByteBufCodecs.DOUBLE),
+                RenderBlueToClient::position,
 
-        public static final StreamCodec<Object, Packet.limitlessInit> CODEC =StreamCodec.unit(new limitlessInit());
+                ByteBufCodecs.DOUBLE,
+                RenderBlueToClient::radius,
+
+                RenderBlueToClient::new
+        );
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return null;
+        }
+    }
+
+    public record LimitlessInit() implements CustomPacketPayload {
+
+        public static final Type<LimitlessInit> TYPE =
+                new LimitlessInit.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"limitless-packet"));
+
+        public static final StreamCodec<Object, LimitlessInit> CODEC =StreamCodec.unit(new LimitlessInit());
 
         @Override
         public Type<? extends CustomPacketPayload> type() {

@@ -2,6 +2,7 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.powers.Ability;
+import com.qstorm.powers.PlayerInfo;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -27,6 +28,7 @@ public class LimitlessInnate extends Ability {
 
     public LimitlessInnate(UUID playerUUID, int id) {
         super(playerUUID,id);
+        this.playerInfo= PlayerInfo.playerInfoHashMap.get(playerUUID);
     }
 
     @Override
@@ -45,8 +47,8 @@ public class LimitlessInnate extends Ability {
      *
      */
 
-    public double startDistance=5;
-    public double endDistance=4;
+    public double startDistance=4;
+    public double endDistance=2;
     public void updateDistance(int power){
         startDistance=power;
         endDistance=startDistance-3;

@@ -13,6 +13,7 @@ public abstract class Ability {
     public UUID playerUUID;
     public ArrayList<Integer> times = new ArrayList<>();
     public final int textColor;
+    public PlayerInfo playerInfo;//this is used for JJK related things
 
 
 
