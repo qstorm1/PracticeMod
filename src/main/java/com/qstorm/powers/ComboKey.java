@@ -58,6 +58,9 @@ public class ComboKey{
     // int timeRequiredToContinue=0;//ticks required for this keybind to count, basically
     //old key pressed -> timer for this key starts, if that time limit is over the time require to continue, then the combo will reset
 
+    int prevTimeSinceLastPressed=0;
+
+
 
     public int getTimeSinceLastPressed() {
         return timeSinceLastPressed;
@@ -134,7 +137,7 @@ public class ComboKey{
 
     }
 
-    
+
 
     public static void handleKey(ServerPlayer player, int keyPressed){
         if(
@@ -208,6 +211,7 @@ public class ComboKey{
         }
     }
     public void keyDown(){
+        prevTimeSinceLastPressed=timeSinceLastPressed;
         timeSinceLastPressed=0;
         keyDown=true;
     }

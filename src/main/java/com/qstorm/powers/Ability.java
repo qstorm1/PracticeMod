@@ -11,6 +11,10 @@ public abstract class Ability {
     Combo abilityCombo;
     public boolean isTicked=false;
     public UUID playerUUID;
+    //when you run .addDetectionKey() if a detection key is pressed it will add ticksSinceLastPressed to this
+    //on reset, the arraylist is cleared
+    public ArrayList<Integer> detectionKeys = new ArrayList<>();
+    public ArrayList<Integer> times = new ArrayList<>();
 
 
 
@@ -19,7 +23,7 @@ public abstract class Ability {
         this.playerUUID = playerUUID;
     }
 
-    public void Do(ArrayList<Integer> times,ServerPlayer player){
+    public void Do(ServerPlayer player){
         if(times.isEmpty()) {
             run(player);
         }else{
@@ -36,8 +40,7 @@ public abstract class Ability {
     protected void run(ServerPlayer player) {
 
     }
-
-    protected void run(ArrayList<Integer> times, ServerPlayer player) {
+    protected void run(ArrayList<Integer> times,ServerPlayer player) {
 
     }
 
