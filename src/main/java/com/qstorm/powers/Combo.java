@@ -330,19 +330,16 @@ public class Combo {
         }
 
 
-        if(currentMax==0){
-            //if somehow a reset is called and the max isn't 0 then do this though I think this is unneccessary
-            combosToRender=combosPlayerHas;
-        }
-        else {
 
-            //make the updated list have all the combos with the highest comboKey
+
+        //make the updated list have all the combos with the highest comboKey
+        if(currentMax!=0) {
             for (Combo combo : combosPlayerHas)
                 if (combo.current == currentMax && combo.comboKeys.get(currentMax - 1).id == keyPressed)
                     combosToRender.add(combo);
-
-
         }
+
+
 
         //if there are no combos that are active, send empty data which the client will recognize as a reset call
         if(combosToRender.isEmpty()){
