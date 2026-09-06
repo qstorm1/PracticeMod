@@ -11,7 +11,7 @@ public class Purple extends Ability {
 
 
     public Purple(UUID playerUUID, int id) {
-        super(playerUUID,id);
+        super(playerUUID,id,0xFF9400d3);
     }
 
     @Override

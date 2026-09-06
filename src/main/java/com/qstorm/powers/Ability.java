@@ -11,20 +11,22 @@ public abstract class Ability {
     Combo abilityCombo;
     public boolean isTicked=false;
     public UUID playerUUID;
-    //when you run .addDetectionKey() if a detection key is pressed it will add ticksSinceLastPressed to this
-    //on reset, the arraylist is cleared
-    public ArrayList<Integer> detectionKeys = new ArrayList<>();
     public ArrayList<Integer> times = new ArrayList<>();
+    public final int textColor;
 
 
 
-    public Ability(UUID playerUUID, int id){
+    public Ability(UUID playerUUID, int id,int textColor){
         this.id=id;
         this.playerUUID = playerUUID;
+        this.textColor = textColor;
+    }
+    public Ability(UUID playerUUID, int id){
+        this(playerUUID,id,0xFF000000);
     }
 
     public void Do(ServerPlayer player){
-        if(times.isEmpty()) {
+         if(times.isEmpty()) {
             run(player);
         }else{
             run(times, player);

@@ -40,6 +40,7 @@ public class ComboClient {
 
     public static ArrayList<String> comboNames= new ArrayList<>();
     public static ArrayList<Integer> idOfKeysToRender = new ArrayList<>();
+    public static ArrayList<Integer> colors = new ArrayList<>();
 
     static boolean isRendered = false;
     //run on client whenever
@@ -52,6 +53,7 @@ public class ComboClient {
                     context.client().execute(()->{
                         ArrayList<String> comboNames = payload.comboNames();//a list of combo's
                         ArrayList<Integer> idOfKeysToRender = payload.IDs();//a list of id's from the combo chosen
+                        ArrayList<Integer> colors = payload.colors();
 
                         //if the list is empty that means we need to reset (I could do with packets but im lazy af)
                         if(idOfKeysToRender.isEmpty()){
@@ -64,6 +66,7 @@ public class ComboClient {
 
                         ComboClient.comboNames=comboNames;
                         ComboClient.idOfKeysToRender =idOfKeysToRender;
+                        ComboClient.colors=colors;
 
 
                     });
@@ -83,7 +86,7 @@ public class ComboClient {
             }
 
             for(int i = 0 ;i<comboNames.size()&&i<5;i++){
-                graphics.drawString(Minecraft.getInstance().font, comboNames.get(i), graphics.guiWidth()/80, (int)(graphics.guiHeight()*6.0/9+i*graphics.guiHeight()/20.0), 0xFF000000);
+                graphics.drawString(Minecraft.getInstance().font, comboNames.get(i), graphics.guiWidth()/80, (int)(graphics.guiHeight()*6.0/9+i*graphics.guiHeight()/20.0), colors.get(i));
 
             }
         });

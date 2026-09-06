@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class Red extends Ability {
     public Red(UUID playerUUID, int id) {
-        super(playerUUID,id);
+        super(playerUUID,id,0xFFdc143c);
     }
 
     @Override

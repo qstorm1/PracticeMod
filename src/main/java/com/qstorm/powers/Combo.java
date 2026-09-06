@@ -31,8 +31,11 @@ public class Combo {
     //the time you need to press this key to count to combo
     public ArrayList<Integer> timeRequiredToContinue= new ArrayList<>();
 
-    //if current is a value in detectionKey
+    //when you run .addDetectionKey() if a detection key is pressed it will add ticksSinceLastPressed to this
+    //on reset, the arraylist is cleared
     public ArrayList<Integer> detectionKey = new ArrayList<>();
+
+
     //do an action whenever current=Integer
     public HashMap<Integer,Ability> actionOnKey = new HashMap<>();
     //the amount into the combo
@@ -255,9 +258,9 @@ public class Combo {
 
 
     public void nextKey(){
-        for (Integer i : this.action.detectionKeys) {
+        for (Integer i : this.detectionKey) {
             if(i==current){
-                this.action.times.add(this.comboKeys.get(current).prevTimeSinceLastPressed);
+                this.action.times.add(this.comboKeys.get(current).timeSinceLastPressed);
             }
         }
         if(this.actionOnKey.get(current)!=null){
@@ -269,7 +272,7 @@ public class Combo {
 
     public void resetCombo(){
         current=0;
-        if(!this.action.detectionKeys.isEmpty())
+        if(!this.detectionKey.isEmpty())
             this.action.times.clear();
 
 
@@ -338,7 +341,7 @@ public class Combo {
         //data to send to client
         ArrayList<String> listOfStrings = new ArrayList<>();
         ArrayList<Integer> listOfIntegers = new ArrayList<>();
-
+        ArrayList<Integer> listOfColors = new ArrayList<>();
 
 
         //find the current biggest combo, combos with the highest current will be rendered
@@ -348,7 +351,7 @@ public class Combo {
 
         //if we reset and there are no other combos working
         if(isReset&&currentMax==0){
-            ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
+            ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers,listOfColors));
             return;
         }
 
@@ -366,7 +369,7 @@ public class Combo {
 
         //if there are no combos that are active, send empty data which the client will recognize as a reset call
         if(combosToRender.isEmpty()){
-            ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
+            ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers,listOfColors));
             return;
         }
 
@@ -384,6 +387,7 @@ public class Combo {
         //update values correctly
         for(Combo combo:combosToRender){
             listOfStrings.add(combo.name);
+            listOfColors.add(combo.action.textColor);
         }
         //all the combo keys
         for(int i = combosToRender.getFirst().current; i<combosToRender.getFirst().comboKeys.size();i++){
@@ -393,17 +397,7 @@ public class Combo {
 
 
         //send rendering data to server
-        ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers));
-    }
-
-    /**
-     * a keybind that runs an Action
-     *
-     */
-    class detectionKey{
-        ComboKey key;
-        int valueIn;
-
+        ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers,listOfColors));
     }
 
 

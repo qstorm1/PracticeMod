@@ -212,6 +212,7 @@ public class ComboKey{
     }
     public void keyDown(){
         prevTimeSinceLastPressed=timeSinceLastPressed;
+        PracticeMod.LOGGER.info("time = {}",timeSinceLastPressed);
         timeSinceLastPressed=0;
         keyDown=true;
     }
