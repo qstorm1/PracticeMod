@@ -14,6 +14,7 @@ public class PlayerInfo {
     public int cursedEnergyReserve=0;
     public int cursedOutput = 0;
     public int maxCursedOutput = 0;
+    public double cursedOutputPercentage=0;
 
     //concentration: decreases as you move around and do things (this decrease is removed if hit a black flash or a pet dies)
     public int concentration = 0;
@@ -60,6 +61,13 @@ public class PlayerInfo {
         this.cursedEnergy=9999999;
     }
 
+
+    @Override
+    public String toString(){
+        return  "Total Cursed Energy = "+cursedEnergyReserve + "Current Cursed Energy = " + cursedEnergy +
+                "\nTotal Cursed Output = "+ maxCursedOutput +" Current Cursed Output = "+cursedOutput +
+                "\nCurrent Cursed Efficiency = "+cursedEfficiency;
+    }
 
 
 

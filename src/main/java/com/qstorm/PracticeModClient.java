@@ -6,6 +6,8 @@ import com.qstorm.powers.ComboClient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 import static com.qstorm.powers.cursedtechnique.JJKClientRender.initJJKClientRender;
 
@@ -20,6 +22,10 @@ public class PracticeModClient implements ClientModInitializer {
         //when we recieve a thing saying to make this player a sorceror, render client
         ClientPlayNetworking.registerGlobalReceiver(Packet.LimitlessInit.TYPE,(packet, context)->{
             ComboClient.addComboRendererToClient();
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(Packet.SendClientMessage.TYPE,(packet,context)->{
+            context.player().displayClientMessage(Component.literal(packet.message()),false);
         });
         //HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"before-thing"),Combo::render);
     }

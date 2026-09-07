@@ -5,6 +5,8 @@ import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;

@@ -53,7 +53,24 @@ public class Packet {
 
         @Override
         public Type<? extends CustomPacketPayload> type() {
-            return null;
+            return TYPE;
+        }
+    }
+
+    public record SendClientMessage(String message) implements CustomPacketPayload {
+        public static final Type<SendClientMessage> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "send-client-message-packet"));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, SendClientMessage> CODEC = StreamCodec.composite(
+                ByteBufCodecs.STRING_UTF8,
+                SendClientMessage::message,
+
+                SendClientMessage::new
+        );
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
         }
     }
 
@@ -69,4 +86,6 @@ public class Packet {
             return TYPE;
         }
     }
+
+
 }

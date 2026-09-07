@@ -2,6 +2,7 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
@@ -83,6 +84,7 @@ public class Combo {
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
             server.execute(this::tick);
         });
+
     }
 
 

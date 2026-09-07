@@ -181,6 +181,7 @@ public class Sorcery {
 
 
 
+
     static void innateDomain(ServerPlayer attacker){
         PracticeMod.LOGGER.info("Used innate domain");
     }

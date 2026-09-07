@@ -1,7 +1,7 @@
 package com.qstorm;
 
 
-import com.qstorm.commands.JJKCommands;
+import com.qstorm.commands.Commands;
 import com.qstorm.effects.CustomEffects;
 import com.qstorm.item.ModItems;
 import com.qstorm.key.HandleKeybinds;
@@ -48,7 +48,7 @@ public class PracticeMod implements ModInitializer {
 
 		ComboKey.init();
 
-		JJKCommands.init();
+		Commands.init();
 
 		//if player joins/leaves checks
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

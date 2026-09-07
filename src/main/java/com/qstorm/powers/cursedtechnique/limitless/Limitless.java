@@ -45,6 +45,10 @@ public class Limitless extends Sorcery {
         Combo purple = Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
                 .setAction(abilities.getLast());
         abilities.getLast().setCombo(purple);
+
+
+        ServerPlayNetworking.send(player,new Packet.SendClientMessage("test"));
+
     }
 
 

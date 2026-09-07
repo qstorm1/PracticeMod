@@ -3,7 +3,6 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
-import com.qstorm.powers.cursedtechnique.CursedTechniqueAbility;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -16,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Blue extends Ability implements CursedTechniqueAbility {
+public class Blue extends Ability {
 
 
 
