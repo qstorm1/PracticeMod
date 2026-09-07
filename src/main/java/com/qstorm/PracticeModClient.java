@@ -42,10 +42,14 @@ public class PracticeModClient implements ClientModInitializer {
                 cursedEnergy=packet.energy();
                 cursedOutput=packet.output();
                 if(!startedRender){
+
                     HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"started-render-eehectevct-im-too-lazy-to-name-bruh"),
                             (graphics,tracker)->{
-                                graphics.drawString(Minecraft.getInstance().font, "Energy: " + cursedEnergy,(int)(graphics.guiWidth()*0.1),(int)(graphics.guiHeight()*0.85),0xFF000000);
-                                graphics.drawString(Minecraft.getInstance().font, "Output: " + cursedOutput,(int)(graphics.guiWidth()*0.1),(int)(graphics.guiHeight()*0.9),0xFF000000);
+                        //TODO: when output is max yell MAX in chate
+                                int percentColor=0xFA8d8d8d;
+                                graphics.drawString(Minecraft.getInstance().font, "Energy: " + cursedEnergy,(int)(graphics.guiWidth()*0.005),(int)(graphics.guiHeight()*0.88),0xFA8d8d8d);
+                                if((int)(cursedOutput*100)==100) percentColor = 0xFFee4a4a;
+                                graphics.drawString(Minecraft.getInstance().font, "Output: " + (int)(cursedOutput*100) + "%",(int)(graphics.guiWidth()*0.005),(int)(graphics.guiHeight()*0.93),percentColor);
                             });
                     startedRender=true;
                 }

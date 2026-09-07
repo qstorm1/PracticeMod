@@ -84,7 +84,7 @@ public class Sorcery {
         sorcerers.putIfAbsent(player.getUUID(),this);
         ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
                 PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
-                (double)(PlayerInfo.playerInfoHashMap.get(player.getUUID()).maxCursedOutput)/(PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedOutput)));
+                PlayerInfo.getOutputAsPercent(player.getUUID())));
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,(context)->{
             tick(context);
         });
@@ -220,7 +220,7 @@ public class Sorcery {
         PracticeMod.LOGGER.info("Activated reversed");
         reversedOn=!reversedOn;
     }
-
+    //TODO: remember that the cost of energy increases faster then the power
 
     private void changeOutput(int amount){
         PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(player.getUUID());
@@ -235,6 +235,10 @@ public class Sorcery {
             playerInfo.cursedOutput += amount;
         }
         PracticeMod.LOGGER.info("Amount {}", playerInfo.cursedOutput);
+        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
+                PlayerInfo.getOutputAsPercent(player.getUUID())));
+
     }
 
 
@@ -252,6 +256,9 @@ public class Sorcery {
         }
 
         playerInfo.cursedOutput-=(int)((energyUsed*(playerInfo.cursedEfficiency/100.0)*multipliedValue)+addedValue);
+        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
+                PlayerInfo.getOutputAsPercent(player.getUUID())));
 
     }
 

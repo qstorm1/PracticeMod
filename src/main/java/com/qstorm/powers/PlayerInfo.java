@@ -70,6 +70,11 @@ public class PlayerInfo {
     }
 
 
+    public static Double getOutputAsPercent(UUID player){
+        return ((double)(playerInfoHashMap.get(player).cursedOutput)/(playerInfoHashMap.get(player).maxCursedOutput));
+    }
+
+
 
     public PlayerInfo(int bornLuck, int increaseLuck){
 
@@ -96,7 +101,7 @@ public class PlayerInfo {
 
 
         maxCursedOutput=(int)(cursedEnergyReserve*tempMaxCursedOutput);
-        this.cursedOutput=maxCursedOutput;
+        this.cursedOutput=maxCursedOutput/2;
 
     }
 }
