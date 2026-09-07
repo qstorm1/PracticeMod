@@ -57,6 +57,27 @@ public class Packet {
         }
     }
 
+    public record ActivateSorceryRender(Integer energy, Double output) implements CustomPacketPayload {
+        public static final Type<ActivateSorceryRender> TYPE =
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "client-render-packet"));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, ActivateSorceryRender> CODEC = StreamCodec.composite(
+                ByteBufCodecs.INT,
+                ActivateSorceryRender::energy,
+
+                ByteBufCodecs.DOUBLE,
+                ActivateSorceryRender::output,
+
+                ActivateSorceryRender::new
+        );
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+
     public record SendClientMessage(String message) implements CustomPacketPayload {
         public static final Type<SendClientMessage> TYPE =
                 new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "send-client-message-packet"));

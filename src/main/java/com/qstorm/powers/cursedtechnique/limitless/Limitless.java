@@ -46,9 +46,6 @@ public class Limitless extends Sorcery {
                 .setAction(abilities.getLast());
         abilities.getLast().setCombo(purple);
 
-
-        ServerPlayNetworking.send(player,new Packet.SendClientMessage("test"));
-
     }
 
 

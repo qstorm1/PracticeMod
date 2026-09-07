@@ -2,6 +2,7 @@ package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
+import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.EffectsCursedEnergyUsage;
 import com.qstorm.powers.PlayerInfo;
@@ -69,6 +70,7 @@ public class Sorcery {
         }
         abilities.add(innate);
 
+
         //player.addTag("Cursed Energy: "+sorcery.cursedEnergy+"Cursed Output "+ sorcery.maxCursedOutput +"Cursed Energy Reserve "+sorcery.cursedEnergyReserve);
 
 
@@ -80,7 +82,9 @@ public class Sorcery {
 
     private Sorcery(ServerPlayer player){
         sorcerers.putIfAbsent(player.getUUID(),this);
-
+        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
+                (double)(PlayerInfo.playerInfoHashMap.get(player.getUUID()).maxCursedOutput)/(PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedOutput)));
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,(context)->{
             tick(context);
         });
