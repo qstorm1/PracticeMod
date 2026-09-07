@@ -243,24 +243,7 @@ public class Sorcery {
 
 
 
-    public void onUseEnergy(UUID playerUUID,int energyUsed){
-        PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(player.getUUID());
-        int addedValue=0;
-        double multipliedValue=1;
 
-        for(Ability abi:sorcerers.get(playerUUID).abilities){
-            if(abi instanceof EffectsCursedEnergyUsage ability) {
-                addedValue+=ability.getEnergyAdd();
-                multipliedValue*=ability.getEnergyMultiply();
-            };
-        }
-
-        playerInfo.cursedOutput-=(int)((energyUsed*(playerInfo.cursedEfficiency/100.0)*multipliedValue)+addedValue);
-        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(player.getUUID())));
-
-    }
 
     // If the player starts getting emotional they increase in power
     // To be added next update

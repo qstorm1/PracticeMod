@@ -13,7 +13,28 @@ public abstract class Ability {
     public UUID playerUUID;
     public ArrayList<Integer> times = new ArrayList<>();
     public final int textColor;
-    public PlayerInfo playerInfo;//this is used for JJK related things
+
+    //JJK Specific
+    public PlayerInfo playerInfo;
+    /**
+     * the amount of energy needed for the ability to run,
+     * ex: if your output is 1000 energy and this value is 1100 then the ability will not run and you will not lose any energy,
+     * it will also trigger a NotEnoughOutputCall
+     */
+    int initial;
+    /**
+     * The how much the power increases as a result of the cost increasing
+     * higher rate = higher cost per power
+     * power=rate*cost+initial
+     */
+    double rate;
+    /**
+     * How much power this ability will have, each ability can handle this uniquely
+     */
+    double power;
+
+
+    //the cursedEnergy system works linearly at the moment, power=increaseRate*energy+initial
 
 
 
@@ -27,7 +48,7 @@ public abstract class Ability {
     }
 
     public void Do(ServerPlayer player){
-         if(times.isEmpty()) {
+        if(times.isEmpty()) {
             run(player);
         }else{
             run(times, player);
@@ -50,5 +71,16 @@ public abstract class Ability {
     public void tick(MinecraftServer context){
 
     }
+
+    public void notEnoughEnergy(){
+
+    }
+
+    public void notEnoughOutput(){
+
+    }
+
+
+
 
 }
