@@ -1,6 +1,7 @@
 package com.qstorm.powers;
 
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -41,6 +42,7 @@ public class PlayerInfo {
 
     public void useEnergy(ServerPlayer player, int energyUsed){
         this.cursedEnergy-=(int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0));
+        Blue.energyList.add((int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0)));
         ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
                 PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
                 PlayerInfo.getOutputAsPercent(player.getUUID())));
@@ -71,8 +73,10 @@ public class PlayerInfo {
      * for debug or aura farming
      */
     public void cheatMode(){
-        this.cursedEnergyReserve=Integer.MAX_VALUE;
-        this.cursedEnergy=9999999;
+        this.cursedEnergyReserve=999999999;
+        this.cursedEnergy= cursedEnergyReserve;
+        this.maxCursedOutput=1000000;
+        this.cursedOutput=maxCursedOutput/2;
     }
 
 

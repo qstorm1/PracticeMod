@@ -20,7 +20,7 @@ public class Blue extends Ability {
 
 
     public final int cursedCost = 1000;
-    int radius;
+    double radius;
     int radiusOfEffect;
 
     int ticksEnabled=80;
@@ -32,11 +32,13 @@ public class Blue extends Ability {
 
     Vec3 prevEyeVector;
 
+    ArrayList<Double> powerList = new ArrayList<>();
+    public static ArrayList<Integer> energyList = new ArrayList<>();
 
 
 
     public Blue(UUID playerUUID,int id) {
-        super(playerUUID,id,10000,1,0xFF0000ff);
+        super(playerUUID,id,100000,1,0xFF0000ff);
         this.playerInfo=PlayerInfo.playerInfoHashMap.get(playerUUID);
     }
 
@@ -48,10 +50,11 @@ public class Blue extends Ability {
         //start timer (set to 0 on reset)
         ticksEnabled=80;
         Vec3 positionToSpawn = player.getEyePosition();
-        this.radius=3;
+        this.radius=power/100000;
         prevEyeVector=positionToSpawn;
         this.position=positionToSpawn.add(player.getLookAngle().scale(radius+1));
 
+        powerList.add(this.power);
         this.isTicked=true;
     }
 
@@ -62,6 +65,7 @@ public class Blue extends Ability {
         ticksEnabled--;
         if(ticksEnabled<=0){
             end();
+            return;
         }
         renderToClient(position,radius,shooter);
         pullEntities();//create a gravitation pull for each entity
@@ -166,8 +170,8 @@ public class Blue extends Ability {
                 playerShooting,
                 blueParticle,
                 false,true,
-                position.getFirst(), position.get(1), position.getLast(), 1,
-                0.0, 0.0, 0.0, 0.0
+                position.getFirst(), position.get(1), position.getLast(), 500,
+                radius/4, radius/4, radius/4, 0.0
         );
 
 

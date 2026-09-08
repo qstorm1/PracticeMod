@@ -21,17 +21,18 @@ public abstract class Ability {
      * ex: if your output is 1000 energy and this value is 1100 then the ability will not run and you will not lose any energy,
      * it will also trigger a NotEnoughOutputCall
      */
-    int initial=0;
+    protected int initial=0;
     /**
      * The how much the power increases as a result of the cost increasing
      * higher rate = higher cost per power
      * power=rate*cost+initial
      */
-    double rate=0;
+    protected double rate=0;
     /**
      * How much power this ability will have, each ability can handle this uniquely
      */
-    double power=0;
+    protected double power=0;
+    protected double percentPower=0;
 
 
     //the cursedEnergy system works linearly at the moment, power=increaseRate*energy+initial
@@ -54,8 +55,10 @@ public abstract class Ability {
     }
 
     public void Do(ServerPlayer player){
-        power=rate*playerInfo.cursedOutput-initial;
-        if(power<0){
+        playerInfo=PlayerInfo.playerInfoHashMap.get(playerUUID);
+        power=(rate*playerInfo.cursedOutput);
+        percentPower=power/rate*playerInfo.maxCursedOutput;
+        if(power<initial){
             return;
         }
         playerInfo.useEnergy(player,playerInfo.cursedOutput);
