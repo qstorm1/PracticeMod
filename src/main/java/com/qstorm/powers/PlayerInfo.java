@@ -1,5 +1,9 @@
 package com.qstorm.powers;
 
+import com.qstorm.packets.Packet;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.level.ServerPlayer;
+
 import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
@@ -20,10 +24,11 @@ public class PlayerInfo {
     public int concentration = 0;
 
 
-    // Energy Used = Total Energy - cursedEfficiency/100.0 *Total Energy
+    // Energy Used = Total Energy *(1-(cursedEfficiency+otherEfficiency)/100.0 )
     public int cursedEfficiency = 0;
+    public int otherEfficiency=0;
 
-    public boolean canUseReversed=false;
+    public boolean canUseReversed=true;
 
 
 
@@ -31,6 +36,15 @@ public class PlayerInfo {
 
 
     public static HashMap<UUID,PlayerInfo> playerInfoHashMap = new HashMap<>();
+
+
+
+    public void useEnergy(ServerPlayer player, int energyUsed){
+        this.cursedEnergy-=(int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0));
+        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
+                PlayerInfo.getOutputAsPercent(player.getUUID())));
+    }
 
 
     public static void initNewPlayer(UUID playerUUID){
