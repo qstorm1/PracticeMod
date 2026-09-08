@@ -85,9 +85,8 @@ public class Sorcery {
         ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
                 PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
                 PlayerInfo.getOutputAsPercent(player.getUUID())));
-        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,(context)->{
-            tick(context);
-        });
+        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,
+                this::tick);
     }
 
 

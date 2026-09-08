@@ -56,3 +56,6 @@ each time server recieves, all combo keys of that type turn to ComboKey.keydown=
 Devlog notes:
 
 This update includes my first power. I figured out most of the logic on paper while I was at school so heres a run down:
+
+I had an issue with negative numbers, at the start of the video you can see the "bounciness" of the animals. At first I thought it was because of some issue with the velocity being too big
+but I'm pretty sure it was an issue with negative numbers. To be honest I just tried diffrent things until it started to work, and that happened to be presseting the acceleration when entities enter the radius of blue

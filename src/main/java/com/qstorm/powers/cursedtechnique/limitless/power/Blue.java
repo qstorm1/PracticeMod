@@ -1,5 +1,7 @@
 package com.qstorm.powers.cursedtechnique.limitless.power;
 
+import com.qstorm.PracticeMod;
+import com.qstorm.mob.Mass;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
@@ -7,8 +9,10 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -19,19 +23,19 @@ public class Blue extends Ability {
 
 
 
-    public final int cursedCost = 1000;
     double radius;
-    int radiusOfEffect;
+    final double maxRadius=5;
+    double radiusOfEffect;
 
     int ticksEnabled=80;
 
 
     Vec3 position;
-    double maxVelocity;
     double currentVelocity;
 
     Vec3 prevEyeVector;
 
+    //debug
     ArrayList<Double> powerList = new ArrayList<>();
     public static ArrayList<Integer> energyList = new ArrayList<>();
 
@@ -48,11 +52,15 @@ public class Blue extends Ability {
     @Override
     protected void run(ServerPlayer player) {
         //start timer (set to 0 on reset)
-        ticksEnabled=80;
+        ticksEnabled=100;
         Vec3 positionToSpawn = player.getEyePosition();
         this.radius=power/100000;
+        if(radius>maxRadius)
+            radius=maxRadius;
+
+        this.radiusOfEffect=radius*4;
         prevEyeVector=positionToSpawn;
-        this.position=positionToSpawn.add(player.getLookAngle().scale(radius+1));
+        this.position=positionToSpawn.add(player.getLookAngle().scale(radiusOfEffect+1));
 
         powerList.add(this.power);
         this.isTicked=true;
@@ -68,7 +76,7 @@ public class Blue extends Ability {
             return;
         }
         renderToClient(position,radius,shooter);
-        pullEntities();//create a gravitation pull for each entity
+        pullEntities(context.getPlayerList().getPlayer(playerUUID));//create a gravitation pull for each entity
         updateSurroundingBlocks();//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
 
         updatePosition(shooter);
@@ -78,11 +86,38 @@ public class Blue extends Ability {
     public void updatePosition(ServerPlayer player){
         Vec3 positionToSpawn = player.getEyePosition();
         prevEyeVector=positionToSpawn;
-        this.position=positionToSpawn.add(player.getLookAngle().scale(radius+1));;
+        this.position=positionToSpawn.add(player.getLookAngle().scale(radius+3));;
     }
 
-    public void pullEntities(){
+    public void pullEntities(ServerPlayer player){
+        player.level().getAllEntities().forEach((entity)->{
 
+            if(entity==player) return;
+
+            double radFromCenter = entity.position().distanceTo(position);
+            if(radFromCenter<=radiusOfEffect){
+                double acceleration;
+                if(radFromCenter<radius){
+                    acceleration=1;
+                }
+                else if(radFromCenter<=(radiusOfEffect-radFromCenter)/3+radius){
+                    acceleration=(power/40000)/(radFromCenter*radFromCenter);
+                }
+                else{
+                    acceleration=(power/10000)/(radFromCenter*radFromCenter*radFromCenter);
+                }
+                Vec3 direction = entity.position().subtract(position).normalize();
+//                double entityMass=1;
+//                if(Mass.mass.get(entity.getClass())!=null) entityMass=Mass.mass.get(entity.getClass());
+
+
+                if(acceleration<3)
+                    entity.setDeltaMovement(direction.scale(-acceleration));
+                else{
+                    return;
+                }
+            }
+        });
     }
 
     public void updateSurroundingBlocks(){
@@ -166,12 +201,14 @@ public class Blue extends Ability {
         //temporary particle render, replace with actual thing later cause i don't want to deal with rendering pain
         DustParticleOptions blueParticle = new DustParticleOptions(0xFF000080,1F);
 
+        int count= 500;
         playerShooting.level().sendParticles(
                 playerShooting,
                 blueParticle,
                 false,true,
-                position.getFirst(), position.get(1), position.getLast(), 500,
-                radius/4, radius/4, radius/4, 0.0
+                position.getFirst(), position.get(1), position.getLast(), count,
+//                radius/2, radius/2, radius/2, 0.0
+                radius/4,radius/4,radius/4,0
         );
 
 

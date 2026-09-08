@@ -42,7 +42,6 @@ public class PlayerInfo {
 
     public void useEnergy(ServerPlayer player, int energyUsed){
         this.cursedEnergy-=(int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0));
-        Blue.energyList.add((int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0)));
         ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
                 PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
                 PlayerInfo.getOutputAsPercent(player.getUUID())));
