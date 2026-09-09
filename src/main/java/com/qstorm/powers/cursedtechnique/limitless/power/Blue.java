@@ -54,7 +54,7 @@ public class Blue extends Ability {
         //start timer (set to 0 on reset)
         ticksEnabled=100;
         Vec3 positionToSpawn = player.getEyePosition();
-        this.radius=power/100000;
+        this.radius=power/200000;
         if(radius>maxRadius)
             radius=maxRadius;
 
@@ -95,32 +95,47 @@ public class Blue extends Ability {
             if(entity==player) return;
 
             double radFromCenter = entity.position().distanceTo(position);
+            Vec3 direction = entity.position().subtract(position).normalize();
+
             if(radFromCenter<=radiusOfEffect){
                 double acceleration;
+                //don't let anything inside of blue
                 if(radFromCenter<radius){
-                    acceleration=1;
-                }
-                else if(radFromCenter<=(radiusOfEffect-radFromCenter)/3+radius){
-                    acceleration=(power/40000)/(radFromCenter*radFromCenter);
+                    entity.setDeltaMovement(0,0,0);
+                    entity.addDeltaMovement(direction.scale(0.1));
+
                 }
                 else{
-                    acceleration=(power/10000)/(radFromCenter*radFromCenter*radFromCenter);
+                    //acceleration is proportional to power
+                    acceleration=(Math.pow(power,2)/1000000000)/(radFromCenter*radFromCenter*radFromCenter);
+                    if(acceleration<3)
+                        entity.addDeltaMovement(direction.scale(-acceleration));
+                    else{
+                        return;
+                    }
                 }
-                Vec3 direction = entity.position().subtract(position).normalize();
+
 //                double entityMass=1;
 //                if(Mass.mass.get(entity.getClass())!=null) entityMass=Mass.mass.get(entity.getClass());
 
 
-                if(acceleration<3)
-                    entity.setDeltaMovement(direction.scale(-acceleration));
-                else{
-                    return;
-                }
+
             }
         });
     }
 
-    public void updateSurroundingBlocks(){
+    public void updateSurroundingBlocks(MinecraftServer server){
+        //for each blocks around position, turn them to graivty blocks
+        //for each gravity block if the block.isFlying==false and block.position-position<radius
+        //gravity block:
+        //add movement based on gravity which is based on radius
+        //rotate based on point closest to the force (only if not laggy)
+        for(server.getPlayerList().getPlayer()){
+
+        }
+        if(){
+            System.out.println(this.radius);
+        }
 
     }
 
