@@ -129,7 +129,7 @@ public class Sorcery {
         //when a player scrolls
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.HandleScroll.TYPE,(payload, context)->{
             context.server().execute(()->{
-                Sorcery sorcery =Limitless.sorcerers.get(context.player().getUUID());
+                Sorcery sorcery =sorcerers.get(context.player().getUUID());
                 if(sorcery==null) return;
                 if(sorcery.energyKeyOn){
                     sorcery.changeOutput(payload.scrollAmount());
@@ -137,6 +137,11 @@ public class Sorcery {
 
                 if(sorcery.innateOn){
                     sorcery.changeInnateAmount(payload.scrollAmount());
+                }
+                for(Ability s:sorcerers.get(context.player().getUUID()).abilities){
+                    if(s.isScroll){
+                        s.onScroll(payload.scrollAmount());
+                    }
                 }
             });
         });

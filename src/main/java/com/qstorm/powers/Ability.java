@@ -34,6 +34,8 @@ public abstract class Ability {
     protected double power=0;
     protected double percentPower=0;
 
+    public boolean isScroll=false;
+
 
     //the cursedEnergy system works linearly at the moment, power=increaseRate*energy+initial
 
@@ -87,6 +89,15 @@ public abstract class Ability {
 
     }
 
+    /**
+     *
+     * @param amount assume = 1
+     */
+    public void onScroll(double amount){
+
+    }
+
+
     public void notEnoughEnergy(){
 
     }
@@ -94,6 +105,8 @@ public abstract class Ability {
     public void notEnoughOutput(){
 
     }
+
+
 
 
 

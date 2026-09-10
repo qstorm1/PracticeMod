@@ -7,14 +7,23 @@ import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ExplosionParticleInfo;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -26,8 +35,9 @@ public class Blue extends Ability {
     double radius;
     final double maxRadius=5;
     double radiusOfEffect;
+    double distanceFromEye=0;//TODO: add max distance
 
-    int ticksEnabled=80;
+    int ticksEnabled=100;
 
 
     Vec3 position;
@@ -52,7 +62,7 @@ public class Blue extends Ability {
     @Override
     protected void run(ServerPlayer player) {
         //start timer (set to 0 on reset)
-        ticksEnabled=100;
+        ticksEnabled=200;
         Vec3 positionToSpawn = player.getEyePosition();
         this.radius=power/200000;
         if(radius>maxRadius)
@@ -60,10 +70,12 @@ public class Blue extends Ability {
 
         this.radiusOfEffect=radius*4;
         prevEyeVector=positionToSpawn;
-        this.position=positionToSpawn.add(player.getLookAngle().scale(radiusOfEffect+1));
+        distanceFromEye=radius+3;
+        this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));
 
         powerList.add(this.power);
         this.isTicked=true;
+        this.isScroll=true;
     }
 
 
@@ -77,17 +89,24 @@ public class Blue extends Ability {
         }
         renderToClient(position,radius,shooter);
         pullEntities(context.getPlayerList().getPlayer(playerUUID));//create a gravitation pull for each entity
-        updateSurroundingBlocks();//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
-
+        updateSurroundingBlocks(context);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
+        if(ticksEnabled%10==0) {
+            context.getPlayerList().getPlayer(playerUUID).level().explode(context.getPlayerList().getPlayer(playerUUID),
+                    position.x,position.y,position.z,
+                    3,Level.ExplosionInteraction.MOB);
+        }
         updatePosition(shooter);
 
     }
 
+
     public void updatePosition(ServerPlayer player){
         Vec3 positionToSpawn = player.getEyePosition();
+        this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));;
         prevEyeVector=positionToSpawn;
-        this.position=positionToSpawn.add(player.getLookAngle().scale(radius+3));;
     }
+
+
 
     public void pullEntities(ServerPlayer player){
         player.level().getAllEntities().forEach((entity)->{
@@ -130,12 +149,11 @@ public class Blue extends Ability {
         //gravity block:
         //add movement based on gravity which is based on radius
         //rotate based on point closest to the force (only if not laggy)
-        for(server.getPlayerList().getPlayer()){
+        BlockPos.betweenClosedStream(new AABB(
+                position.subtract(radius),
+                position.add(radius)
+        ));
 
-        }
-        if(){
-            System.out.println(this.radius);
-        }
 
     }
 
@@ -157,14 +175,16 @@ public class Blue extends Ability {
     }
 
 
-    class GravityBlock{
+    class GravityBlock extends Display.BlockDisplay{
         Vec3 acceleration;
         Vec3 velocity;
         int terminalVelocity;
         Display.BlockDisplay blockDisplay;
-        GravityBlock(BlockState block){
 
+        public GravityBlock(EntityType<?> entityType, Level level) {
+            super(entityType, level);
         }
+
         public void applyForce(Vec3 force){
 
         }
@@ -187,6 +207,16 @@ public class Blue extends Ability {
                 velocity.add(0,0,terminalVelocity);
             }
         }
+
+        @Override
+        protected void updateRenderSubState(boolean interpolate, float partialTick) {
+
+        }
+    }
+
+    @Override
+    public void onScroll(double amount){
+        this.distanceFromEye+=amount;
     }
 
 
@@ -238,6 +268,25 @@ public class Blue extends Ability {
         double theta=Math.acos(first.dot(second)/first.length()*second.length());
         //find the ark length
         return(theta*Math.PI/180);
+    }
+
+
+    private void testFunction() {
+
+        //Var 5 and 9 don't exist lmao
+
+        //var 1: the source/ the entity doing the explode
+        //Var 2: the damage source
+        //Var 3: the damage calculator which detects if a block should disapear, or how much damage happens
+        //Var 4, 5,6,7: x,y,z,radius
+        //Var 8: fire
+        //Var 9: idk check ExplosionInteraction
+        //Var 10: Particle Type
+        //Var 11: Another Particle Type idk?
+        //Var 12: IDK
+
+        //Abstract explosion thing in Level
+        //new Level().explode();
     }
 
 
