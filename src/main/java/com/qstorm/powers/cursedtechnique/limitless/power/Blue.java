@@ -1,32 +1,19 @@
 package com.qstorm.powers.cursedtechnique.limitless.power;
 
-import com.qstorm.PracticeMod;
-import com.qstorm.mob.Mass;
-import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ExplosionParticleInfo;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.TntBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 
 public class Blue extends Ability {
 
@@ -45,9 +32,6 @@ public class Blue extends Ability {
 
     Vec3 prevEyeVector;
 
-    //debug
-    ArrayList<Double> powerList = new ArrayList<>();
-    public static ArrayList<Integer> energyList = new ArrayList<>();
 
 
 
@@ -68,50 +52,59 @@ public class Blue extends Ability {
         if(radius>maxRadius)
             radius=maxRadius;
 
-        this.radiusOfEffect=radius*4;
+        this.radiusOfEffect=radius*3;
         prevEyeVector=positionToSpawn;
         distanceFromEye=radius+3;
         this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));
 
-        powerList.add(this.power);
-        this.isTicked=true;
-        this.isScroll=true;
+
+        startTickLoop();
+        enableScroll();
     }
 
 
     @Override
     public void tick(MinecraftServer context){
         ServerPlayer shooter = context.getPlayerList().getPlayer(playerUUID);
+
+        renderToClient(position,radius,shooter);
+        pullEntities(shooter);//create a gravitation pull for each entity
+        updateSurroundingBlocks(context);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
+        causeExplosion(shooter.level(),shooter);
+        updateBluePosition(shooter);
         ticksEnabled--;
         if(ticksEnabled<=0){
-            end();
-            return;
+            end(shooter.level());
         }
-        renderToClient(position,radius,shooter);
-        pullEntities(context.getPlayerList().getPlayer(playerUUID));//create a gravitation pull for each entity
-        updateSurroundingBlocks(context);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
-        if(ticksEnabled%10==0) {
-            context.getPlayerList().getPlayer(playerUUID).level().explode(context.getPlayerList().getPlayer(playerUUID),
-                    position.x,position.y,position.z,
-                    3,Level.ExplosionInteraction.MOB);
-        }
-        updatePosition(shooter);
 
     }
 
 
-    public void updatePosition(ServerPlayer player){
+    public void updateBluePosition(ServerPlayer player){
         Vec3 positionToSpawn = player.getEyePosition();
         this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));;
         prevEyeVector=positionToSpawn;
     }
 
+    public void causeExplosion(ServerLevel context,ServerPlayer player){
+        if(ticksEnabled%10==0) {
+//            ServerExplosion explodeS = new ServerExplosion(context,player,null,null,
+//                    position,2,false, Explosion.BlockInteraction.KEEP);
+//            explodeS.explode();
 
 
-    public void pullEntities(ServerPlayer player){
-        player.level().getAllEntities().forEach((entity)->{
+            player.level().explode(player,
+                    position.x,position.y,position.z,
+                    3,Level.ExplosionInteraction.MOB);
+        }
+    }
 
-            if(entity==player) return;
+
+
+    public void pullEntities(ServerPlayer shooter){
+        shooter.level().getAllEntities().forEach((entity)->{
+
+            if(entity==shooter) return;
 
             double radFromCenter = entity.position().distanceTo(position);
             Vec3 direction = entity.position().subtract(position).normalize();
@@ -163,15 +156,6 @@ public class Blue extends Ability {
 
     public void setPosition(Vec3 position){
         this.position=position;
-    }
-
-
-    /**
-     * ran on death, level change, and on end
-     */
-    public void end(){
-
-        this.isTicked=false;
     }
 
 
@@ -263,7 +247,7 @@ public class Blue extends Ability {
     }
 
 
-    private double findArkLength(Vec3 first,Vec3 second){
+    private static double findArkLength(Vec3 first,Vec3 second){
         //find the angle between the vectors
         double theta=Math.acos(first.dot(second)/first.length()*second.length());
         //find the ark length
@@ -292,3 +276,74 @@ public class Blue extends Ability {
 
 
 }
+
+/**
+public int explode() {
+    //do all game events related to explosions
+    this.level.gameEvent(this.source, GameEvent.EXPLODE, this.center);
+
+    //calculate a list of position in which an explosion happened
+    List<BlockPos> list = this.calculateExplodedPositions();
+    //hurt all effected entities
+    //all effected entities are 2 times the distance from the blast
+    this.hurtEntities();
+    if (this.interactsWithBlocks()) {
+        ProfilerFiller profilerFiller = Profiler.get();
+        profilerFiller.push("explosion_blocks");
+        this.interactWithBlocks(list);
+        profilerFiller.pop();
+    }
+    if (this.fire) {
+        this.createFire(list);
+    }
+    return list.size();
+}
+
+ //go through a 16x16 block position and calculate the outer positions
+ //a normalized vector is created that points to each block position
+ //A random amount of power is then created for each ray with its orign set to the center of the explosion
+ //this power will then decrease for every block in the vectors way
+ //h will aslo decrease by 0.225 each step
+
+private List<BlockPos> calculateExplodedPositions() {
+    HashSet<BlockPos> set = new HashSet<BlockPos>();
+    int i = 16;
+    for (int j = 0; j < 16; ++j) {
+        for (int k = 0; k < 16; ++k) {
+            block2: for (int l = 0; l < 16; ++l) {
+                if (j != 0 && j != 15 && k != 0 && k != 15 && l != 0 && l != 15) continue;
+                double d = (float)j / 15.0f * 2.0f - 1.0f;
+                double e = (float)k / 15.0f * 2.0f - 1.0f;
+                double f = (float)l / 15.0f * 2.0f - 1.0f;
+                //d e and f go through each axis 16 times idk what the math does, at 16 it turns to 17/15
+                double g = Math.sqrt(d * d + e * e + f * f);
+                //g= the diagnol be
+                d /= g;
+                e /= g;
+                f /= g;
+                double m = this.center.x;
+                double n = this.center.y;
+                double o = this.center.z;
+                float p = 0.3f;
+                for (float h = this.radius * (0.7f + this.level.random.nextFloat() * 0.6f); h > 0.0f; h -= 0.22500001f) {
+                    BlockPos blockPos = BlockPos.containing(m, n, o);
+                    BlockState blockState = this.level.getBlockState(blockPos);
+                    FluidState fluidState = this.level.getFluidState(blockPos);
+                    if (!this.level.isInWorldBounds(blockPos)) continue block2;
+                    Optional<Float> optional = this.damageCalculator.getBlockExplosionResistance(this, this.level, blockPos, blockState, fluidState);
+                    if (optional.isPresent()) {
+                        h -= (optional.get().floatValue() + 0.3f) * 0.3f;
+                    }
+                    if (h > 0.0f && this.damageCalculator.shouldBlockExplode(this, this.level, blockPos, blockState, h)) {
+                        set.add(blockPos);
+                    }
+                    m += d * (double)0.3f;
+                    n += e * (double)0.3f;
+                    o += f * (double)0.3f;
+                }
+            }
+        }
+    }
+    return new ObjectArrayList<BlockPos>(set);
+}
+*/

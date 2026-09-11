@@ -1,6 +1,7 @@
 package com.qstorm.powers;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
@@ -86,14 +87,32 @@ public abstract class Ability {
     }
 
     public void tick(MinecraftServer context){
-
     }
+    public void startTickLoop(){
+        isTicked=true;
+    }
+    public void endTickLoop(){
+        isTicked=false;
+    }
+
+    public void end(ServerLevel context){
+        this.isTicked=false;
+        disableScroll();
+    };
 
     /**
      *
      * @param amount assume = 1
      */
     public void onScroll(double amount){
+
+    }
+
+    public void enableScroll(){
+        this.isScroll=true;
+    }
+    public void disableScroll(){
+        this.isScroll=false;
 
     }
 

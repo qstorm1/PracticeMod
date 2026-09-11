@@ -4,18 +4,15 @@ import com.qstorm.PracticeMod;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.entity.monster.warden.Warden;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
@@ -25,6 +22,7 @@ public class LimitlessInnate extends Ability {
 
 
     public int innateDistance = 5;
+    public static String TAG = "effected by limitless";
 
     public LimitlessInnate(UUID playerUUID, int id) {
         super(playerUUID,id);
@@ -79,7 +77,9 @@ public class LimitlessInnate extends Ability {
             //Don't need to deal with:
             // Eye of ender
             //Living entities
+
             if(player.getUUID()!=entity.getUUID()&&player.distanceTo(entity)<=startDistance){
+                entity.addTag(TAG);
                 if(entity instanceof FallingBlockEntity){
                     PracticeMod.LOGGER.info("is fallingBlock {}",entity.getName());
                 }
@@ -111,7 +111,18 @@ public class LimitlessInnate extends Ability {
                 else{
                     entity.setDeltaMovement(0,0,0);
                 }
+                entity.needsSync = true;
             }
+        });
+
+    }
+
+    @Override
+    public void end(ServerLevel level){
+        super.end(level);
+        level.getAllEntities().forEach(entity-> {
+            if (entity.getTags().contains(TAG))
+                entity.removeTag(TAG);
         });
 
     }
