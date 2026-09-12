@@ -2,6 +2,7 @@ package com.qstorm.key;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.qstorm.PracticeMod;
+import com.qstorm.powers.ComboKey;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -145,6 +146,7 @@ public class InitializeBindings {
                 if(!InitializeBindings.attack2WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
                     InitializeBindings.attack2WasDown.put(client.player.getUUID(), true);
+                    ComboKey.handleKey();
 
                 }
             }

@@ -11,9 +11,12 @@ import com.qstorm.powers.ComboKey;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +57,14 @@ public class PracticeMod implements ModInitializer {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			onPlayerJoin(handler.player);
 		});
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+			onPlayerJoin(client.player);
+		});
 		ServerPlayConnectionEvents.DISCONNECT.register((handler,server) -> {
 			onPlayerLeave(handler.player);
+		});
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+			onPlayerJoin(client.player);
 		});
 
 
@@ -65,7 +74,7 @@ public class PracticeMod implements ModInitializer {
 		HandleKeybinds.handle();
 
 		//init (mostly the keybind stuff) for sorcery users
-		Sorcery.init();
+		Sorcery.registerServerNetworking();;
 
 	}
 	public static void test(){
@@ -81,7 +90,8 @@ public class PracticeMod implements ModInitializer {
 	public static void onPlayerJoin(Player player){
 		InitializeBindings.onPlayerJoin(player);
 		ComboKey.registerPlayer(player.getUUID());
-		PlayerInfo.initNewPlayer(player.getUUID());
+		if(player instanceof ServerPlayer)
+			PlayerInfo.initNewPlayer(player.getUUID());
 	}
 
 	public static void onPlayerLeave(Player player){

@@ -6,6 +6,7 @@ import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.EffectsCursedEnergyUsage;
 import com.qstorm.powers.PlayerInfo;
+import com.qstorm.powers.ScrollableInnate;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -16,6 +17,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.phys.Vec3;
 
@@ -50,6 +52,7 @@ public class Sorcery {
     //The domain of this ability
     public Domain domain;
 
+    public UUID playerUUID;
 
 
 
@@ -60,38 +63,41 @@ public class Sorcery {
 
     //born luck is a percentage that represents how lucky are your initial stat growths
     //increase luck represents and increase in luck
-    public Sorcery(Ability innate,ServerPlayer player,int domainEnergyCost,int constantAbilityTickCost){
+    public Sorcery(Ability innate, Player player, int domainEnergyCost, int constantAbilityTickCost){
         this(player);
 
-        //sets all the important values
-        this.player=player;
+
+
         this.domainEnergyCost=domainEnergyCost;
         this.constantAbilityTickCost = constantAbilityTickCost;
 
 
-
+        //if for whatever reason the arraylist already has stuff in it, reset it
         if(abilities.size()>1){
-            abilities =new ArrayList<>();
+            abilities = new ArrayList<>();
         }
         abilities.add(innate);
-
-
-        //player.addTag("Cursed Energy: "+sorcery.cursedEnergy+"Cursed Output "+ sorcery.maxCursedOutput +"Cursed Energy Reserve "+sorcery.cursedEnergyReserve);
-
-
-
 
     }
 
 
 
-    private Sorcery(ServerPlayer player){
-        sorcerers.putIfAbsent(player.getUUID(),this);
-        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(player.getUUID())));
+    private Sorcery(Player player){
+        playerUUID=player.getUUID();
+        sorcerers.putIfAbsent(playerUUID,this);
+
+
+        if(player instanceof ServerPlayer serverPlayer) {
+            this.player = serverPlayer;
+            ServerPlayNetworking.send(serverPlayer, new Packet.ActivateSorceryRender(
+                    PlayerInfo.playerInfoHashMap.get(playerUUID).cursedEnergy,
+                    PlayerInfo.getOutputAsPercent(playerUUID)));
+
+        }
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,
                 this::tick);
+
+
     }
 
 
@@ -105,6 +111,40 @@ public class Sorcery {
     public boolean reversedOn=false;
     public boolean energyKeyOn=false;
 
+    public static void onActivateReversed(UUID playerUUID){
+        if(sorcerers.get(playerUUID)!=null)
+            sorcerers.get(playerUUID).changeReversed();
+    }
+
+    public static void enableInnateTechnique(UUID playerUUID){
+        //if the player changes the state of their innate technique
+        if(sorcerers.get(playerUUID) !=null)
+            sorcerers.get(playerUUID).activateInnate();
+    }
+
+    public static void handleScroll(UUID playerUUID,double scrollAmount){
+        Sorcery sorcery =sorcerers.get(playerUUID);
+        if(sorcery==null) return;
+        if(sorcery.energyKeyOn){
+            sorcery.changeOutput(scrollAmount);
+        }
+
+        if(sorcery.innateOn&&sorcery instanceof ScrollableInnate scrollableInnate){
+            scrollableInnate.changeInnateAmount(scrollAmount);
+        }
+        for(Ability s:sorcerers.get(playerUUID).abilities){
+            if(s.isScroll){
+                s.onScroll(scrollAmount);
+            }
+        }
+    }
+
+    public static void energyKeyChange(UUID playerUUID,boolean on){
+        if(sorcerers.get(playerUUID)==null) return;
+        sorcerers.get(playerUUID).energyKeyOn=on;
+        //PracticeMod.LOGGER.info("Energy Key: {}" ,sorcerers.get(context.player().getUUID()).energyKeyOn);
+
+    }
 
     /**
      * if a key is gotten from the client, it will activate the function associated with the key on the server
@@ -115,8 +155,7 @@ public class Sorcery {
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.ActivateReversed.TYPE, (payload, context) -> {
             //says to run it on server
             context.server().execute(() -> {
-                if(sorcerers.get(context.player().getUUID())!=null)
-                    sorcerers.get(context.player().getUUID()).changeReversed();
+                onActivateReversed(context.player().getUUID());
             });
         });
 
@@ -125,46 +164,28 @@ public class Sorcery {
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnableInnateTechnique.TYPE, (payload, context) -> {
             //says to run it on server
             context.server().execute(() -> {
-                //if the player changes the state of their innate technique
-                if(sorcerers.get(context.player().getUUID()) !=null)
-                    sorcerers.get(context.player().getUUID()).activateInnate();
+                enableInnateTechnique(context.player().getUUID());
             });
         });
 
         //when a player scrolls
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.HandleScroll.TYPE,(payload, context)->{
             context.server().execute(()->{
-                Sorcery sorcery =sorcerers.get(context.player().getUUID());
-                if(sorcery==null) return;
-                if(sorcery.energyKeyOn){
-                    sorcery.changeOutput(payload.scrollAmount());
-                }
-
-                if(sorcery.innateOn){
-                    sorcery.changeInnateAmount(payload.scrollAmount());
-                }
-                for(Ability s:sorcerers.get(context.player().getUUID()).abilities){
-                    if(s.isScroll){
-                        s.onScroll(payload.scrollAmount());
-                    }
-                }
+                handleScroll(context.player().getUUID(),payload.scrollAmount());
             });
         });
 
         //when the energy key is pressed, handle that
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKeyOn.TYPE,(payload, context)->{
             context.server().execute(()->{
-                if(sorcerers.get(context.player().getUUID())==null) return;
-                sorcerers.get(context.player().getUUID()).energyKeyOn=true;
-                PracticeMod.LOGGER.info("Energy Key: {}" ,sorcerers.get(context.player().getUUID()).energyKeyOn);
+                energyKeyChange(context.player().getUUID(), true);
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKeyOff.TYPE,((payload, context) -> {
             context.server().execute(()->{
-                if(sorcerers.get(context.player().getUUID())==null) return;
-                sorcerers.get(context.player().getUUID()).energyKeyOn=false;
-                PracticeMod.LOGGER.info("Energy Key: {}" ,sorcerers.get(context.player().getUUID()).energyKeyOn);
+                energyKeyChange(context.player().getUUID(), false);
+
             });
         }));
     }
@@ -186,10 +207,53 @@ public class Sorcery {
 
 
 
+    public void activateInnate(){
+        innateOn=!innateOn;
+        PracticeMod.LOGGER.info("Activated innate {}", innateOn);
+    }
 
 
 
 
+    public void changeReversed() {
+        PracticeMod.LOGGER.info("Activated reversed");
+        reversedOn=!reversedOn;
+    }
+    //TODO: remember that the cost of energy increases faster then the power but both increase exponentially
+
+
+
+    public void changeOutputPercent(double percentAmount){
+        changeOutput((int)(percentAmount*PlayerInfo.playerInfoHashMap.get(playerUUID).maxCursedOutput));
+    }
+
+    public void changeOutput(double percentAmount){
+        changeOutput((int)((percentAmount/20.0F)*PlayerInfo.playerInfoHashMap.get(playerUUID).maxCursedOutput));
+    }
+
+
+    private void changeOutput(int amount){
+        //you can only change the output on server, that means these values need to be updated through packets
+        //this system already is in place but its kinda funky check PracticeModClient to see
+        if(Minecraft.getInstance().player.level().isClientSide()) return;
+
+        PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(player.getUUID());
+
+        if(playerInfo.cursedOutput+amount>=playerInfo.maxCursedOutput){
+            playerInfo.cursedOutput= playerInfo.maxCursedOutput;
+        }
+        else if(playerInfo.cursedOutput+amount<0){
+            playerInfo.cursedOutput=0;
+        }
+        else {
+            playerInfo.cursedOutput += amount;
+        }
+        PracticeMod.LOGGER.info("Cursed Output = {}", playerInfo.cursedOutput);
+        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
+                PlayerInfo.getOutputAsPercent(player.getUUID())));
+
+    }
 
 
 
@@ -203,81 +267,14 @@ public class Sorcery {
         PracticeMod.LOGGER.info("Used domain");
     }
 
-    public void changeOutputPercent(double percentAmount){
-        changeOutput((int)(percentAmount*PlayerInfo.playerInfoHashMap.get(player.getUUID()).maxCursedOutput));
-    }
-
-    public void changeOutput(double percentAmount){
-        changeOutput((int)((percentAmount/20.0F)*PlayerInfo.playerInfoHashMap.get(player.getUUID()).maxCursedOutput));
-    }
-
-
-
-    public void activateInnate(){
-        innateOn=!innateOn;
-        PracticeMod.LOGGER.info("Activated innate {}", innateOn);
-    }
-
-
-    public void changeInnateAmount(double amountIncrease){
-        PracticeMod.LOGGER.info("Changed Innate Amount by {}", amountIncrease);
-    }
-
-
-
-    public void changeReversed() {
-        PracticeMod.LOGGER.info("Activated reversed");
-        reversedOn=!reversedOn;
-    }
-    //TODO: remember that the cost of energy increases faster then the power
-
-    private void changeOutput(int amount){
-        PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(player.getUUID());
-
-        if(playerInfo.cursedOutput+amount>=playerInfo.maxCursedOutput){
-            playerInfo.cursedOutput= playerInfo.maxCursedOutput;
-        }
-        else if(playerInfo.cursedOutput+amount<0){
-            playerInfo.cursedOutput=0;
-        }
-        else {
-            playerInfo.cursedOutput += amount;
-        }
-        PracticeMod.LOGGER.info("Amount {}", playerInfo.cursedOutput);
-        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(player.getUUID())));
-
-    }
-
-
 
 
 
     // If the player starts getting emotional they increase in power
     // To be added next update
-    public void onPetDeath(){
-
-    }
+    public void onPetDeath() {}
 
 
-    //typicallly used right after a function to keep context
-    public static Sorcery context;
-
-
-
-
-
-
-
-    static void sorceryClientInit(AbstractClientPlayer player){
-
-    }
-
-
-    public static void init(){
-        registerServerNetworking();
-    }
 
 
     //NOT RECOMMENDED TO USE

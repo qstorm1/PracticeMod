@@ -36,6 +36,8 @@ public class Packet {
         }
     }
 
+
+
     public record RenderBlueToClient(ArrayList<Double> position, Double radius) implements CustomPacketPayload {
         //TODO: six eyes or advance sorcery can automatically detect which combo's a player is doing so this info shared to them as well
         public static final Type<RenderBlueToClient> TYPE =

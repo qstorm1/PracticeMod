@@ -69,3 +69,5 @@ The entity class runs its baseTick() function on both client and server,
 I had a ton of problems with fixing the innate technique for limitless, primarily because for whatever reason, gravity is handled
 right before the movement function which alone took forever to find not to mention the fact that in order to learn how to edit minecrafts code
 i had to get good at mixins
+
+Turns out I need to make my system client and server side (it was only server side before)

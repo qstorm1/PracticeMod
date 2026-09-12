@@ -3,7 +3,7 @@ package com.qstorm.powers.cursedtechnique.limitless;
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
-import com.qstorm.powers.PlayerInfo;
+import com.qstorm.powers.ComboClient;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
@@ -54,18 +54,16 @@ public class Limitless extends Sorcery {
 
 
     /**
-     * HAPPENS ONLY ON SERVER SIDE
+     * MUST RUN BOTH ON CLIENT AND SERVER
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
         if(
-                (!(player instanceof ServerPlayer))||
                 sorcerers.get(player.getUUID())!=null){
             return;
         }
 
         PracticeMod.LOGGER.info("New Limitless player added!");
-        //
 
         Limitless playerLimitless = new Limitless((ServerPlayer)player);
         sorcerers.put(player.getUUID(),playerLimitless);
@@ -76,6 +74,13 @@ public class Limitless extends Sorcery {
         ServerPlayNetworking.send((ServerPlayer) player,new Packet.LimitlessInit());
 
 
+
+    }
+
+    public static void initClientOnly(){
+        ComboClient.addComboRendererToClient();
+    }
+    public static void initServerOnly(){
 
     }
 

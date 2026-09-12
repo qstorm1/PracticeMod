@@ -25,18 +25,16 @@ public class PracticeModClient implements ClientModInitializer {
     public void onInitializeClient() {
         //initialize all keyboard stuff
         InitializeBindings.init();
-        PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE, Packet.LimitlessInit.CODEC);
         initJJKClientRender();
 
-        //when we recieve a thing saying to make this player a sorceror, render client
-        ClientPlayNetworking.registerGlobalReceiver(Packet.LimitlessInit.TYPE,(packet, context)->{
-            ComboClient.addComboRendererToClient();
-        });
+
 
         ClientPlayNetworking.registerGlobalReceiver(Packet.SendClientMessage.TYPE,(packet,context)->{
             context.player().displayClientMessage(Component.literal(packet.message()),false);
         });
 
+
+        //handles the little thing in the bottom left of the screen
         ClientPlayNetworking.registerGlobalReceiver(Packet.ActivateSorceryRender.TYPE,(packet, context)->{
             context.client().execute(()->{
                 cursedEnergy=packet.energy();
@@ -55,7 +53,6 @@ public class PracticeModClient implements ClientModInitializer {
                 }
             });
         });
-        //HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"before-thing"),Combo::render);
     }
 
 }
