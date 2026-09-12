@@ -8,14 +8,20 @@ import com.qstorm.powers.EffectsCursedEnergyUsage;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.level.ServerExplosion;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 //player specific
@@ -32,7 +38,6 @@ public class Sorcery {
      * the cursed energy used per tick innate techinque is active
      */
     int constantAbilityTickCost =0;
-
 
 
     /**
@@ -256,7 +261,8 @@ public class Sorcery {
     }
 
 
-
+    //typicallly used right after a function to keep context
+    public static Sorcery context;
 
 
 
@@ -275,7 +281,6 @@ public class Sorcery {
 
 
     //NOT RECOMMENDED TO USE
-    @Deprecated
     public ServerPlayer player;
 
 

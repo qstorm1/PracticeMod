@@ -32,7 +32,7 @@ public abstract class Ability {
     /**
      * How much power this ability will have, each ability can handle this uniquely
      */
-    protected double power=0;
+    public double power=0;
     protected double percentPower=0;
 
     public boolean isScroll=false;

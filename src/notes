@@ -62,3 +62,10 @@ but I'm pretty sure it was an issue with negative numbers. To be honest I just t
 
 I have gone back to looking through minecraft code, primarily because of all of the weird issues with blue's velocity with the goal of creating
 a 3d render
+Unfortunately I've gotten past the point of being able to rely on the internet, in order to make more cool stuff I've started
+once more looking through minecrafts code
+
+The entity class runs its baseTick() function on both client and server,
+I had a ton of problems with fixing the innate technique for limitless, primarily because for whatever reason, gravity is handled
+right before the movement function which alone took forever to find not to mention the fact that in order to learn how to edit minecrafts code
+i had to get good at mixins

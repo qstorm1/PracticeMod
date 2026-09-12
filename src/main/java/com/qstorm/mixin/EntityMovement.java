@@ -18,13 +18,13 @@ import java.util.Set;
  */
 @Mixin(Entity.class)
 public abstract class EntityMovement {
-    @Shadow
-    public abstract Set<String> getTags();
-
-    @Inject(method = "move",at=@At("HEAD"))
-    public void move(MoverType type, Vec3 movement, CallbackInfo ci){
-        if(this.getTags().contains(LimitlessInnate.TAG)){
-            ci.cancel();
-        }
-    }
+//    @Shadow
+//    public abstract Set<String> getTags();
+//
+//    @Inject(method = "move",at=@At("HEAD"))
+//    public void move(MoverType type, Vec3 movement, CallbackInfo ci){
+////        if(this.getTags().contains(LimitlessInnate.TAG)){
+////            ci.cancel();
+////        }
+//    }
 }

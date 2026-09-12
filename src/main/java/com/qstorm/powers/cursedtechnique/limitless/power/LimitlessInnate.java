@@ -3,6 +3,7 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 import com.qstorm.PracticeMod;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -81,23 +82,24 @@ public class LimitlessInnate extends Ability {
             if(player.getUUID()!=entity.getUUID()&&player.distanceTo(entity)<=startDistance){
                 entity.addTag(TAG);
                 if(entity instanceof FallingBlockEntity){
-                    PracticeMod.LOGGER.info("is fallingBlock {}",entity.getName());
+                    //PracticeMod.LOGGER.info("is fallingBlock {}",entity.getName());
+                    //entity.setNoGravity(true);
                 }
                 if(entity instanceof PrimedTnt){
-                    PracticeMod.LOGGER.info("is primed TNT");
+                    //PracticeMod.LOGGER.info("is primed TNT");
                 }
 
                 if(entity instanceof Projectile){
-                    PracticeMod.LOGGER.info("is projectile");
+                    //PracticeMod.LOGGER.info("is projectile");
                 }
                 if(entity instanceof LightningBolt){
-                    PracticeMod.LOGGER.info("is Lightning Bolt");
+                    //PracticeMod.LOGGER.info("is Lightning Bolt");
                 }
                 if(entity instanceof LightningBolt){
-                    PracticeMod.LOGGER.info("lightining kill");
+                    //PracticeMod.LOGGER.info("lightining kill");
                 }
                 if(entity instanceof EvokerFangs evokerFangs){
-                    PracticeMod.LOGGER.info("this is a tihng");
+                    //PracticeMod.LOGGER.info("this is a tihng");
                 }
                 if(entity instanceof ItemEntity){
 

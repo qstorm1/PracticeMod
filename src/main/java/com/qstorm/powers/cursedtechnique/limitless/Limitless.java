@@ -13,6 +13,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * A limitless instance is created for every single player with the tag of Limitless
@@ -73,6 +77,25 @@ public class Limitless extends Sorcery {
 
 
 
+    }
+
+    public static Limitless getClosestLimitlessPosition(Vec3 position){
+        ArrayList<Double> smallestDistance = new ArrayList<>();
+        ArrayList<UUID> uuidFinal = new ArrayList<>();
+        smallestDistance.add(-1.0);
+        sorcerers.forEach((uuid,sorcery)->{
+            if(sorcery instanceof Limitless && sorcery.innateOn){
+                if(smallestDistance.getFirst()<sorcery.player.position().distanceTo(position)){
+                    smallestDistance.set(0,sorcery.player.position().distanceTo(position));
+                    uuidFinal.add(uuid);
+
+                }
+            }
+        });
+        if(uuidFinal.isEmpty()){
+            return null;
+        }
+        return (Limitless) sorcerers.get(uuidFinal.getFirst());
     }
 
 
