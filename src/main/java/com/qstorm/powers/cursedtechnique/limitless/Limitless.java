@@ -1,7 +1,6 @@
 package com.qstorm.powers.cursedtechnique.limitless;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.ComboClient;
@@ -10,8 +9,8 @@ import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.player.AbstractClientPlayer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -80,7 +79,7 @@ public class Limitless extends Sorcery {
         sorcerers.put(player.getUUID(),playerLimitless);
 
 
-        if(player instanceof AbstractClientPlayer){
+        if(FabricLoader.getInstance().getEnvironmentType()== EnvType.CLIENT){
             initClientOnly();
         }
         if(player instanceof ServerPlayer){
@@ -91,7 +90,7 @@ public class Limitless extends Sorcery {
 
 
     public static void initClientOnly(){
-        ComboClient.addComboRendererToClient();
+        ComboClient.addARendererToClient();
     }
     public static void initServerOnly(){
 

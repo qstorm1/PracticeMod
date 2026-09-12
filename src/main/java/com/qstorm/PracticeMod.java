@@ -31,6 +31,7 @@ public class PracticeMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 
+	public static final Identifier SETS_DATA = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"sets_data");
 	public static final Identifier USES_DATA = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"use_data");
 	public static final Identifier RESET = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"reset");
 
@@ -42,6 +43,7 @@ public class PracticeMod implements ModInitializer {
 	public void onInitialize() {
 
 		//all actions that reset happen after the data is used
+		ServerTickEvents.END_SERVER_TICK.addPhaseOrdering(SETS_DATA,USES_DATA);
 		ServerTickEvents.END_SERVER_TICK.addPhaseOrdering(USES_DATA,RESET);
 
 

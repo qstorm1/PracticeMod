@@ -12,7 +12,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,7 +36,7 @@ public class Sorcery {
     //Sorcery specific data
     public int domainEnergyCost=0;//use for innate domain as well
     /**
-     * the cursed energy used per tick innate techinque is active
+     * the cursed energy used per tick innate technique is active
      */
     int constantAbilityTickCost =0;
 

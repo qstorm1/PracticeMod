@@ -1,10 +1,10 @@
 package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.packets.Packet;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -12,6 +12,9 @@ import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.UUID;
+
+import static com.qstorm.powers.Combo.findLongestCombo;
 
 public class ComboClient {
     static Identifier stuffInBoxIdentifier=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"combo_hud_box");;
@@ -23,7 +26,9 @@ public class ComboClient {
 
 
     //the comparator mode from the settings
-
+    public static final Comparator<Combo> alphabeticOrder = Comparator.comparing((combo -> combo.name));
+    public static final Comparator<Combo> highestTickTime = Comparator.comparing(Combo::getCurrentTimeSinceLastPressed).reversed();
+    public static Comparator<Combo> compMode = highestTickTime;
 
     public static final Identifier TEXTURECOMBO1 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/1.png");
     public static final Identifier TEXTURECOMBO2 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/2.png");
@@ -36,42 +41,106 @@ public class ComboClient {
     public static final Identifier BLACKTEXTURECOMBO3 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/3.png");
     public static final Identifier BLACKTEXTURECOMBO4 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/4.png");
 
-    public static final Identifier TESTIDENTIFIER = Identifier.fromNamespaceAndPath("minecraft", "textures/blocks/deepslate.png");
 
     public static ArrayList<String> comboNames= new ArrayList<>();
     public static ArrayList<Integer> idOfKeysToRender = new ArrayList<>();
     public static ArrayList<Integer> colors = new ArrayList<>();
 
     static boolean isRendered = false;
-    //run on client whenever
-    public static void addComboRendererToClient(){
+
+
+    //run on client whenever a new sorceror created
+    public static void addARendererToClient(){
         drawComboList();
         renderComboBox();
         drawKeybinds();
-        ClientPlayNetworking.registerGlobalReceiver(Packet.ComboRenderInfoS2C.TYPE,
-                (payload, context) -> {
-                    context.client().execute(()->{
-                        ArrayList<String> comboNames = payload.comboNames();//a list of combo's
-                        ArrayList<Integer> idOfKeysToRender = payload.IDs();//a list of id's from the combo chosen
-                        ArrayList<Integer> colors = payload.colors();
-
-                        //if the list is empty that means we need to reset (I could do with packets but im lazy af)
-                        if(idOfKeysToRender.isEmpty()){
-                            clearScreen();
-                            return;
-                        }
-
-                        //tels renderer to render the following
-                        isRendered=true;
-
-                        ComboClient.comboNames=comboNames;
-                        ComboClient.idOfKeysToRender =idOfKeysToRender;
-                        ComboClient.colors=colors;
-
-
-                    });
-                });
     }
+
+
+
+
+
+    public static void getComboBoxRenderValues(UUID playerUUID, int keyPressed, boolean isReset){
+        if(FabricLoader.getInstance().getEnvironmentType()== EnvType.SERVER) return;
+
+
+        ArrayList<Combo> combosPlayerHas = Combo.playerCombos.get(playerUUID);
+        ArrayList<Combo> combosToRender= new ArrayList<>();
+
+        //data to send to client
+        ArrayList<String> listOfStrings = new ArrayList<>();
+        ArrayList<Integer> listOfIntegers = new ArrayList<>();
+        ArrayList<Integer> listOfColors = new ArrayList<>();
+
+
+        //find the current biggest combo, combos with the highest current will be rendered
+        //if this is a reset call, the current of the reset will be 0 therefore not being considered as the main combo
+        int currentMax=findLongestCombo(playerUUID);
+
+
+        //if we reset and there are no other combos working
+        if(isReset&&currentMax==0){
+            updateHudData(listOfStrings,listOfIntegers,listOfColors);
+            return;
+        }
+
+
+        //make the updated list have all the combos with the highest comboKey
+        if(currentMax!=0) {
+            for (Combo combo : combosPlayerHas)
+                if (combo.current == currentMax && combo.comboKeys.get(currentMax - 1).id == keyPressed)
+                    combosToRender.add(combo);
+        }
+
+        //if there are no combos that are active, send empty data which the client will recognize as a reset call
+        if(combosToRender.isEmpty()){
+            updateHudData(listOfStrings,listOfIntegers,listOfColors);
+            return;
+        }
+
+
+        //sort combo list by whatever sorting method (ex alphabetical -> A is the one at the top of the render)
+        combosToRender.sort(compMode);
+
+
+        //update values correctly
+        for(Combo combo:combosToRender){
+            listOfStrings.add(combo.name);
+            listOfColors.add(combo.action.textColor);
+        }
+        //all the combo keys
+        for(int i = combosToRender.getFirst().current; i<combosToRender.getFirst().comboKeys.size();i++){
+            listOfIntegers.add(combosToRender.getFirst().comboKeys.get(i).id);
+        }
+
+
+        //send rendering data to server
+        updateHudData(listOfStrings,listOfIntegers,listOfColors);
+    }
+
+
+
+    private static void updateHudData(ArrayList<String> listOfStrings, ArrayList<Integer> listOfIntegers, ArrayList<Integer> listOfColors){
+        if(listOfIntegers.isEmpty()){
+            clearScreen();
+            return;
+        }
+
+        //tels renderer to render the following
+        isRendered=true;
+
+        ComboClient.comboNames=listOfStrings;
+        ComboClient.idOfKeysToRender =listOfIntegers;
+        ComboClient.colors=listOfColors;
+
+    }
+
+
+
+
+
+
+
 
     public static void clearScreen(){
         isRendered=false;

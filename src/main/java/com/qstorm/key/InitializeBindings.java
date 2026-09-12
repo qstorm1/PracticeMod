@@ -136,6 +136,7 @@ public class InitializeBindings {
                 if(!InitializeBindings.attack1WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK1());
                     InitializeBindings.attack1WasDown.put(client.player.getUUID(), true);
+                    ComboKey.handleKey(client.player,1);
                 }
             }
             else InitializeBindings.attack1WasDown.put(client.player.getUUID(),false);
@@ -146,8 +147,7 @@ public class InitializeBindings {
                 if(!InitializeBindings.attack2WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
                     InitializeBindings.attack2WasDown.put(client.player.getUUID(), true);
-                    ComboKey.handleKey();
-
+                    ComboKey.handleKey(client.player,2);
                 }
             }
             else InitializeBindings.attack2WasDown.put(client.player.getUUID(),false);
@@ -158,7 +158,7 @@ public class InitializeBindings {
                 if(!InitializeBindings.attack3WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK3());
                     InitializeBindings.attack3WasDown.put(client.player.getUUID(), true);
-
+                    ComboKey.handleKey(client.player,3);
                 }
             }
             else InitializeBindings.attack3WasDown.put(client.player.getUUID(),false);
@@ -167,7 +167,7 @@ public class InitializeBindings {
                 if(!InitializeBindings.attack4WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK4());
                     InitializeBindings.attack4WasDown.put(client.player.getUUID(), true);
-
+                    ComboKey.handleKey(client.player,4);
                 }
             }
             else InitializeBindings.attack4WasDown.put(client.player.getUUID(),false);

@@ -2,9 +2,11 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
-import com.qstorm.powers.cursedtechnique.Sorcery;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -62,9 +64,6 @@ public class Combo {
 
 
 
-    /**
-     * ASSUME THAT COMBO KEYS HAVE BEEN REGISTERED AND ARE FUCNTIONAL
-     */
     private Combo(Player player,String name){
         playerUUID =player.getUUID();
 
@@ -83,6 +82,10 @@ public class Combo {
         //update the state of the combo every tick from the server
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
             server.execute(this::tick);
+        });
+
+        ClientTickEvents.END_CLIENT_TICK.register(PracticeMod.USES_DATA,client ->{
+            client.execute(this::tick);
         });
 
     }
@@ -198,7 +201,7 @@ public class Combo {
         //if the combo ran out of time, reset it
         if(!checkBefore()){
             resetCombo();
-            resetClientHUDFromServer();
+            resetClientHUD();
         }
     }
 
@@ -286,7 +289,7 @@ public class Combo {
     public void doComboAction(){
         action.Do(serverPlayer);
         resetCombo();
-        resetClientHUDFromServer();
+        resetClientHUD();
     }
 
     /**
@@ -311,9 +314,7 @@ public class Combo {
 
 
 
-    public static final Comparator<Combo> alphabeticOrder = Comparator.comparing((combo -> combo.name));
-    public static final Comparator<Combo> highestTickTime = Comparator.comparing(Combo::getCurrentTimeSinceLastPressed).reversed();
-    public static Comparator<Combo> compMode = highestTickTime;
+
 
 
 
@@ -321,88 +322,15 @@ public class Combo {
 
     /**
      * the last key that was pressed on this server?
+     * lokey idk i don't remember
      */
     private int lastKeyID=1;
 
-    public void resetClientHUDFromServer(){
-        Combo.handleServerSideComboRendering(serverPlayer,lastKeyID,true);
+    public void resetClientHUD(){
+        ComboClient.getComboBoxRenderValues(playerUUID,lastKeyID,true);
     }
 
 
-
-    /**
-     * Run whenever a key is pressed or a combo is reset
-     * @param player the player that is going to render the HUD
-     * @param keyPressed the key that the player pressed
-     */
-
-    public static void handleServerSideComboRendering(ServerPlayer player, int keyPressed,boolean isReset){
-        //at this point current is the value after the one just pressed no?
-
-        ArrayList<Combo> combosPlayerHas = playerCombos.get(player.getUUID());
-        ArrayList<Combo> combosToRender= new ArrayList<>();
-
-        //data to send to client
-        ArrayList<String> listOfStrings = new ArrayList<>();
-        ArrayList<Integer> listOfIntegers = new ArrayList<>();
-        ArrayList<Integer> listOfColors = new ArrayList<>();
-
-
-        //find the current biggest combo, combos with the highest current will be rendered
-        //if this is a reset call, the current of the reset will be 0 therefore not being considered as the main combo
-        int currentMax=findLongestCombo(player.getUUID());
-
-
-        //if we reset and there are no other combos working
-        if(isReset&&currentMax==0){
-            ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers,listOfColors));
-            return;
-        }
-
-
-
-
-        //make the updated list have all the combos with the highest comboKey
-        if(currentMax!=0) {
-            for (Combo combo : combosPlayerHas)
-                if (combo.current == currentMax && combo.comboKeys.get(currentMax - 1).id == keyPressed)
-                    combosToRender.add(combo);
-        }
-
-
-
-        //if there are no combos that are active, send empty data which the client will recognize as a reset call
-        if(combosToRender.isEmpty()){
-            ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers,listOfColors));
-            return;
-        }
-
-
-
-        //sort combo list by whatever sorting method (ex alphabetical -> A is the one at the top of the render)
-        combosToRender.sort(compMode);
-
-
-
-
-
-
-
-        //update values correctly
-        for(Combo combo:combosToRender){
-            listOfStrings.add(combo.name);
-            listOfColors.add(combo.action.textColor);
-        }
-        //all the combo keys
-        for(int i = combosToRender.getFirst().current; i<combosToRender.getFirst().comboKeys.size();i++){
-            listOfIntegers.add(combosToRender.getFirst().comboKeys.get(i).id);
-        }
-
-
-
-        //send rendering data to server
-        ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers,listOfColors));
-    }
 
 
 

@@ -2,10 +2,11 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.level.ServerPlayer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -127,7 +128,7 @@ public class ComboKey{
 
 
         //Doesn't use data so no identifier needed
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
+        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.SETS_DATA,server -> {
             server.execute(ComboKey::tickUpdateComboKeys);
         });
 
@@ -141,16 +142,16 @@ public class ComboKey{
 
 
     public static void handleKey(Player player, int keyPressed){
-        if(
-                !(Combo.playerCombos.get(player.getUUID())==null||
-                        Combo.playerCombos.get(player.getUUID()).isEmpty())
-        ) {
+        //if the player has a combo going
+        if(!(Combo.playerCombos.get(player.getUUID())==null)&&!Combo.playerCombos.get(player.getUUID()).isEmpty())
+        {
             int current = Combo.findLongestCombo(player.getUUID());
             //render server stuff
             for (Combo combo : Combo.playerCombos.get(player.getUUID())) {
                 if (current == combo.current) {
                     combo.checkIfContinue(keyPressed);
-                    Combo.handleServerSideComboRendering(player, keyPressed, false);
+                    ComboClient.getComboBoxRenderValues(player.getUUID(), keyPressed, false);
+
                 }
             }
         }

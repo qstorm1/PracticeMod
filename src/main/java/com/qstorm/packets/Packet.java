@@ -97,18 +97,5 @@ public class Packet {
         }
     }
 
-    public record LimitlessInit() implements CustomPacketPayload {
-
-        public static final Type<LimitlessInit> TYPE =
-                new LimitlessInit.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"limitless-packet"));
-
-        public static final StreamCodec<Object, LimitlessInit> CODEC =StreamCodec.unit(new LimitlessInit());
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
-    }
-
 
 }
