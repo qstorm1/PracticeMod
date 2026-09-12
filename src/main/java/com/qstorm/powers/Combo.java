@@ -179,7 +179,9 @@ public class Combo {
 
 
 
-
+    public boolean actionNull(){
+        return action==null;
+    }
     public Combo setAction(Ability ability){
         this.action=ability;
         return this;

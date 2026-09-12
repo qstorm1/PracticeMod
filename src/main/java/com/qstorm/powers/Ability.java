@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public abstract class Ability {
-    int id;
+    public int id;
     Combo abilityCombo;
     public boolean isTicked=false;
     public UUID playerUUID;

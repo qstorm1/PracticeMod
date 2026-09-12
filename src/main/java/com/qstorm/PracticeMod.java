@@ -31,9 +31,10 @@ public class PracticeMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 
-
 	public static final Identifier USES_DATA = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"use_data");
 	public static final Identifier RESET = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"reset");
+
+
 
 
 
@@ -77,9 +78,6 @@ public class PracticeMod implements ModInitializer {
 		Sorcery.registerServerNetworking();;
 
 	}
-	public static void test(){
-
-	}
 
 
 
@@ -94,12 +92,12 @@ public class PracticeMod implements ModInitializer {
 			PlayerInfo.initNewPlayer(player.getUUID());
 	}
 
+
 	public static void onPlayerLeave(Player player){
 		PracticeMod.LOGGER.info(player.getDisplayName().getString() + " has left");
 
 		InitializeBindings.onPlayerLeave(player);
 		ComboKey.deregisterPlayer(player.getUUID());
-
 
 	}
 

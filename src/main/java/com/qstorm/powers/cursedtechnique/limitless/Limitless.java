@@ -2,6 +2,7 @@ package com.qstorm.powers.cursedtechnique.limitless;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.Ability;
 import com.qstorm.powers.Combo;
 import com.qstorm.powers.ComboClient;
 import com.qstorm.powers.cursedtechnique.Sorcery;
@@ -10,6 +11,7 @@ import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -28,28 +30,38 @@ public class Limitless extends Sorcery {
     public int innateTechniquePower=10;
 
 
+    protected void addAbility(Ability ability,Combo combo){
+        ability.id = abilities.getLast().id+1;
+        abilities.add(ability);
+        if(combo.actionNull()){
+            combo.setAction(ability);
+        }
+        abilities.getLast().setCombo(combo);
+    }
 
-    //generate a limitless technique
-    private Limitless(ServerPlayer player){
+
+
+
+    //generate a limitless players technique
+    private Limitless(Player player){
         super(new LimitlessInnate(player.getUUID(),0),player,100000,10);
 
 
-        abilities.add(new Blue(player.getUUID(),1));
-        Combo blue = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
-                .setAction(abilities.getLast());
-        abilities.getLast().setCombo(blue);
+        addAbility(
+                new Blue(playerUUID,0),
+                Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
+        );
 
 
-        abilities.add(new Red(player.getUUID(),2));
-        Combo red = Combo.build(player,"Limitless Red").addKey1(100).addKey1(200).addKey4(60).addKey4(10).addKey2(50)
-                .setAction(abilities.getLast());
-        abilities.getLast().setCombo(red);
+        addAbility(
+                new Red(playerUUID,0),
+                Combo.build(player,"Limitless Red").addKey1(100).addKey1(200).addKey4(60).addKey4(10).addKey2(50)
+        );
 
-        abilities.add(new Purple(player.getUUID(),3));
-        Combo purple = Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
-                .setAction(abilities.getLast());
-        abilities.getLast().setCombo(purple);
-
+        addAbility(
+                new Purple(player.getUUID(),3),
+                Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
+        );
     }
 
 
@@ -58,24 +70,25 @@ public class Limitless extends Sorcery {
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
-        if(
-                sorcerers.get(player.getUUID())!=null){
-            return;
-        }
-
+        //if the sorcerer already has a technique then reset
+        if(sorcerers.get(player.getUUID())!=null) return;
         PracticeMod.LOGGER.info("New Limitless player added!");
 
-        Limitless playerLimitless = new Limitless((ServerPlayer)player);
+
+
+        Limitless playerLimitless = new Limitless(player);
         sorcerers.put(player.getUUID(),playerLimitless);
 
 
-
-
-        ServerPlayNetworking.send((ServerPlayer) player,new Packet.LimitlessInit());
-
-
+        if(player instanceof AbstractClientPlayer){
+            initClientOnly();
+        }
+        if(player instanceof ServerPlayer){
+            initServerOnly();
+        }
 
     }
+
 
     public static void initClientOnly(){
         ComboClient.addComboRendererToClient();

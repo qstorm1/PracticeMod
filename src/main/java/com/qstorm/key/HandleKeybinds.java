@@ -29,8 +29,6 @@ public class HandleKeybinds {
         PayloadTypeRegistry.playC2S().register(EnergyKeyOn.TYPE, EnergyKeyOn.CODEC);
         PayloadTypeRegistry.playC2S().register(EnergyKeyOff.TYPE, EnergyKeyOff.CODEC);
 
-        PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE, Packet.LimitlessInit.CODEC);
-
 
         PayloadTypeRegistry.playS2C().register(Packet.SendClientMessage.TYPE,Packet.SendClientMessage.CODEC);
 

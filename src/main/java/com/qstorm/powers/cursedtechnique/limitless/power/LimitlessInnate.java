@@ -3,6 +3,7 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 import com.qstorm.PracticeMod;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
+import com.qstorm.powers.ScrollableInnate;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -19,7 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class LimitlessInnate extends Ability {
+public class LimitlessInnate extends Ability implements ScrollableInnate {
 
 
     public int innateDistance = 5;
