@@ -149,6 +149,7 @@ public class ComboClient {
 
 
     private static void drawComboList(){
+        //TODO: six eyes or advance sorcery can automatically detect which combo's a player is doing so this info shared to them as well
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,comboListIdentifier,(graphics, timeDelta)->{
             if(!isRendered){
                 return;

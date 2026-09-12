@@ -10,33 +10,6 @@ import net.minecraft.resources.Identifier;
 import java.util.ArrayList;
 
 public class Packet {
-    public record ComboRenderInfoS2C(ArrayList<String> comboNames, ArrayList<Integer> IDs,ArrayList<Integer> colors) implements CustomPacketPayload {
-        //TODO: six eyes or advance sorcery can automatically detect which combo's a player is doing so this info shared to them as well
-        public static final Type<Packet.ComboRenderInfoS2C> TYPE =
-                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"render-info-packet"));
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, Packet.ComboRenderInfoS2C> CODEC =StreamCodec.composite(
-                ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.STRING_UTF8),
-                ComboRenderInfoS2C::comboNames,
-
-                ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT),
-                ComboRenderInfoS2C::IDs,
-
-                ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT),
-                ComboRenderInfoS2C::colors,
-
-
-
-                ComboRenderInfoS2C::new
-        );
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
-    }
-
-
 
     public record RenderBlueToClient(ArrayList<Double> position, Double radius) implements CustomPacketPayload {
         //TODO: six eyes or advance sorcery can automatically detect which combo's a player is doing so this info shared to them as well
