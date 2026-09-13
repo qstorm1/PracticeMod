@@ -14,6 +14,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class Limitless extends Sorcery {
      * MUST RUN BOTH ON CLIENT AND SERVER
      * @param player the Limitless player that has been initialized
      */
-    public static void initLimitlessPlayer(Player player){
+    public static void initLimitlessPlayer(Level level, Player player){
         //if the sorcerer already has a technique then reset
         if(sorcerers.get(player.getUUID())!=null) return;
         PracticeMod.LOGGER.info("New Limitless player added!");
@@ -79,10 +80,10 @@ public class Limitless extends Sorcery {
         sorcerers.put(player.getUUID(),playerLimitless);
 
 
-        if(FabricLoader.getInstance().getEnvironmentType()== EnvType.CLIENT){
+        if(level.isClientSide()){
             initClientOnly();
         }
-        if(player instanceof ServerPlayer){
+        else if(player instanceof ServerPlayer){
             initServerOnly();
         }
 

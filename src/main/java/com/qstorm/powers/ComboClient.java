@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -60,8 +61,8 @@ public class ComboClient {
 
 
 
-    public static void getComboBoxRenderValues(UUID playerUUID, int keyPressed, boolean isReset){
-        if(FabricLoader.getInstance().getEnvironmentType()== EnvType.SERVER) return;
+    public static void getComboBoxRenderValues(Level level, UUID playerUUID, int keyPressed, boolean isReset){
+        if(!level.isClientSide()) return;
 
 
         ArrayList<Combo> combosPlayerHas = Combo.playerCombos.get(playerUUID);

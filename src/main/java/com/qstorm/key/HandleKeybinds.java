@@ -35,6 +35,7 @@ public class HandleKeybinds {
         //server side stuff
         PayloadTypeRegistry.playS2C().register(Packet.ActivateSorceryRender.TYPE, Packet.ActivateSorceryRender.CODEC);
 
+        PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE,Packet.LimitlessInit.CODEC);
 
         //ability rendering
         PayloadTypeRegistry.playS2C().register(Packet.RenderBlueToClient.TYPE,Packet.RenderBlueToClient.CODEC);

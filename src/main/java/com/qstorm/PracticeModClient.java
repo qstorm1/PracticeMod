@@ -3,6 +3,7 @@ package com.qstorm;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.ComboClient;
+import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -31,6 +32,11 @@ public class PracticeModClient implements ClientModInitializer {
 
         ClientPlayNetworking.registerGlobalReceiver(Packet.SendClientMessage.TYPE,(packet,context)->{
             context.player().displayClientMessage(Component.literal(packet.message()),false);
+        });
+        ClientPlayNetworking.registerGlobalReceiver(Packet.LimitlessInit.TYPE,(packet,context)->{
+            context.client().execute(()->{
+                Limitless.initLimitlessPlayer(context.player().level(), context.player());
+            });
         });
 
 

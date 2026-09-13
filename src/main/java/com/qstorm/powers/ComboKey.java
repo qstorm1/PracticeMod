@@ -7,7 +7,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -103,25 +105,25 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
-                handleKey(context.player(),1);
+                handleKey(context.player().level(), context.player().getUUID(),1);
             });
         });
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK2.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key2.get(context.player().getUUID()).keyDown();
-                handleKey(context.player(),2);
+                handleKey(context.player().level(), context.player().getUUID(),2);
             });
         });
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK3.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key3.get(context.player().getUUID()).keyDown();
-                handleKey(context.player(),3);
+                handleKey(context.player().level(), context.player().getUUID(),3);
             });
         });
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK4.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key4.get(context.player().getUUID()).keyDown();
-                handleKey(context.player(),4);
+                handleKey(context.player().level(), context.player().getUUID(),4);
             });
         });
 
@@ -141,16 +143,17 @@ public class ComboKey{
 
 
 
-    public static void handleKey(Player player, int keyPressed){
+    public static void handleKey(Level level, UUID playerUUID, int keyPressed){
+        assert Minecraft.getInstance().player != null;
         //if the player has a combo going
-        if(!(Combo.playerCombos.get(player.getUUID())==null)&&!Combo.playerCombos.get(player.getUUID()).isEmpty())
+        if(!(Combo.playerCombos.get(playerUUID)==null)&&!Combo.playerCombos.get(playerUUID).isEmpty())
         {
-            int current = Combo.findLongestCombo(player.getUUID());
+            int current = Combo.findLongestCombo(playerUUID);
             //render server stuff
-            for (Combo combo : Combo.playerCombos.get(player.getUUID())) {
+            for (Combo combo : Combo.playerCombos.get(playerUUID)) {
                 if (current == combo.current) {
-                    combo.checkIfContinue(keyPressed);
-                    ComboClient.getComboBoxRenderValues(player.getUUID(), keyPressed, false);
+                    combo.checkIfContinue(level,keyPressed);
+                    ComboClient.getComboBoxRenderValues(level,playerUUID, keyPressed, false);
 
                 }
             }

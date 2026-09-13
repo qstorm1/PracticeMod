@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -81,11 +82,15 @@ public class Combo {
 
         //update the state of the combo every tick from the server
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
-            server.execute(this::tick);
+            server.execute(()->{
+                this.tick(server.getPlayerList().getPlayer(playerUUID).level());
+            });
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(PracticeMod.USES_DATA,client ->{
-            client.execute(this::tick);
+            client.execute(()->{
+                this.tick(client.level);
+            });
         });
 
     }
@@ -197,11 +202,12 @@ public class Combo {
 
 
 
-    public void tick(){
+    public void tick(Level level){
         //if the combo ran out of time, reset it
         if(!checkBefore()){
+            boolean isClient = FabricLoader.getInstance().getEnvironmentType()==EnvType.CLIENT;
             resetCombo();
-            resetClientHUD();
+            resetClientHUD(level);
         }
     }
 
@@ -211,27 +217,28 @@ public class Combo {
      * Note that this doesn't handle tick specific combo endings
      * @param keyPressed the key pressed
      */
-    public void checkIfContinue(int keyPressed){
+    public void checkIfContinue(Level level,int keyPressed){
         lastKeyID = keyPressed;
+        boolean isClient = level.isClientSide();
 
         //if the comboKey doesn't match the key pressed
         if(comboKeys.get(current).id==keyPressed){
             //this could be replaced with ==, but >= just in case some wierd thread error
             //if the current value that was pressed is the last value, do the action
             if(current>=comboKeys.size()-1){
-                PracticeMod.LOGGER.debug("Did action for Combo {}",this.name);
-                doComboAction();
+                PracticeMod.LOGGER.info("Did action for Combo {} | is client: {}",this.name,isClient);
+                doComboAction(level);
             }
             else {
                 //move to the next state of the combo
-                PracticeMod.LOGGER.debug("Move to next key in Combo {}",this.name);
+                PracticeMod.LOGGER.info("Move to next key in Combo {} | is client: {}",this.name,isClient);
                 nextKey();
             }
 
         }
         else{
             //reset the combo if the key pressed was wrong
-            PracticeMod.LOGGER.debug("Reset Combo because key pressed was wronge {}",this.name);
+            PracticeMod.LOGGER.info("Reset Combo because key pressed was wrong {} | is client: {}",this.name,isClient);
             resetCombo();
         }
 
@@ -277,6 +284,7 @@ public class Combo {
 
     }
 
+    static boolean isClientStatic = FabricLoader.getInstance().getEnvironmentType()==EnvType.CLIENT;
     public void resetCombo(){
         current=0;
         if(!this.detectionKey.isEmpty())
@@ -286,10 +294,10 @@ public class Combo {
         PracticeMod.LOGGER.info("reset combo");
     }
 
-    public void doComboAction(){
+    public void doComboAction(Level level){
         action.Do(serverPlayer);
         resetCombo();
-        resetClientHUD();
+        resetClientHUD(level);
     }
 
     /**
@@ -326,8 +334,8 @@ public class Combo {
      */
     private int lastKeyID=1;
 
-    public void resetClientHUD(){
-        ComboClient.getComboBoxRenderValues(playerUUID,lastKeyID,true);
+    public void resetClientHUD(Level level){
+        ComboClient.getComboBoxRenderValues(level,playerUUID,lastKeyID,true);
     }
 
 
