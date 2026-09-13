@@ -69,15 +69,15 @@ public class Limitless extends Sorcery {
      * MUST RUN BOTH ON CLIENT AND SERVER
      * @param player the Limitless player that has been initialized
      */
-    public static void initLimitlessPlayer(Level level, Player player){
-        //if the sorcerer already has a technique then reset
-        if(sorcerers.get(player.getUUID())!=null) return;
+    public static void initLimitlessPlayer(Level level, Player player,boolean isSinglePlayer){
+
+        //if the sorcerer already has a technique, and we are not using the same JVM then reset (doesn't work with multiple JVM's yet
+        if(sorcerers.get(player.getUUID())!=null&&!isSinglePlayer) deregisterLimitlessPlayer(player);
         PracticeMod.LOGGER.info("New Limitless player added!");
 
 
 
-        Limitless playerLimitless = new Limitless(player);
-        sorcerers.put(player.getUUID(),playerLimitless);
+        sorcerers.put(player.getUUID(),new Limitless(player));
 
 
         if(level.isClientSide()){
@@ -90,10 +90,16 @@ public class Limitless extends Sorcery {
     }
 
 
+
     public static void initClientOnly(){
         ComboClient.addARendererToClient();
     }
     public static void initServerOnly(){
+
+    }
+
+
+    public static void deregisterLimitlessPlayer(Player player){
 
     }
 
@@ -113,6 +119,7 @@ public class Limitless extends Sorcery {
         if(uuidFinal.isEmpty()){
             return null;
         }
+
         return (Limitless) sorcerers.get(uuidFinal.getFirst());
     }
 

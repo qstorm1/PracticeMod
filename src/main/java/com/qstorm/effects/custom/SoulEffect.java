@@ -4,6 +4,8 @@ import com.qstorm.packets.Packet;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -26,7 +28,7 @@ public class SoulEffect extends MobEffect {
         super.onEffectAdded(effectInstance, entity);
         entity.addTag(Limitless.tag);
         if(entity instanceof Player player){
-            Limitless.initLimitlessPlayer(entity.level(),player);
+            Limitless.initLimitlessPlayer(entity.level(),player, Minecraft.getInstance().isSingleplayer());
             if(player.getTags().contains("cheat"))
                 PlayerInfo.playerInfoHashMap.get(player.getUUID()).cheatMode();
             if(player instanceof ServerPlayer serverPlayer){

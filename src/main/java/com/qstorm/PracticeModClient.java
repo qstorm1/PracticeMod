@@ -35,7 +35,7 @@ public class PracticeModClient implements ClientModInitializer {
         });
         ClientPlayNetworking.registerGlobalReceiver(Packet.LimitlessInit.TYPE,(packet,context)->{
             context.client().execute(()->{
-                Limitless.initLimitlessPlayer(context.player().level(), context.player());
+                Limitless.initLimitlessPlayer(context.player().level(), context.player(),Minecraft.getInstance().isSingleplayer());
             });
         });
 
