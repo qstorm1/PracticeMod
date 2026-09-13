@@ -52,6 +52,10 @@ public class Combo {
      * All combos are stored in this hash map
      */
     public static HashMap<UUID,ArrayList<Combo>> playerCombos = new HashMap<>();
+    /**
+     * All combos are stored in this hash map (seperate because in singleplayer JVM environments are the same)
+     */
+    public static HashMap<UUID,ArrayList<Combo>> playerCombosClient = new HashMap<>();
 
 
 
@@ -284,7 +288,7 @@ public class Combo {
 
     }
 
-    static boolean isClientStatic = FabricLoader.getInstance().getEnvironmentType()==EnvType.CLIENT;
+
     public void resetCombo(){
         current=0;
         if(!this.detectionKey.isEmpty())

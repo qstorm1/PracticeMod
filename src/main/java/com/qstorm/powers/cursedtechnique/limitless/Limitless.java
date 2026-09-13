@@ -26,7 +26,7 @@ import java.util.UUID;
 public class Limitless extends Sorcery {
 
 
-    public static String tag= "Limitless User";
+    public static final String tag= "Limitless User";
     public int innateTechniquePower=10;
 
 

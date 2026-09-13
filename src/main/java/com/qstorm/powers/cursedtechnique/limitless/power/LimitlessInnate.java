@@ -24,7 +24,7 @@ public class LimitlessInnate extends Ability implements ScrollableInnate {
 
 
     public int innateDistance = 5;
-    public static String TAG = "effected by limitless";
+    public static final String TAG = "effected by limitless";
 
     public LimitlessInnate(UUID playerUUID, int id) {
         super(playerUUID,id);

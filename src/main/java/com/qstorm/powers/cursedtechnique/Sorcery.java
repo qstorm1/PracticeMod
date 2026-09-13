@@ -57,6 +57,7 @@ public class Sorcery {
 
     //a global list of each player's sorcery data (All sorcery objects)
     public static HashMap<UUID,Sorcery> sorcerers = new HashMap<>();
+    public static HashMap<UUID,Sorcery> sorcerersClient = new HashMap<>();
 
 
 

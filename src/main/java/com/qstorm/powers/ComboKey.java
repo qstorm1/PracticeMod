@@ -3,6 +3,7 @@ package com.qstorm.powers;
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -38,6 +39,7 @@ public class ComboKey{
     public static HashMap<UUID,ComboKey> key2= new HashMap<>();
     public static HashMap<UUID,ComboKey> key3= new HashMap<>();
     public static HashMap<UUID,ComboKey> key4= new HashMap<>();
+
 
     //the combo class handles start and end stuff
     //combo.build().key1(3T).key4(4T).Key2(72T)
@@ -75,6 +77,7 @@ public class ComboKey{
      * must happen after checking
      */
     public static void tickUpdateComboKeys(){
+        //I already handle the integrated server issue
         key1.forEach((uuid, comboKey) -> {
             comboKey.timeSinceLastPressed++;
         });
@@ -138,13 +141,28 @@ public class ComboKey{
             ComboKey.reset();
         });
 
+        //Doesn't use data so no identifier needed
+        ClientTickEvents.END_CLIENT_TICK.register(PracticeMod.SETS_DATA, client -> {
+            if(client.getSingleplayerServer()==null)
+                client.execute(ComboKey::tickUpdateComboKeys);
+        });
+
+        ClientTickEvents.END_CLIENT_TICK.register(PracticeMod.RESET,client -> {
+            ComboKey.reset();
+        });
+
 
     }
 
 
 
     public static void handleKey(Level level, UUID playerUUID, int keyPressed){
-        assert Minecraft.getInstance().player != null;
+        //if this client is on the same JVM as the server, we don't need to update the values and just need to update the HUD
+        if(Minecraft.getInstance().getSingleplayerServer() != null && level.isClientSide()) {
+            ComboClient.getComboBoxRenderValues(level,playerUUID, keyPressed, false);
+            return;
+        }
+
         //if the player has a combo going
         if(!(Combo.playerCombos.get(playerUUID)==null)&&!Combo.playerCombos.get(playerUUID).isEmpty())
         {

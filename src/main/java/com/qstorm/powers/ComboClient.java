@@ -17,10 +17,11 @@ import java.util.UUID;
 
 import static com.qstorm.powers.Combo.findLongestCombo;
 
+//Code only ran on client side
 public class ComboClient {
-    static Identifier stuffInBoxIdentifier=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"combo_hud_box");;
-    static Identifier comboListIdentifier=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"combo_list");;
-    static Identifier GUIBox=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"gui_box");;
+    static final Identifier stuffInBoxIdentifier=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"combo_hud_box");;
+    static final Identifier comboListIdentifier=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"combo_list");;
+    static final Identifier GUIBox=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"gui_box");;
 
 
 
@@ -31,16 +32,6 @@ public class ComboClient {
     public static final Comparator<Combo> highestTickTime = Comparator.comparing(Combo::getCurrentTimeSinceLastPressed).reversed();
     public static Comparator<Combo> compMode = highestTickTime;
 
-    public static final Identifier TEXTURECOMBO1 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/1.png");
-    public static final Identifier TEXTURECOMBO2 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/2.png");
-    public static final Identifier TEXTURECOMBO3 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/3.png");
-    public static final Identifier TEXTURECOMBO4 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/4.png");
-
-
-    public static final Identifier BLACKTEXTURECOMBO1 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/1.png");
-    public static final Identifier BLACKTEXTURECOMBO2 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/2.png");
-    public static final Identifier BLACKTEXTURECOMBO3 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/3.png");
-    public static final Identifier BLACKTEXTURECOMBO4 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/4.png");
 
 
     public static ArrayList<String> comboNames= new ArrayList<>();

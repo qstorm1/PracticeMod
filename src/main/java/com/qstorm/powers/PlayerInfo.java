@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+/**
+ * Contains ServerSide only player data
+ */
 public class PlayerInfo {
 
     //you can only train up to this value of cursed efficiency (items and abilities like six eyes can further improve this value)
