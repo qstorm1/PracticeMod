@@ -24,7 +24,8 @@ public class LimitlessInnate extends Ability {
 
 
     public int innateDistance = 5;
-    public static String TAG = "effected by limitless";
+    public static final String TAG = "LLI-EFFECTED-JJK-MOD";
+
 
     public LimitlessInnate(UUID playerUUID, int id) {
         super(playerUUID,id);
@@ -81,7 +82,6 @@ public class LimitlessInnate extends Ability {
             //Living entities
 
             if(player.getUUID()!=entity.getUUID()&&player.distanceTo(entity)<=startDistance){
-                entity.addTag(TAG);
                 if(entity instanceof PrimedTnt){
                     //PracticeMod.LOGGER.info("is primed TNT");
                 }
@@ -116,8 +116,7 @@ public class LimitlessInnate extends Ability {
     public void end(ServerLevel level){
         super.end(level);
         level.getAllEntities().forEach(entity-> {
-            if (entity.getTags().contains(TAG))
-                entity.removeTag(TAG);
+
         });
 
     }

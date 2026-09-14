@@ -15,18 +15,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
 @Mixin(Entity.class)
-public abstract class LLInnateMovementHandle {
+public abstract class LLInnateMovementHandle{
     //TODO: make the explosion line things in the 16x16 thing stop at the start of limitless domains
 
-    @Unique
-    private static final String isEffectedByLimitless = "LLI-EFFECTED-JJK-MOD";
 
-    @Unique
-    private Vec3 preLimitlessMovement;
 
     @Shadow
     private Vec3 position;
@@ -46,6 +43,12 @@ public abstract class LLInnateMovementHandle {
 
     @Shadow
     public abstract UUID getUUID();
+
+    @Shadow
+    public abstract void setDeltaMovement(Vec3 deltaMovement);
+
+    @Shadow
+    public abstract Vec3 getDeltaMovement();
 
     @ModifyVariable(
             method="move",
@@ -72,18 +75,16 @@ public abstract class LLInnateMovementHandle {
 
                 //if inside sphere
                 if (li.startDistance*increaseAmount > distanceFromPlayer) {
-                    if (!this.getTags().contains(isEffectedByLimitless)) {
-                        this.addTag(isEffectedByLimitless);
-                        this.preLimitlessMovement = movement;
+                    if (!this.getTags().contains(LimitlessInnate.TAG)) {
+                        this.addTag(LimitlessInnate.TAG);
                     }
                 }
 
 
                 if (li.startDistance*increaseAmount < distanceFromPlayer) {
                     //outside sphere
-                    if (this.getTags().contains(isEffectedByLimitless)) {
-                        this.removeTag(isEffectedByLimitless);
-                        movement = preLimitlessMovement;
+                    if (this.getTags().contains(LimitlessInnate.TAG)) {
+                        this.removeTag(LimitlessInnate.TAG);
                     }
                 } else if (li.endDistance*increaseAmount < distanceFromPlayer) {
                     //if between 0 and start
@@ -98,17 +99,20 @@ public abstract class LLInnateMovementHandle {
         return movement;
     }
 
-    //arrows do not effect limitless targets
-    @Inject(method="canBeHitByProjectile",at=@At("HEAD"), cancellable = true)
+
+    @Inject(method = "canBeHitByProjectile",at=@At("HEAD"),cancellable = true)
     public void canBeHitByProjectile(CallbackInfoReturnable<Boolean> cir){
-        if(Sorcery.sorcerers.get(this.getUUID())!=null) {
+        if(Sorcery.sorcerers.get(this.getUUID()) != null){
+            //if the target is a sorcerer
             Sorcery.sorcerers.get(this.getUUID()).abilities.forEach((ability -> {
                 if (ability instanceof LimitlessInnate li && li.isTicked) {
                     cir.setReturnValue(false);
                 }
             }));
-        }
 
+        }
     }
+
+
 
 }
