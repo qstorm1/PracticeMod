@@ -4,14 +4,30 @@ import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Set;
 
 @Mixin(Entity.class)
-public class EntityGravityHandle {
+public abstract class EntityGravityHandle {
+
+
+    @Unique
+    private static final String isEffectedByLimitless = "LLI-EFFECTED-JJK-MOD";
+
+    @Unique
+    private Vec3 preLimitlessMovement;
 
     @Shadow
     private Vec3 position;
@@ -19,37 +35,66 @@ public class EntityGravityHandle {
     @Shadow
     public boolean needsSync;
 
-    @ModifyVariable(
-            method="applyGravity",
-            at= @At(value="STORE"),
-            ordinal=0
-    )
-    public double modifyVar(double d){
-        Sorcery closest = Limitless.getClosestLimitlessPosition(this.position);
-        this.needsSync=true;
-        if (closest!=null&&closest.abilities.getFirst() instanceof LimitlessInnate li) {
-            Vec3 closestPos = closest.player.getPosition(0);
+    @Shadow
+    public abstract Set<String> getTags();
 
-            double distanceFromPlayer = closestPos.distanceTo(position);
-            if(li.startDistance < distanceFromPlayer) {
-                //if out of range
-                return d;
-            } else if (li.endDistance < distanceFromPlayer) {
-                //if between 0 and start
-                return d* (distanceFromPlayer*li.startDistance);
-            } else{
-                //if in 0 area
-                return 0;
+    @Shadow
+    public abstract boolean removeTag(String tag);
+
+    @Shadow
+    public abstract boolean addTag(String tag);
+
+
+    @ModifyVariable(
+            method="move",
+            at= @At("HEAD"),
+            argsOnly = true
+    )
+    public Vec3 updateMovement(Vec3 movement) {
+        if (!((Object) this instanceof Player)) {
+            double increaseAmount;
+            if((Object)this instanceof FallingBlockEntity){
+                increaseAmount=1.5;
+
             }
-//            return li.startDistance < closestPos.distanceTo(position) ? li.endDistance< closestPos.distanceTo(position) ?
-//                    //case 1: velocity is 0 cause too close to player
-//                    d*0 :
-//                    //case 2: velocity is in endzone
-//                    d * (li.startDistance) :
-//                    //case 3: too far away from player
-//                    d; 3/4
+            else{
+                increaseAmount=1;
+            }
+            Sorcery closest = Limitless.getClosestLimitlessPosition(this.position);
+            this.needsSync = true;
+            if (closest != null && closest.abilities.getFirst() instanceof LimitlessInnate li) {
+                Vec3 closestPos = closest.player.getPosition(0);
+
+                double distanceFromPlayer = closestPos.distanceTo(position);
+
+
+                //if inside sphere
+                if (li.startDistance*increaseAmount > distanceFromPlayer) {
+                    if (!this.getTags().contains(isEffectedByLimitless)) {
+                        this.addTag(isEffectedByLimitless);
+                        this.preLimitlessMovement = movement;
+                    }
+                }
+
+
+                if (li.startDistance*increaseAmount < distanceFromPlayer) {
+                    //outside sphere
+                    if (this.getTags().contains(isEffectedByLimitless)) {
+                        this.removeTag(isEffectedByLimitless);
+                        movement = preLimitlessMovement;
+                    }
+                } else if (li.endDistance*increaseAmount < distanceFromPlayer) {
+                    //if between 0 and start
+                    double test = Math.pow((distanceFromPlayer/(li.startDistance*increaseAmount)),3);
+                    movement = preLimitlessMovement.scale(Math.pow((distanceFromPlayer/(li.startDistance*increaseAmount)),3));
+
+                } else {
+                    //if in 0 area
+                    movement = movement.scale(0);
+                }
+            }
         }
-        return d;
+        return movement;
     }
 
 }

@@ -108,10 +108,12 @@ public class LimitlessInnate extends Ability {
 
                 }
                 if(player.distanceTo(entity)>=endDistance){
-                    entity.setDeltaMovement(entity.getDeltaMovement().scale( (((player.distanceTo(entity)-endDistance)*(player.distanceTo(entity)-endDistance))/((startDistance-endDistance)*(startDistance-endDistance)))));
+                    if(entity instanceof ServerPlayer)
+                        entity.setDeltaMovement(entity.getDeltaMovement().scale((((player.distanceTo(entity)-endDistance)*(player.distanceTo(entity)-endDistance))/((startDistance-endDistance)*(startDistance-endDistance)))));
                 }
                 else{
-                    entity.setDeltaMovement(0,0,0);
+                    if(entity instanceof ServerPlayer)
+                        entity.setDeltaMovement(0,0,0);
                 }
                 entity.needsSync = true;
             }
