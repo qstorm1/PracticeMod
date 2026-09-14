@@ -85,9 +85,8 @@ public abstract class EntityGravityHandle {
                     }
                 } else if (li.endDistance*increaseAmount < distanceFromPlayer) {
                     //if between 0 and start
-                    double test = Math.pow((distanceFromPlayer/(li.startDistance*increaseAmount)),3);
-                    movement = preLimitlessMovement.scale(Math.pow((distanceFromPlayer/(li.startDistance*increaseAmount)),3));
-
+                    //TODO: item entities currently stop all forward velocity after setting it to 0, fix by giving small push
+                    movement = movement.scale(Math.pow((distanceFromPlayer/(li.startDistance*increaseAmount)),2));
                 } else {
                     //if in 0 area
                     movement = movement.scale(0);

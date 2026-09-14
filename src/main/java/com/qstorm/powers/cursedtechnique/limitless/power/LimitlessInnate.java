@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
@@ -81,10 +82,6 @@ public class LimitlessInnate extends Ability {
 
             if(player.getUUID()!=entity.getUUID()&&player.distanceTo(entity)<=startDistance){
                 entity.addTag(TAG);
-                if(entity instanceof FallingBlockEntity){
-                    //PracticeMod.LOGGER.info("is fallingBlock {}",entity.getName());
-                    //entity.setNoGravity(true);
-                }
                 if(entity instanceof PrimedTnt){
                     //PracticeMod.LOGGER.info("is primed TNT");
                 }
@@ -95,24 +92,18 @@ public class LimitlessInnate extends Ability {
                 if(entity instanceof LightningBolt){
                     //PracticeMod.LOGGER.info("is Lightning Bolt");
                 }
-                if(entity instanceof LightningBolt){
-                    //PracticeMod.LOGGER.info("lightining kill");
-                }
                 if(entity instanceof EvokerFangs evokerFangs){
                     //PracticeMod.LOGGER.info("this is a tihng");
-                }
-                if(entity instanceof ItemEntity){
-
                 }
                 if(entity instanceof ExperienceOrb){
 
                 }
                 if(player.distanceTo(entity)>=endDistance){
-                    if(entity instanceof ServerPlayer)
+                    if(entity instanceof LivingEntity)
                         entity.setDeltaMovement(entity.getDeltaMovement().scale((((player.distanceTo(entity)-endDistance)*(player.distanceTo(entity)-endDistance))/((startDistance-endDistance)*(startDistance-endDistance)))));
                 }
                 else{
-                    if(entity instanceof ServerPlayer)
+                    if(entity instanceof LivingEntity)
                         entity.setDeltaMovement(0,0,0);
                 }
                 entity.needsSync = true;
