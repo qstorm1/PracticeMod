@@ -33,7 +33,7 @@ public class LimitlessInnate extends Ability {
 
     @Override
     public void run(ServerPlayer player) {
-
+        player.canBeHitByProjectile();
     }
 
     /**

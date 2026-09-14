@@ -4,7 +4,6 @@ import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -13,14 +12,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Mixin(Entity.class)
-public abstract class EntityGravityHandle {
+public abstract class LLInnateMovementHandle {
     //TODO: make the explosion line things in the 16x16 thing stop at the start of limitless domains
 
     @Unique
@@ -44,6 +43,9 @@ public abstract class EntityGravityHandle {
     @Shadow
     public abstract boolean addTag(String tag);
 
+
+    @Shadow
+    public abstract UUID getUUID();
 
     @ModifyVariable(
             method="move",
@@ -94,6 +96,19 @@ public abstract class EntityGravityHandle {
             }
         }
         return movement;
+    }
+
+    //arrows do not effect limitless targets
+    @Inject(method="canBeHitByProjectile",at=@At("HEAD"), cancellable = true)
+    public void canBeHitByProjectile(CallbackInfoReturnable<Boolean> cir){
+        if(Sorcery.sorcerers.get(this.getUUID())!=null) {
+            Sorcery.sorcerers.get(this.getUUID()).abilities.forEach((ability -> {
+                if (ability instanceof LimitlessInnate li && li.isTicked) {
+                    cir.setReturnValue(false);
+                }
+            }));
+        }
+
     }
 
 }
