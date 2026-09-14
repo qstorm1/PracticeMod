@@ -140,10 +140,8 @@ public class ComboKey{
 
 
     public static void handleKey(ServerPlayer player, int keyPressed){
-        if(
-                !(Combo.playerCombos.get(player.getUUID())==null||
-                        Combo.playerCombos.get(player.getUUID()).isEmpty())
-        ) {
+        if(!(Combo.playerCombos.get(player.getUUID())==null||
+                        Combo.playerCombos.get(player.getUUID()).isEmpty())) {
             int current = Combo.findLongestCombo(player.getUUID());
             //render server stuff
             for (Combo combo : Combo.playerCombos.get(player.getUUID())) {
