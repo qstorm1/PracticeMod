@@ -21,7 +21,7 @@ import java.util.Set;
 
 @Mixin(Entity.class)
 public abstract class EntityGravityHandle {
-
+    //TODO: make the explosion line things in the 16x16 thing stop at the start of limitless domains
 
     @Unique
     private static final String isEffectedByLimitless = "LLI-EFFECTED-JJK-MOD";
