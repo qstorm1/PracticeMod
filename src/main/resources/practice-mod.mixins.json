@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "EntityMovement",
+    "LLInnateArrowHandle",
     "LLInnateMovementHandle",
     "LLInnateProjectile"
   ],

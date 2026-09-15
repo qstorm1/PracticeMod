@@ -23,7 +23,9 @@ import java.util.UUID;
 public abstract class LLInnateMovementHandle{
     //TODO: make the explosion line things in the 16x16 thing stop at the start of limitless domains
 
-
+    //Used to calculate things that don't tick their velocity (ex: rockets)
+    @Unique
+    private Vec3 prevVelocity;
 
     @Shadow
     private Vec3 position;

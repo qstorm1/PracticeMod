@@ -99,7 +99,7 @@ public class LimitlessInnate extends Ability {
 
                 }
                 if(player.distanceTo(entity)>=endDistance){
-                    if(entity instanceof LivingEntity)
+                    if(entity instanceof LivingEntity || entity instanceof Projectile)
                         entity.setDeltaMovement(entity.getDeltaMovement().scale((((player.distanceTo(entity)-endDistance)*(player.distanceTo(entity)-endDistance))/((startDistance-endDistance)*(startDistance-endDistance)))));
                 }
                 else{
