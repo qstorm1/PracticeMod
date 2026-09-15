@@ -16,6 +16,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.phys.Vec3;
 
@@ -91,7 +92,7 @@ public class Sorcery {
                 PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
                 PlayerInfo.getOutputAsPercent(player.getUUID())));
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,
-                this::tick);
+                (server)->{this.tick(player);});
     }
 
 
@@ -171,7 +172,7 @@ public class Sorcery {
 
 
 
-    public void tick(MinecraftServer context){
+    public void tick(Player contextPlayer){
         if(innateOn){
             abilities.getFirst().isTicked=true;
         }else{
@@ -179,7 +180,7 @@ public class Sorcery {
         }
         for (Ability ability:abilities){
             if(ability.isTicked){
-                ability.tick(context);
+                ability.tick(contextPlayer);
             }
         }
     }

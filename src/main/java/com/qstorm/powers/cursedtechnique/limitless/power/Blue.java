@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -64,14 +65,14 @@ public class Blue extends Ability {
 
 
     @Override
-    public void tick(MinecraftServer context){
-        ServerPlayer shooter = context.getPlayerList().getPlayer(playerUUID);
+    public void tick(Player contextPlayer){
+        ServerPlayer shooter = (ServerPlayer) contextPlayer;
 
         renderToClient(position,radius,shooter);
         pullEntities(shooter);//create a gravitation pull for each entity
-        updateSurroundingBlocks(context);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
+        updateSurroundingBlocks(shooter);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
         causeExplosion(shooter.level(),shooter);
-        updateBluePosition(shooter);
+        updateBluePosition(contextPlayer);
         ticksEnabled--;
         if(ticksEnabled<=0){
             end(shooter.level());
@@ -80,7 +81,7 @@ public class Blue extends Ability {
     }
 
 
-    public void updateBluePosition(ServerPlayer player){
+    public void updateBluePosition(Player player){
         Vec3 positionToSpawn = player.getEyePosition();
         this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));;
         prevEyeVector=positionToSpawn;
@@ -136,7 +137,7 @@ public class Blue extends Ability {
         });
     }
 
-    public void updateSurroundingBlocks(MinecraftServer server){
+    public void updateSurroundingBlocks(ServerPlayer server){
         //for each blocks around position, turn them to graivty blocks
         //for each gravity block if the block.isFlying==false and block.position-position<radius
         //gravity block:

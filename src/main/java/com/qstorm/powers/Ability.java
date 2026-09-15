@@ -3,6 +3,7 @@ package com.qstorm.powers;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -86,7 +87,7 @@ public abstract class Ability {
 
     }
 
-    public void tick(MinecraftServer context){
+    public void tick(Player contextPlayer){
     }
     public void startTickLoop(){
         isTicked=true;

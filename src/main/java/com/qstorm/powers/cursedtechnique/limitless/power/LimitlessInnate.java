@@ -13,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
@@ -71,44 +72,45 @@ public class LimitlessInnate extends Ability {
 
 
     @Override
-    public void tick(MinecraftServer context){
-        ServerPlayer player = context.getPlayerList().getPlayer(playerUUID);
-        player.level().getAllEntities().forEach((entity)->{
+    public void tick(Player contextPlayer){
+        if(contextPlayer instanceof ServerPlayer player){
+            player.level().getAllEntities().forEach((entity)->{
 
 
 
-            //Don't need to deal with:
-            // Eye of ender
-            //Living entities
+                //Don't need to deal with:
+                // Eye of ender
+                //Living entities
 
-            if(player.getUUID()!=entity.getUUID()&&player.distanceTo(entity)<=startDistance){
-                if(entity instanceof PrimedTnt){
-                    //PracticeMod.LOGGER.info("is primed TNT");
-                }
+                if(player.getUUID()!=entity.getUUID()&&player.distanceTo(entity)<=startDistance){
+                    if(entity instanceof PrimedTnt){
+                        //PracticeMod.LOGGER.info("is primed TNT");
+                    }
 
-                if(entity instanceof Projectile){
-                    //PracticeMod.LOGGER.info("is projectile");
-                }
-                if(entity instanceof LightningBolt){
-                    //PracticeMod.LOGGER.info("is Lightning Bolt");
-                }
-                if(entity instanceof EvokerFangs evokerFangs){
-                    //PracticeMod.LOGGER.info("this is a tihng");
-                }
-                if(entity instanceof ExperienceOrb){
+                    if(entity instanceof Projectile){
+                        //PracticeMod.LOGGER.info("is projectile");
+                    }
+                    if(entity instanceof LightningBolt){
+                        //PracticeMod.LOGGER.info("is Lightning Bolt");
+                    }
+                    if(entity instanceof EvokerFangs evokerFangs){
+                        //PracticeMod.LOGGER.info("this is a tihng");
+                    }
+                    if(entity instanceof ExperienceOrb){
 
+                    }
+                    if(player.distanceTo(entity)>=endDistance){
+                        if(entity instanceof LivingEntity || entity instanceof Projectile)
+                            entity.setDeltaMovement(entity.getDeltaMovement().scale((((player.distanceTo(entity)-endDistance)*(player.distanceTo(entity)-endDistance))/((startDistance-endDistance)*(startDistance-endDistance)))));
+                    }
+                    else{
+                        if(entity instanceof LivingEntity)
+                            entity.setDeltaMovement(0,0,0);
+                    }
+                    entity.needsSync = true;
                 }
-                if(player.distanceTo(entity)>=endDistance){
-                    if(entity instanceof LivingEntity || entity instanceof Projectile)
-                        entity.setDeltaMovement(entity.getDeltaMovement().scale((((player.distanceTo(entity)-endDistance)*(player.distanceTo(entity)-endDistance))/((startDistance-endDistance)*(startDistance-endDistance)))));
-                }
-                else{
-                    if(entity instanceof LivingEntity)
-                        entity.setDeltaMovement(0,0,0);
-                }
-                entity.needsSync = true;
-            }
-        });
+            });
+        }
 
     }
 

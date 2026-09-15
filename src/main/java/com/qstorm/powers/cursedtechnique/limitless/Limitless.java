@@ -106,8 +106,8 @@ public class Limitless extends Sorcery {
     //two times as much cursed energy as blue
 
     @Override
-    public void tick(MinecraftServer context){
-        super.tick(context);
+    public void tick(Player contextPlayer){
+        super.tick(contextPlayer);
     }
 
 
