@@ -11,6 +11,7 @@ import com.qstorm.powers.ComboKey;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.resources.Identifier;
@@ -56,6 +57,12 @@ public class PracticeMod implements ModInitializer {
 		});
 		ServerPlayConnectionEvents.DISCONNECT.register((handler,server) -> {
 			onPlayerLeave(handler.player);
+		});
+		ClientPlayConnectionEvents.JOIN.register((handler,sender,context) -> {
+			onPlayerJoin(context.player);
+		});
+		ClientPlayConnectionEvents.DISCONNECT.register((handler,context) -> {
+			onPlayerLeave(context.player);
 		});
 
 

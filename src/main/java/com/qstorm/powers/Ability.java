@@ -70,19 +70,25 @@ public abstract class Ability {
         this.rate=rate;
     }
 
-    public void Do(ServerPlayer player){
+    public void Do(Player player){
         playerInfo=PlayerInfo.playerInfoHashMap.get(playerUUID);
         power=(rate*playerInfo.cursedOutput);
         percentPower=power/rate*playerInfo.maxCursedOutput;
+
+
         if(power<initial){
             return;
         }
-        playerInfo.useEnergy(player,playerInfo.cursedOutput);
-        animate(player);
-        if(times.isEmpty()) {
-            run(player);
+
+        if(player instanceof ServerPlayer serverPlayer) {
+            playerInfo.useEnergy(serverPlayer, playerInfo.cursedOutput);
+            if (times.isEmpty()) {
+                run(serverPlayer);
+            } else {
+                run(times, serverPlayer);
+            }
         }else{
-            run(times, player);
+            animate(player);
         }
 
     }

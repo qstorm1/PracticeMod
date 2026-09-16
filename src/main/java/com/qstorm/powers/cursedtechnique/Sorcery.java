@@ -6,10 +6,10 @@ import com.qstorm.key.HandleKeybinds;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -101,9 +101,12 @@ public class Sorcery {
                 });
     }
 
-    //TODO: maybe make non-static
-    protected static void clientSideInitCode(Player player){
+
+    protected void clientSideInitCode(Player player){
         hasInitializedOnClient.put(player.getUUID(),true);
+        ClientTickEvents.END_CLIENT_TICK.register(
+                client -> this.tick(player)
+        );
         PALHandle.init();
     }
 
@@ -114,16 +117,15 @@ public class Sorcery {
      * Checks if the sorcerer already exists
      * @return 0 if a sorcerer hasn't been initialized, 1 if client needs to be initialized on an integrated server, 2 if doesn't need to be initialized
      */
-    protected static int checkIfUnique(Player player){
+    protected static boolean checkIfAlreadyHasTechnique(Player player){
         //we are in an environment where the sorcerer hasn't been initialized
         if(Minecraft.getInstance().isSingleplayer()&&!(player instanceof ServerPlayer)) {
             if(hasInitializedOnClient.get(player.getUUID())==null)
-                return 1;
+                return true;
 
-            return hasInitializedOnClient.get(player.getUUID()) ? 2:1;
+            return !hasInitializedOnClient.get(player.getUUID());
         }
-        else
-            return sorceryInMap(player.getUUID())? 2:0;
+        return !sorceryInMap(player.getUUID());
     }
 
     /**

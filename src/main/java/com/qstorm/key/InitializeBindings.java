@@ -2,6 +2,7 @@ package com.qstorm.key;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.qstorm.PracticeMod;
+import com.qstorm.powers.ComboKey;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -133,7 +134,11 @@ public class InitializeBindings {
             //if attack is sent, refresh render data
             if(attack1.isDown()){
                 if(!InitializeBindings.attack1WasDown.get(client.player.getUUID())) {
+                    //send info to server and update stuff
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK1());
+                    ComboKey.key1.get(client.player.getUUID()).keyDown();
+                    ComboKey.handleKey(client.player,1);
+
                     InitializeBindings.attack1WasDown.put(client.player.getUUID(), true);
                 }
             }
@@ -144,6 +149,9 @@ public class InitializeBindings {
             if(attack2.isDown()){
                 if(!InitializeBindings.attack2WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK2());
+                    ComboKey.key2.get(client.player.getUUID()).keyDown();
+                    ComboKey.handleKey(client.player,2);
+
                     InitializeBindings.attack2WasDown.put(client.player.getUUID(), true);
 
                 }
@@ -155,6 +163,9 @@ public class InitializeBindings {
             if(attack3.isDown()){
                 if(!InitializeBindings.attack3WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK3());
+                    ComboKey.key3.get(client.player.getUUID()).keyDown();
+                    ComboKey.handleKey(client.player,3);
+
                     InitializeBindings.attack3WasDown.put(client.player.getUUID(), true);
 
                 }
@@ -164,6 +175,9 @@ public class InitializeBindings {
             if(attack4.isDown()){
                 if(!InitializeBindings.attack4WasDown.get(client.player.getUUID())) {
                     ClientPlayNetworking.send(new HandleKeybinds.AttackJJK4());
+                    ComboKey.key4.get(client.player.getUUID()).keyDown();
+                    ComboKey.handleKey(client.player,4);
+
                     InitializeBindings.attack4WasDown.put(client.player.getUUID(), true);
 
                 }

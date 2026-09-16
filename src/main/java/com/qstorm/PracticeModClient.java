@@ -54,7 +54,6 @@ public class PracticeModClient implements ClientModInitializer {
 //        );
         //when we recieve a thing saying to make this player a sorceror, render client
         ClientPlayNetworking.registerGlobalReceiver(Packet.LimitlessInit.TYPE,(packet, context)->{
-            ComboClient.addComboRendererToClient();
             Limitless.initLimitlessPlayer(context.player());
         });
 

@@ -3,13 +3,13 @@ package com.qstorm.powers.cursedtechnique.limitless;
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
+import com.qstorm.powers.ComboClient;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -57,25 +57,26 @@ public class Limitless extends Sorcery {
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
-        switch(checkIfUnique(player)) {
-            case 0 -> {}
-            case 1 -> {
-                clientSideInitCode(player);
-                return;
-            }
-            case 2 -> {
-                return;
-            }
+        //non-resetable
+        //TODO: make it resetable (remove all the combos and stuff
+        if(!checkIfAlreadyHasTechnique(player)){
+            return;
         }
 
         PracticeMod.LOGGER.info("New Limitless player added!");
-
         new Limitless(player);
 
-        if(player instanceof ServerPlayer serverPlayer) {
-            ServerPlayNetworking.send( serverPlayer, new Packet.LimitlessInit());
-        }
 
+
+
+
+        if(!(player instanceof ServerPlayer serverPlayer)) {
+            ComboClient.addComboRendererToClient();
+        }
+        else{
+            //auto init client side
+            ServerPlayNetworking.send(serverPlayer,new Packet.LimitlessInit());
+        }
 
     }
 

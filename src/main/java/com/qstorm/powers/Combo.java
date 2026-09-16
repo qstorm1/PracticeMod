@@ -206,7 +206,7 @@ public class Combo {
      * Note that this doesn't handle tick specific combo endings
      * @param keyPressed the key pressed
      */
-    public void checkIfContinue(int keyPressed){
+    public void checkIfContinue(Player player,int keyPressed){
         lastKeyID = keyPressed;
 
         //if the comboKey doesn't match the key pressed
@@ -215,12 +215,12 @@ public class Combo {
             //if the current value that was pressed is the last value, do the action
             if(current>=comboKeys.size()-1){
                 PracticeMod.LOGGER.debug("Did action for Combo {}",this.name);
-                doComboAction();
+                doComboAction(player);
             }
             else {
                 //move to the next state of the combo
                 PracticeMod.LOGGER.debug("Move to next key in Combo {}",this.name);
-                nextKey();
+                nextKey(player);
             }
 
         }
@@ -259,14 +259,14 @@ public class Combo {
 
 
 
-    public void nextKey(){
+    public void nextKey(Player player){
         for (Integer i : this.detectionKey) {
             if(i==current){
                 this.action.times.add(this.comboKeys.get(current).timeSinceLastPressed);
             }
         }
         if(this.actionOnKey.get(current)!=null){
-            this.actionOnKey.get(current).Do(serverPlayer);
+            this.actionOnKey.get(current).Do(player);
         }
         current++;
 
@@ -281,8 +281,8 @@ public class Combo {
         PracticeMod.LOGGER.info("reset combo");
     }
 
-    public void doComboAction(){
-        action.Do(serverPlayer);
+    public void doComboAction(Player player){
+        action.Do(player);
         resetCombo();
         resetClientHUDFromServer();
     }
