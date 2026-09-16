@@ -3,14 +3,13 @@ package com.qstorm.powers.cursedtechnique.limitless;
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Combo;
-import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -30,7 +29,7 @@ public class Limitless extends Sorcery {
 
 
     //generate a limitless technique
-    private Limitless(ServerPlayer player){
+    private Limitless(Player player){
         super(new LimitlessInnate(player.getUUID(),0),player,100000,10);
 
 
@@ -58,23 +57,24 @@ public class Limitless extends Sorcery {
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
-        if(
-                (!(player instanceof ServerPlayer))||
-                sorcerers.get(player.getUUID())!=null){
+        if(sorcerers.get(player.getUUID())!=null&& !Minecraft.getInstance().isSingleplayer()){
             return;
+        }
+        else if(Minecraft.getInstance().isSingleplayer()){
+
         }
 
         PracticeMod.LOGGER.info("New Limitless player added!");
-        //
 
-        Limitless playerLimitless = new Limitless((ServerPlayer)player);
+        Limitless playerLimitless = new Limitless(player);
+        //TODO: remove this cause it happens in super class after fixing animation
         sorcerers.put(player.getUUID(),playerLimitless);
 
 
 
-
-        ServerPlayNetworking.send((ServerPlayer) player,new Packet.LimitlessInit());
-
+        if(player instanceof ServerPlayer serverPlayer) {
+            ServerPlayNetworking.send( serverPlayer, new Packet.LimitlessInit());
+        }
 
 
     }
@@ -85,8 +85,8 @@ public class Limitless extends Sorcery {
         smallestDistance.add(-1.0);
         sorcerers.forEach((uuid,sorcery)->{
             if(sorcery instanceof Limitless && sorcery.innateOn){
-                if(smallestDistance.getFirst()<sorcery.player.position().distanceTo(position)){
-                    smallestDistance.set(0,sorcery.player.position().distanceTo(position));
+                if(smallestDistance.getFirst()<sorcery.storedPlayer.position().distanceTo(position)){
+                    smallestDistance.set(0,sorcery.storedPlayer.position().distanceTo(position));
                     uuidFinal.add(uuid);
 
                 }

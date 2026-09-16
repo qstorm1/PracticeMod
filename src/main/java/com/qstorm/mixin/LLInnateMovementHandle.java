@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
@@ -70,7 +69,7 @@ public abstract class LLInnateMovementHandle{
             Sorcery closest = Limitless.getClosestLimitlessPosition(this.position);
             this.needsSync = true;
             if (closest != null && closest.abilities.getFirst() instanceof LimitlessInnate li) {
-                Vec3 closestPos = closest.player.getPosition(0);
+                Vec3 closestPos = closest.storedPlayer.getPosition(0);
 
                 double distanceFromPlayer = closestPos.distanceTo(position);
 

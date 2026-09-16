@@ -1,9 +1,11 @@
 package com.qstorm.powers.cursedtechnique.limitless.power;
 
+import com.qstorm.PracticeMod;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,6 +28,8 @@ public class Blue extends Ability {
     double distanceFromEye=0;//TODO: add max distance
 
     int ticksEnabled=100;
+
+    public static final Identifier BLUE_ANIMATION_TAG = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"blue-animation-tag-jjk");
 
 
     Vec3 position;

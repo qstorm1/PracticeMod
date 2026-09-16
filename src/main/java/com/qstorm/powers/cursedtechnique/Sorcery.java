@@ -1,28 +1,20 @@
 package com.qstorm.powers.cursedtechnique;
 
+import com.qstorm.PAL.PALHandle;
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
-import com.qstorm.powers.EffectsCursedEnergyUsage;
 import com.qstorm.powers.PlayerInfo;
-import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ServerExplosion;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 //player specific
@@ -30,6 +22,8 @@ import java.util.UUID;
 public class Sorcery {
 
     //data on weather the player can use things
+    public boolean hasInnateTechnique = false;
+
     public boolean canUseInnateDomain=false;
     public boolean canUseDomain=false;
 
@@ -56,23 +50,23 @@ public class Sorcery {
 
     //a global list of each player's sorcery data (All sorcery objects)
     public static HashMap<UUID,Sorcery> sorcerers = new HashMap<>();
+    public static HashMap<UUID,Boolean> hasInitializedOnClient = new HashMap<>();
 
 
 
     //born luck is a percentage that represents how lucky are your initial stat growths
     //increase luck represents and increase in luck
-    public Sorcery(Ability innate,ServerPlayer player,int domainEnergyCost,int constantAbilityTickCost){
+    public Sorcery(Ability innate,Player player,int domainEnergyCost,int constantAbilityTickCost){
         this(player);
 
         //sets all the important values
-        this.player=player;
         this.domainEnergyCost=domainEnergyCost;
         this.constantAbilityTickCost = constantAbilityTickCost;
+        hasInnateTechnique=true;
 
-
-
-        if(abilities.size()>1){
-            abilities =new ArrayList<>();
+        //set innate ability to be first
+        if(!abilities.isEmpty()){
+            abilities = new ArrayList<>();
         }
         abilities.add(innate);
 
@@ -86,13 +80,62 @@ public class Sorcery {
 
 
 
-    private Sorcery(ServerPlayer player){
+    private Sorcery(Player player){
+
+        //TODO: change to .put() and remove all combos
         sorcerers.putIfAbsent(player.getUUID(),this);
-        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(player.getUUID())));
+        hasInitializedOnClient.putIfAbsent(player.getUUID(),false);
+
+        if(player instanceof ServerPlayer serverPlayer) {
+            serverSideInitCode(serverPlayer);
+        }
+        else{
+            clientSideInitCode(player);
+        }
+
+    }
+
+
+    private void serverSideInitCode(ServerPlayer serverPlayer){
+        this.storedPlayer =serverPlayer;
+        ServerPlayNetworking.send(serverPlayer, new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoHashMap.get(serverPlayer.getUUID()).cursedEnergy,
+                PlayerInfo.getOutputAsPercent(serverPlayer.getUUID())));
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,
-                (server)->{this.tick(player);});
+                (server) -> {
+                    this.tick(serverPlayer);
+
+                });
+    }
+    private void clientSideInitCode(Player player){
+        hasInitializedOnClient.put(player.getUUID(),true);
+        PALHandle.init();
+
+
+    }
+
+
+
+
+    /**
+     * Checks if the sorcerer already exists
+     * @return 0 if a sorcerer hasn't been initialized, 1 if client needs to be initialized on an integrated server, 2 if doesn't need to be initialized
+     */
+    protected static int checkIfUnique(UUID playerUUID){
+        //we are in an environment where the sorcerer hasn't been initialized
+        if(Minecraft.getInstance().isSingleplayer()) {
+            return hasInitializedOnClient.get(playerUUID) ? 2:1;
+        }
+        else return sorceryInMap(playerUUID)? 2:0;
+    }
+
+    /**
+     * Checks if the sorcerers map contains this element
+     * @param playerUUID UUID of player checking
+     * @return if the player input already has a sorcery object in memory
+     */
+    protected static boolean sorceryInMap(UUID playerUUID){
+        return sorcerers.get(playerUUID)!=null;
     }
 
 
@@ -205,11 +248,11 @@ public class Sorcery {
     }
 
     public void changeOutputPercent(double percentAmount){
-        changeOutput((int)(percentAmount*PlayerInfo.playerInfoHashMap.get(player.getUUID()).maxCursedOutput));
+        changeOutput((int)(percentAmount*PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).maxCursedOutput));
     }
 
     public void changeOutput(double percentAmount){
-        changeOutput((int)((percentAmount/20.0F)*PlayerInfo.playerInfoHashMap.get(player.getUUID()).maxCursedOutput));
+        changeOutput((int)((percentAmount/20.0F)*PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).maxCursedOutput));
     }
 
 
@@ -233,7 +276,7 @@ public class Sorcery {
     //TODO: remember that the cost of energy increases faster then the power
 
     private void changeOutput(int amount){
-        PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(player.getUUID());
+        PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID());
 
         if(playerInfo.cursedOutput+amount>=playerInfo.maxCursedOutput){
             playerInfo.cursedOutput= playerInfo.maxCursedOutput;
@@ -245,9 +288,9 @@ public class Sorcery {
             playerInfo.cursedOutput += amount;
         }
         PracticeMod.LOGGER.info("Amount {}", playerInfo.cursedOutput);
-        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(player.getUUID())));
+        ServerPlayNetworking.send(storedPlayer,new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).cursedEnergy,
+                PlayerInfo.getOutputAsPercent(storedPlayer.getUUID())));
 
     }
 
@@ -282,7 +325,7 @@ public class Sorcery {
 
 
     //NOT RECOMMENDED TO USE
-    public ServerPlayer player;
+    public ServerPlayer storedPlayer;
 
 
 }
