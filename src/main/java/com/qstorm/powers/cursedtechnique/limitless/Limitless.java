@@ -53,28 +53,24 @@ public class Limitless extends Sorcery {
 
 
     /**
-     * HAPPENS ONLY ON SERVER SIDE
+     * THIS CAN RUN ON BOTH SERVER AND CLIENT HOWEVER IT ONLY NEEDS TO BE RAN ON SERVER
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
-        switch(checkIfUnique(player.getUUID())) {
-            case 0 -> {
-                return;
-            }
+        switch(checkIfUnique(player)) {
+            case 0 -> {}
             case 1 -> {
                 clientSideInitCode(player);
                 return;
             }
-            case 2 -> {}
+            case 2 -> {
+                return;
+            }
         }
 
         PracticeMod.LOGGER.info("New Limitless player added!");
 
-        Limitless playerLimitless = new Limitless(player);
-        //TODO: remove this cause it happens in super class after fixing animation
-        //sorcerers.put(player.getUUID(),playerLimitless);
-
-
+        new Limitless(player);
 
         if(player instanceof ServerPlayer serverPlayer) {
             ServerPlayNetworking.send( serverPlayer, new Packet.LimitlessInit());
@@ -84,7 +80,7 @@ public class Limitless extends Sorcery {
     }
 
     public static Limitless getClosestLimitlessPosition(Vec3 position){
-        ArrayList<Double> smallestDistance = new ArrayList<>();
+        ArrayList<Double> smallestDistance = new ArrayList<>();//uses arraylist cause lambdas are stupid
         ArrayList<UUID> uuidFinal = new ArrayList<>();
         smallestDistance.add(-1.0);
         sorcerers.forEach((uuid,sorcery)->{

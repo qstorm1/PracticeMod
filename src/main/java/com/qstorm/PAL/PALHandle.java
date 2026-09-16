@@ -1,10 +1,15 @@
 package com.qstorm.PAL;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.powers.Ability;
 import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
+import com.zigythebird.playeranim.animation.PlayerAnimResources;
+import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.animation.PlayerRawAnimationBuilder;
 import com.zigythebird.playeranim.api.PlayerAnimationFactory;
+import com.zigythebird.playeranimcore.animation.Animation;
 import com.zigythebird.playeranimcore.animation.RawAnimation;
+import com.zigythebird.playeranimcore.enums.PlayState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -13,6 +18,8 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PALHandle{
 
@@ -22,8 +29,9 @@ public class PALHandle{
 
 
     public static void init(){
+
         DOMAIN_ONE = PlayerRawAnimationBuilder.begin().thenPlay(ANIMATION_NAME_ID).build();
-        //PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(Blue.BLUE_ANIMATION_TAG);
+        Ability.initAnimate(Blue.BLUE_ANIMATION_TAG,DOMAIN_ONE,1510);
 
     }
 

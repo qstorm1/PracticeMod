@@ -69,3 +69,7 @@ The entity class runs its baseTick() function on both client and server,
 I had a ton of problems with fixing the innate technique for limitless, primarily because for whatever reason, gravity is handled
 right before the movement function which alone took forever to find not to mention the fact that in order to learn how to edit minecrafts code
 i had to get good at mixins
+
+I had some issues trying to get the Player Animation Library (PAL) mod to work, the most vital of which was the fact that animations wouldn't load on startup.
+The PAL mod runs after my mod including all of the important initialization functions that take the .json data and put them into static variables.
+I fixed it by making my mod initialize player animations when creating a new sorcerer.

@@ -1,8 +1,11 @@
 package com.qstorm.powers.cursedtechnique.limitless.power;
 
+import com.qstorm.PAL.PALHandle;
 import com.qstorm.PracticeMod;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
+import com.zigythebird.playeranim.animation.PlayerAnimationController;
+import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.resources.Identifier;
@@ -57,10 +60,12 @@ public class Blue extends Ability {
         if(radius>maxRadius)
             radius=maxRadius;
 
+
         this.radiusOfEffect=radius*3;
         prevEyeVector=positionToSpawn;
         distanceFromEye=radius+3;
         this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));
+
 
 
         startTickLoop();
@@ -75,7 +80,7 @@ public class Blue extends Ability {
         renderToClient(position,radius,shooter);
         pullEntities(shooter);//create a gravitation pull for each entity
         updateSurroundingBlocks(shooter);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
-        causeExplosion(shooter.level(),shooter);
+        //causeExplosion(shooter.level(),shooter);
         updateBluePosition(contextPlayer);
         ticksEnabled--;
         if(ticksEnabled<=0){

@@ -1,5 +1,13 @@
 package com.qstorm.powers;
 
+import com.qstorm.PAL.PALHandle;
+import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
+import com.zigythebird.playeranim.animation.PlayerAnimationController;
+import com.zigythebird.playeranim.api.PlayerAnimationAccess;
+import com.zigythebird.playeranim.api.PlayerAnimationFactory;
+import com.zigythebird.playeranimcore.animation.Animation;
+import com.zigythebird.playeranimcore.animation.RawAnimation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -42,6 +50,10 @@ public abstract class Ability {
     //the cursedEnergy system works linearly at the moment, power=increaseRate*energy+initial
 
 
+    //PAL stuff
+    protected Animation onRunAnimation;
+    protected Identifier factoryAnimation;
+
 
     public Ability(UUID playerUUID, int id,int textColor){
         this.id=id;
@@ -66,6 +78,7 @@ public abstract class Ability {
             return;
         }
         playerInfo.useEnergy(player,playerInfo.cursedOutput);
+        animate(player);
         if(times.isEmpty()) {
             run(player);
         }else{
@@ -80,15 +93,55 @@ public abstract class Ability {
     }
 
 
+    /**
+     * Run the ability
+     * @param player the player running the ability
+     */
     protected void run(ServerPlayer player) {
 
     }
+
+    /**
+     * Run the ability if this ability is a detection ability (an ability that tracks the time it took to click)
+     * @param times the time it took to click the next comboKey
+     * @param player the player running the ability
+     */
     protected void run(ArrayList<Integer> times,ServerPlayer player) {
 
     }
 
     public void tick(Player contextPlayer){
     }
+
+
+    protected void animate(Player player, Identifier factory, Animation animation){
+        if(!player.level().isClientSide())
+            return;
+
+        PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(
+                player,factory
+        );
+        if (controller != null)
+            controller.triggerAnimation(animation);
+
+    }
+
+
+    protected void animate(Player player){
+        if(factoryAnimation!=null&&onRunAnimation!=null){
+            animate(player,factoryAnimation,onRunAnimation);
+        }
+    }
+
+    public static void initAnimate(Identifier factoryID, RawAnimation rawAnimation,int priority){
+        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(factoryID,priority,
+                player ->new PlayerAnimationController(player,
+                        (animationController, animationState, animationSetter) ->
+                                animationSetter.setAnimation(rawAnimation))
+        );
+    }
+
+
     public void startTickLoop(){
         isTicked=true;
     }
@@ -123,6 +176,11 @@ public abstract class Ability {
     }
 
     public void notEnoughOutput(){
+
+    }
+
+
+    protected void runOneTimeAnimation(){
 
     }
 

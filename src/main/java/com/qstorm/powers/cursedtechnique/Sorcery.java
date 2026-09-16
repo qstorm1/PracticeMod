@@ -70,13 +70,6 @@ public class Sorcery {
             abilities = new ArrayList<>();
         }
         abilities.add(innate);
-
-
-        //player.addTag("Cursed Energy: "+sorcery.cursedEnergy+"Cursed Output "+ sorcery.maxCursedOutput +"Cursed Energy Reserve "+sorcery.cursedEnergyReserve);
-
-
-
-
     }
 
 
@@ -107,6 +100,7 @@ public class Sorcery {
 
                 });
     }
+
     //TODO: maybe make non-static
     protected static void clientSideInitCode(Player player){
         hasInitializedOnClient.put(player.getUUID(),true);
@@ -120,12 +114,16 @@ public class Sorcery {
      * Checks if the sorcerer already exists
      * @return 0 if a sorcerer hasn't been initialized, 1 if client needs to be initialized on an integrated server, 2 if doesn't need to be initialized
      */
-    protected static int checkIfUnique(UUID playerUUID){
+    protected static int checkIfUnique(Player player){
         //we are in an environment where the sorcerer hasn't been initialized
-        if(Minecraft.getInstance().isSingleplayer()) {
-            return hasInitializedOnClient.get(playerUUID) ? 2:1;
+        if(Minecraft.getInstance().isSingleplayer()&&!(player instanceof ServerPlayer)) {
+            if(hasInitializedOnClient.get(player.getUUID())==null)
+                return 1;
+
+            return hasInitializedOnClient.get(player.getUUID()) ? 2:1;
         }
-        else return sorceryInMap(playerUUID)? 2:0;
+        else
+            return sorceryInMap(player.getUUID())? 2:0;
     }
 
     /**
@@ -141,7 +139,9 @@ public class Sorcery {
 
 
 
-
+    public static void init(){
+        registerServerNetworking();
+    }
 
 
     public boolean innateOn =false;
@@ -238,6 +238,8 @@ public class Sorcery {
 
 
 
+
+
     static void innateDomain(ServerPlayer attacker){
         PracticeMod.LOGGER.info("Used innate domain");
     }
@@ -301,25 +303,6 @@ public class Sorcery {
     // To be added next update
     public void onPetDeath(){
 
-    }
-
-
-    //typicallly used right after a function to keep context
-    public static Sorcery context;
-
-
-
-
-
-
-
-    static void sorceryClientInit(AbstractClientPlayer player){
-
-    }
-
-
-    public static void init(){
-        registerServerNetworking();
     }
 
 
