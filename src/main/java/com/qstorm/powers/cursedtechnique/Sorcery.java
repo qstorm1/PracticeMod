@@ -40,7 +40,8 @@ public class Sorcery {
      * get(0) = Innate technique
      */
     public ArrayList<Ability> abilities = new ArrayList<>();
-
+    //TODO: replace the whole innate ability thing with a unique Ability variable, look down to see what I want to do
+    //Ability innate;
 
     //The domain of this ability
     public Domain domain;
@@ -81,7 +82,6 @@ public class Sorcery {
 
 
     private Sorcery(Player player){
-
         //TODO: change to .put() and remove all combos
         sorcerers.putIfAbsent(player.getUUID(),this);
         hasInitializedOnClient.putIfAbsent(player.getUUID(),false);
@@ -96,7 +96,7 @@ public class Sorcery {
     }
 
 
-    private void serverSideInitCode(ServerPlayer serverPlayer){
+    protected void serverSideInitCode(ServerPlayer serverPlayer){
         this.storedPlayer =serverPlayer;
         ServerPlayNetworking.send(serverPlayer, new Packet.ActivateSorceryRender(
                 PlayerInfo.playerInfoHashMap.get(serverPlayer.getUUID()).cursedEnergy,
@@ -107,11 +107,10 @@ public class Sorcery {
 
                 });
     }
-    private void clientSideInitCode(Player player){
+    //TODO: maybe make non-static
+    protected static void clientSideInitCode(Player player){
         hasInitializedOnClient.put(player.getUUID(),true);
         PALHandle.init();
-
-
     }
 
 

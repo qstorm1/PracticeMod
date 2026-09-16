@@ -57,18 +57,22 @@ public class Limitless extends Sorcery {
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
-        if(sorcerers.get(player.getUUID())!=null&& !Minecraft.getInstance().isSingleplayer()){
-            return;
-        }
-        else if(Minecraft.getInstance().isSingleplayer()){
-
+        switch(checkIfUnique(player.getUUID())) {
+            case 0 -> {
+                return;
+            }
+            case 1 -> {
+                clientSideInitCode(player);
+                return;
+            }
+            case 2 -> {}
         }
 
         PracticeMod.LOGGER.info("New Limitless player added!");
 
         Limitless playerLimitless = new Limitless(player);
         //TODO: remove this cause it happens in super class after fixing animation
-        sorcerers.put(player.getUUID(),playerLimitless);
+        //sorcerers.put(player.getUUID(),playerLimitless);
 
 
 
