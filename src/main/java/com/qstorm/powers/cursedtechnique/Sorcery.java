@@ -109,6 +109,7 @@ public class Sorcery {
                 client -> this.tick(player)
         );
         PALHandle.init();
+
     }
 
 
@@ -142,7 +143,7 @@ public class Sorcery {
     protected void addAbility(Ability ability, Combo combo){
         ability.id = abilities.getLast().id+1;
         abilities.add(ability);
-        if(combo.actionNull()){
+        if(combo.isActionNull()){
             combo.setAction(ability);
         }
         abilities.getLast().setCombo(combo);
@@ -225,11 +226,8 @@ public class Sorcery {
 
 
     public void tick(Player contextPlayer){
-        if(innateOn){
-            abilities.getFirst().isTicked=true;
-        }else{
-            abilities.getFirst().isTicked=false;
-        }
+        if(abilities.isEmpty()) return;
+        abilities.getFirst().isTicked = innateOn;
         for (Ability ability:abilities){
             if(ability.isTicked){
                 ability.tick(contextPlayer);

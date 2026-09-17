@@ -1,14 +1,11 @@
 package com.qstorm.powers;
 
-import com.qstorm.PAL.PALHandle;
-import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import com.zigythebird.playeranim.api.PlayerAnimationFactory;
 import com.zigythebird.playeranimcore.animation.Animation;
 import com.zigythebird.playeranimcore.animation.RawAnimation;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -51,8 +48,9 @@ public abstract class Ability {
 
 
     //PAL stuff
+    public boolean animationOn=false;
     protected Animation onRunAnimation;
-    protected Identifier factoryAnimation;
+    protected Identifier IS_JJK_ANIMATION;
 
 
     public Ability(UUID playerUUID, int id,int textColor){
@@ -134,8 +132,8 @@ public abstract class Ability {
 
 
     protected void animate(Player player){
-        if(factoryAnimation!=null&&onRunAnimation!=null){
-            animate(player,factoryAnimation,onRunAnimation);
+        if(IS_JJK_ANIMATION !=null&&onRunAnimation!=null){
+            animate(player, IS_JJK_ANIMATION,onRunAnimation);
         }
     }
 

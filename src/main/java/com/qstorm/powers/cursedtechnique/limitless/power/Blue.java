@@ -2,10 +2,12 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 
 import com.qstorm.PAL.PALHandle;
 import com.qstorm.PracticeMod;
+import com.qstorm.packets.AnimationPacket;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.resources.Identifier;
@@ -66,7 +68,9 @@ public class Blue extends Ability {
         distanceFromEye=radius+3;
         this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));
 
-
+        //TODO: send to all players in level and then send player uuid of player who is gonna do animation
+        //ServerPlayNetworking.send(player.level().players(),);
+        ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.blueInit));
 
         startTickLoop();
         enableScroll();

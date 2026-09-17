@@ -2,6 +2,7 @@ package com.qstorm;
 
 import com.qstorm.PAL.PALHandle;
 import com.qstorm.key.InitializeBindings;
+import com.qstorm.packets.AnimationPacket;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.ComboClient;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
@@ -33,6 +34,7 @@ public class PracticeModClient implements ClientModInitializer {
         //initialize all keyboard stuff
         InitializeBindings.init();
         PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE, Packet.LimitlessInit.CODEC);
+        PayloadTypeRegistry.playS2C().register(AnimationPacket.SendAnimationUpdate.TYPE,AnimationPacket.SendAnimationUpdate.CODEC);
         initJJKClientRender();
 
 

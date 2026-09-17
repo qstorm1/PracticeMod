@@ -104,8 +104,6 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
-                var test = Combo.playerCombos;
-                var test2 = Sorcery.sorcerers;
                 handleKey(context.player(),1);
             });
         });

@@ -2,7 +2,6 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
@@ -303,7 +302,7 @@ public class Combo {
         return max;
     }
 
-    public boolean actionNull(){
+    public boolean isActionNull(){
         return action==null;
     }
 
