@@ -2,9 +2,11 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
+import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -102,6 +104,8 @@ public class ComboKey{
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.AttackJJK1.TYPE, (payload, context) -> {
             context.server().execute(() -> {
                 key1.get(context.player().getUUID()).keyDown();
+                var test = Combo.playerCombos;
+                var test2 = Sorcery.sorcerers;
                 handleKey(context.player(),1);
             });
         });
@@ -147,9 +151,11 @@ public class ComboKey{
             //render server stuff
             for (Combo combo : Combo.playerCombos.get(player.getUUID())) {
                 if (current == combo.current) {
-                    if(player instanceof ServerPlayer serverPlayer)
+                    if(player instanceof ServerPlayer serverPlayer) {
                         Combo.handleServerSideComboRendering(serverPlayer, keyPressed, false);
-                    else combo.checkIfContinue(player,keyPressed);
+                        combo.checkIfContinue(player,keyPressed);
+                    }
+                    else if(!Minecraft.getInstance().isSingleplayer()) combo.checkIfContinue(player,keyPressed);
                 }
             }
         }

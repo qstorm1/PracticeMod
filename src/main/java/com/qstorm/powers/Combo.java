@@ -2,9 +2,10 @@ package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
-import com.qstorm.powers.cursedtechnique.Sorcery;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -56,7 +57,7 @@ public class Combo {
 
     //the player this combo is attached to (used to detect ComboKey's)
     UUID playerUUID;
-    ServerPlayer serverPlayer;
+    ServerPlayer storePlayer;
 
     Ability action;
 
@@ -69,21 +70,22 @@ public class Combo {
         playerUUID =player.getUUID();
 
 
+        if(!Minecraft.getInstance().isSingleplayer()||!player.level().isClientSide()) {
+            this.name = name;
 
-        this.name=name;
-        if(player instanceof ServerPlayer) {
-            this.serverPlayer = (ServerPlayer) player;
+            //add to the servers list of players
+            playerCombos.computeIfAbsent(playerUUID, k -> new ArrayList<>());
+            playerCombos.get(playerUUID).add(this);
         }
 
-        //add to the servers list of players
-        playerCombos.computeIfAbsent(playerUUID, k -> new ArrayList<>());
-        playerCombos.get(playerUUID).add(this);
+        if (player instanceof ServerPlayer) {
+            this.storePlayer = (ServerPlayer) player;
 
-
-        //update the state of the combo every tick from the server
-        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
-            server.execute(this::tick);
-        });
+            //update the state of the combo every tick from the server
+            ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
+                server.execute(() -> tick(server.getPlayerList().getPlayer(playerUUID)));
+            });
+        }
 
     }
 
@@ -192,11 +194,11 @@ public class Combo {
 
 
 
-    public void tick(){
+    public void tick(Player player){
         //if the combo ran out of time, reset it
         if(!checkBefore()){
             resetCombo();
-            resetClientHUDFromServer();
+            resetClientHUDFromServer(player);
         }
     }
 
@@ -284,7 +286,7 @@ public class Combo {
     public void doComboAction(Player player){
         action.Do(player);
         resetCombo();
-        resetClientHUDFromServer();
+        resetClientHUDFromServer(player);
     }
 
     /**
@@ -299,6 +301,10 @@ public class Combo {
             }
         }
         return max;
+    }
+
+    public boolean actionNull(){
+        return action==null;
     }
 
 
@@ -322,8 +328,9 @@ public class Combo {
      */
     private int lastKeyID=1;
 
-    public void resetClientHUDFromServer(){
-        Combo.handleServerSideComboRendering(serverPlayer,lastKeyID,true);
+    public void resetClientHUDFromServer(Player player){
+        if(player instanceof ServerPlayer serverPlayer)
+            Combo.handleServerSideComboRendering(serverPlayer,lastKeyID,true);
     }
 
 

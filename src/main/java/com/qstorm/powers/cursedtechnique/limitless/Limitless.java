@@ -31,24 +31,22 @@ public class Limitless extends Sorcery {
     //generate a limitless technique
     private Limitless(Player player){
         super(new LimitlessInnate(player.getUUID(),0),player,100000,10);
+        UUID playerUUID = player.getUUID();
+        addAbility(
+                new Blue(playerUUID,0),
+                Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
+        );
 
 
-        abilities.add(new Blue(player.getUUID(),1));
-        Combo blue = Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
-                .setAction(abilities.getLast());
-        abilities.getLast().setCombo(blue);
+        addAbility(
+                new Red(playerUUID,0),
+                Combo.build(player,"Limitless Red").addKey1(100).addKey1(200).addKey4(60).addKey4(10).addKey2(50)
+        );
 
-
-        abilities.add(new Red(player.getUUID(),2));
-        Combo red = Combo.build(player,"Limitless Red").addKey1(100).addKey1(200).addKey4(60).addKey4(10).addKey2(50)
-                .setAction(abilities.getLast());
-        abilities.getLast().setCombo(red);
-
-        abilities.add(new Purple(player.getUUID(),3));
-        Combo purple = Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
-                .setAction(abilities.getLast());
-        abilities.getLast().setCombo(purple);
-
+        addAbility(
+                new Purple(player.getUUID(),3),
+                Combo.build(player,"Limitless Purple").addKey2(4).addKey4(10).addKey1(60).addKey1(10).addKey3(5)
+        );
     }
 
 

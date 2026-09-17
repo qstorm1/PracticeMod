@@ -5,6 +5,7 @@ import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
+import com.qstorm.powers.Combo;
 import com.qstorm.powers.PlayerInfo;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -75,8 +76,9 @@ public class Sorcery {
 
 
     private Sorcery(Player player){
-        //TODO: change to .put() and remove all combos
-        sorcerers.putIfAbsent(player.getUUID(),this);
+
+        if(!Minecraft.getInstance().isSingleplayer()||!player.level().isClientSide())
+            sorcerers.put(player.getUUID(),this);
         hasInitializedOnClient.putIfAbsent(player.getUUID(),false);
 
         if(player instanceof ServerPlayer serverPlayer) {
@@ -97,7 +99,6 @@ public class Sorcery {
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,
                 (server) -> {
                     this.tick(serverPlayer);
-
                 });
     }
 
@@ -138,7 +139,14 @@ public class Sorcery {
     }
 
 
-
+    protected void addAbility(Ability ability, Combo combo){
+        ability.id = abilities.getLast().id+1;
+        abilities.add(ability);
+        if(combo.actionNull()){
+            combo.setAction(ability);
+        }
+        abilities.getLast().setCombo(combo);
+    }
 
 
     public static void init(){
