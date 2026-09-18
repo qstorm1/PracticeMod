@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -154,6 +155,9 @@ public class ComboKey{
                         combo.checkIfContinue(player,keyPressed);
                     }
                     else if(!Minecraft.getInstance().isSingleplayer()) combo.checkIfContinue(player,keyPressed);
+                    else {
+                        combo.checkIfContinueLocalSingleplayer((LocalPlayer)player,keyPressed);
+                    }
                 }
             }
         }

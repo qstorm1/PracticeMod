@@ -5,6 +5,7 @@ import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import com.zigythebird.playeranim.api.PlayerAnimationFactory;
 import com.zigythebird.playeranimcore.animation.Animation;
 import com.zigythebird.playeranimcore.animation.RawAnimation;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -125,7 +126,9 @@ public abstract class Ability {
 
 
 
-
+    public void DoSinglePlayerLocal(LocalPlayer player){
+        runClient(player);
+    }
 
 
     public void Do(Player player){
@@ -137,16 +140,10 @@ public abstract class Ability {
         if(power<initial){
             return;
         }
-
-        if(player instanceof ServerPlayer serverPlayer) {
-            playerInfo.useEnergy(serverPlayer, playerInfo.cursedOutput);
-            if (times.isEmpty()) {
-                run(serverPlayer);
-            } else {
-                run(times, serverPlayer);
-            }
-        }else{
-            animate(player);
+        if (times.isEmpty()) {
+            run(player);
+        } else {
+            run(times, player);
         }
 
     }
@@ -156,8 +153,13 @@ public abstract class Ability {
      * Run the ability
      * @param player the player running the ability
      */
-    protected void run(ServerPlayer player) {
-
+    protected void run(Player player) {
+        runServerClient(player);
+        if(player instanceof ServerPlayer serverPlayer)
+            runServer(serverPlayer);
+        else if(player instanceof LocalPlayer localPlayer)
+            runClient(localPlayer);
+        runServerClientPost(player);
     }
 
     /**
@@ -165,9 +167,31 @@ public abstract class Ability {
      * @param times the time it took to click the next comboKey
      * @param player the player running the ability
      */
-    protected void run(ArrayList<Integer> times,ServerPlayer player) {
+    protected void run(ArrayList<Integer> times,Player player) {
+        this.times=times;
+        run(player);
+    }
+
+    protected void runServerClient(Player player){
 
     }
+
+    /**
+     * Runs after the runServer/runClient method
+     */
+    protected void runServerClientPost(Player player){
+
+    }
+
+    protected void runClient(LocalPlayer player){
+
+    }
+
+    protected void runServer(ServerPlayer player){
+        playerInfo.useEnergy(player, playerInfo.cursedOutput);
+    }
+
+
 
     public void tick(Player contextPlayer){
     }

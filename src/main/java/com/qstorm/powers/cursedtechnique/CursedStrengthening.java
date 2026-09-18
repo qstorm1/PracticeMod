@@ -3,6 +3,7 @@ package com.qstorm.powers.cursedtechnique;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.Combo;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class CursedStrengthening extends Ability {
     }
 
     @Override
-    protected void run(ServerPlayer player) {
+    protected void run(Player player) {
 
     }
 }

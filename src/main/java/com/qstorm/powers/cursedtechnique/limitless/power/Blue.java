@@ -50,11 +50,9 @@ public class Blue extends Ability {
     }
 
 
-
-
     @Override
-    protected void run(ServerPlayer player) {
-        //start timer (set to 0 on reset)
+    protected void runServerClient(Player player){
+        super.runServerClient(player);
         ticksEnabled=200;
         Vec3 positionToSpawn = player.getEyePosition();
         this.radius=power/200000;
@@ -67,13 +65,22 @@ public class Blue extends Ability {
         distanceFromEye=radius+3;
         this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));
 
+        enableScroll();
+        startTickLoop();
+    }
+
+    @Override
+    protected void runServer(ServerPlayer player){
+        super.runServerClient(player);
+
         //TODO: send to all players in level and then send player uuid of player who is gonna do animation
         //ServerPlayNetworking.send(player.level().players(),);
         ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.blueInit));
 
-        startTickLoop();
-        enableScroll();
     }
+
+
+
 
 
     @Override

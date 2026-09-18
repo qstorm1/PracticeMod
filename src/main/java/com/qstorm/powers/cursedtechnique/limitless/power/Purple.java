@@ -8,6 +8,7 @@ import com.qstorm.powers.PlayerInfo;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class Purple extends Ability {
     }
 
     @Override
-    public void run(ServerPlayer player) {
+    public void run(Player player) {
         PracticeMod.LOGGER.info("ran purple");
         LaserEyes.shootLaser(player);
     }

@@ -5,6 +5,7 @@ import com.qstorm.packets.Packet;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -201,6 +202,12 @@ public class Combo {
         }
     }
 
+    public void checkIfContinueLocalSingleplayer(LocalPlayer player, int keyPressed){
+        if(comboKeys.get(current).id==keyPressed&&current>=comboKeys.size()-1){
+            action.DoSinglePlayerLocal(player);
+
+        }
+    }
 
     /**
      * Checks if the combo should continue after pressing ComboKey keyPressed.id

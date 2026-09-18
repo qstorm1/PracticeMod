@@ -6,6 +6,7 @@ import com.qstorm.powers.Combo;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class Red extends Ability {
     }
 
     @Override
-    public void run(ServerPlayer player) {
+    public void run(Player player) {
         PracticeMod.LOGGER.info("ran Red");
         LaserEyes.shootLaser(player);
     }
