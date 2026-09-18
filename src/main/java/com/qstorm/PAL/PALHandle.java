@@ -50,8 +50,10 @@ public class PALHandle{
                 Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "reloader"),
                 (sharedState, exectutor, barrier, applyExectutor) ->
                         barrier.wait(Unit.INSTANCE).thenRunAsync(()->{
-                            PracticeMod.LOGGER.info("test");
-                            DOMAIN_ONE = PlayerRawAnimationBuilder.begin().thenPlay(ANIMATION_NAME_ID).build();
+                            PracticeMod.LOGGER.info("Reloaded Assets for {}",PracticeMod.MOD_ID);
+
+
+                            DOMAIN_ONE = PlayerRawAnimationBuilder.begin().then(ANIMATION_NAME_ID, Animation.LoopType.PLAY_ONCE).build();
                             Ability.initAnimate(Blue.BLUE_ANIMATION_TAG,DOMAIN_ONE,1510);
                                 },applyExectutor)
         );
@@ -69,8 +71,6 @@ public class PALHandle{
             switch(payload.ID()){
                 case AnimationPacket.SendAnimationUpdate.blueInit -> {
                     PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(
-                            context.player(), Blue.BLUE_ANIMATION_TAG);
-                    var test = PlayerAnimationAccess.getPlayerAnimationLayer(
                             context.player(), Blue.BLUE_ANIMATION_TAG);
                     if(controller!=null) controller.triggerAnimation(DOMAIN_ONE);
                 }

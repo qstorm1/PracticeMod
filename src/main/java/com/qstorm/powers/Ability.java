@@ -14,14 +14,43 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public abstract class Ability {
+    /**
+     * The identifier of this ability
+     */
     public int id;
+    /**
+     * The combo attached to this player
+     */
     Combo abilityCombo;
+
+    /**
+     * If minecraft runs this program every tick
+     */
     public boolean isTicked=false;
+    /**
+     * how many ticks minecraft runs this program before ending
+     * MUST BE SET EVERY RUN
+     */
+    public int ticksEnabled;
+
+    /**
+     * The player with this ability
+     */
     public UUID playerUUID;
+
+    /**
+     * The time it takes for each key to be pressed
+     */
     public ArrayList<Integer> times = new ArrayList<>();
+    /**
+     * The color of the name on the client renderer (hexadecimal)
+     */
     public final int textColor;
 
     //JJK Specific
+    /**
+     * The info of the player
+     */
     public PlayerInfo playerInfo;
     /**
      * the amount of energy needed for the ability to run,
@@ -41,16 +70,38 @@ public abstract class Ability {
     public double power=0;
     protected double percentPower=0;
 
+    /**
+     * If this ability detects when the scroll wheel happens
+     */
     public boolean isScroll=false;
+
+    /**
+     * If this ability prevents the hotBar from moving
+     */
+    public boolean locksHotBarScroll=false;
 
 
     //the cursedEnergy system works linearly at the moment, power=increaseRate*energy+initial
 
 
     //PAL stuff
-    public boolean animationOn=false;
+    /**
+     * weather this ability runs an animation on run
+     */
+    public boolean animationOnRun=false;
+    /**
+     * The animation this animation runs
+     */
     protected Animation onRunAnimation;
+    /**
+     * The factory registry attached to this animation
+     */
     protected Identifier IS_JJK_ANIMATION;
+
+
+
+
+
 
 
     public Ability(UUID playerUUID, int id,int textColor){
@@ -67,6 +118,15 @@ public abstract class Ability {
         this.initial=initial;
         this.rate=rate;
     }
+
+
+
+
+
+
+
+
+
 
     public void Do(Player player){
         playerInfo=PlayerInfo.playerInfoHashMap.get(playerUUID);
@@ -89,11 +149,6 @@ public abstract class Ability {
             animate(player);
         }
 
-    }
-
-    public void setCombo(Combo combo){
-        this.abilityCombo=combo;
-        //abilityCombo.setAction(()->Do());
     }
 
 
@@ -188,6 +243,10 @@ public abstract class Ability {
 
     }
 
+    public void setCombo(Combo combo){
+        this.abilityCombo=combo;
+        //abilityCombo.setAction(()->Do());
+    }
 
 
 

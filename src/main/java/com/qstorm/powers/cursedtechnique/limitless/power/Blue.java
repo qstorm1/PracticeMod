@@ -32,7 +32,6 @@ public class Blue extends Ability {
     double radiusOfEffect;
     double distanceFromEye=0;//TODO: add max distance
 
-    int ticksEnabled=100;
 
     public static final Identifier BLUE_ANIMATION_TAG = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"blue-animation-tag-jjk");
 
