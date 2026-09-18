@@ -24,6 +24,10 @@ repositories {
 		name="Modrinth"
 		url="https://api.modrinth.com/maven"
 	}
+	maven {
+		name="LadySnake Mods"
+		url="https://maven.ladysnake.org/releases"
+	}
 }
 
 //fabricAPI settings
@@ -53,7 +57,9 @@ dependencies {
 	//carpet
 	modRuntimeOnly "maven.modrinth:carpet:${project.carpet_version}"
 
-
+	//cardinal components
+	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
+	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 
 
 
