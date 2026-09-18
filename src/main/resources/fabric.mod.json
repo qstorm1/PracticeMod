@@ -30,6 +30,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.19.3",
+		"player_animation_library": "*",
 		"minecraft": "~1.21.11",
 		"java": ">=21",
 		"fabric-api": "*"

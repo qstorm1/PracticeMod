@@ -36,6 +36,7 @@ public class PracticeModClient implements ClientModInitializer {
         PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE, Packet.LimitlessInit.CODEC);
         PayloadTypeRegistry.playS2C().register(AnimationPacket.SendAnimationUpdate.TYPE,AnimationPacket.SendAnimationUpdate.CODEC);
         initJJKClientRender();
+        PALHandle.init();
 
 
 //        ClientTickEvents.END_CLIENT_TICK.register((client)->{

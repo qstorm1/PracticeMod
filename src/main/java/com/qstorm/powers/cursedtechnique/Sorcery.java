@@ -108,7 +108,6 @@ public class Sorcery {
         ClientTickEvents.END_CLIENT_TICK.register(
                 client -> this.tick(player)
         );
-        PALHandle.init();
 
     }
 
