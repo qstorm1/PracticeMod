@@ -37,7 +37,7 @@
 	},
 	"custom": {
 		"cardinal-components": [
-			"practice_mod:magik"
+			"practice_mod:player-data"
 		]
 	}
 }

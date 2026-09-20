@@ -3,18 +3,14 @@ package com.qstorm.powers;
 import com.qstorm.PracticeMod;
 import com.qstorm.TestComponent;
 import com.qstorm.packets.Packet;
-import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
-import org.ladysnake.cca.api.v3.component.Component;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
@@ -24,7 +20,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class PlayerInfo implements EntityComponentInitializer, TestComponent {
@@ -113,27 +108,12 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
 
         //a random number between 0-1 with a higher chance of being close to one based on bornLuck stat
         //tbh this is kinda more vibes based
-        Random random = new Random();
-        int i = 0;
-
-
 
         //how much cursed energy the player has
-        this.cursedEnergyReserve = (int)(Math.abs(random.nextGaussian(500000+bornLuck,200000))*(1+increaseLuck/100.0));
+        this.cursedEnergyReserve = generateCursedEnergyStat(bornLuck,increaseLuck);
         this.cursedEnergy=cursedEnergyReserve;
 
-        //how much cursed energy the player can output (0-100%) default to 0.1% its realistically impossible to go past 5%
-        // (you can run a thing that costs a default of 1/1000 of maxed cursed energy 1000 times)
-        // I might change this from a percentage to an amount (ie you use scroll bar to output 1 energy-10000 energy)
-        double tempMaxCursedOutput;
-        do {
-            tempMaxCursedOutput = Math.abs(random.nextGaussian(0.2,0.05));
-            i++;
-        }
-        while(tempMaxCursedOutput>=1&&i<99);
-
-
-        maxCursedOutput=(int)(cursedEnergyReserve*tempMaxCursedOutput);
+        maxCursedOutput= generateCursedOutputStat(cursedEnergyReserve);
         this.cursedOutput=maxCursedOutput/2;
 
     }
@@ -146,30 +126,38 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
         this.cursedOutput=maxCursedOutput/2;
     }
 
-    public void onPlayerJoin(ServerPlayer player){
-        if()
 
+
+
+    private Integer generateCursedEnergyStat(int bornLuck, int increasedLuck){
+        return (int)(Math.abs(new Random().nextGaussian(500000+bornLuck,200000))*(1+increasedLuck/100.0));
     }
 
-    public void onPlayerLeave(ServerPlayer player){
+    private Integer generateCursedOutputStat(int cursedEnergyReserve){
+        //how much cursed energy the player can output (0-100%) default to 0.1% its realistically impossible to go past 5%
+        // (you can run a thing that costs a default of 1/1000 of maxed cursed energy 1000 times)
+        // I might change this from a percentage to an amount (ie you use scroll bar to output 1 energy-10000 energy)
 
+        int i = 0;
+        double tempMaxCursedOutput;
+        do {
+            tempMaxCursedOutput = Math.abs(new Random().nextGaussian(0.2,0.05));
+            i++;
+        }
+        while(tempMaxCursedOutput>=1&&i<99);
+
+        return (int)(cursedEnergyReserve*tempMaxCursedOutput);
     }
 
-    BiFunction<Integer,Integer,Integer> generateEnergy =
-            (BornLuck,IncreasedLuck)->(int)(Math.abs(new Random().nextGaussian(500000+BornLuck,200000))*(1+IncreasedLuck/100.0));
 
-    private Integer getOutput(){
 
-    }
+
 
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(playerInfoData,player -> new PlayerInfo(), RespawnCopyStrategy.ALWAYS_COPY);
+        registry.registerForPlayers(playerInfoData,player -> new PlayerInfo(0,0), RespawnCopyStrategy.ALWAYS_COPY);
     }
-
-
-
 
 
     public <T> T setValueOrMakeNew(Optional<T> value, Supplier<T> onNew){
@@ -181,10 +169,16 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
 
     @Override
     public void readData(ValueInput readView) {
-        this.cursedEnergyReserve = setValueOrMakeNew(readView.getInt("Max Cursed Energy"),);
+        this.cursedEnergyReserve = setValueOrMakeNew(readView.getInt("Max Cursed Energy"),
+                (Supplier<Integer>) () -> generateCursedEnergyStat(0,1));
         this.cursedEnergy = setValueOrMakeNew(readView.getInt("Current Cursed Energy"),cursedEnergyReserve);
-        this.maxCursedOutput = setValueOrMakeNew(readView.getInt("Max Cursed Output"),);
+
+
+        this.maxCursedOutput = setValueOrMakeNew(readView.getInt("Max Cursed Output"),
+                (Supplier<Integer>) ()-> generateCursedOutputStat(cursedEnergyReserve));
         this.cursedOutput = setValueOrMakeNew(readView.getInt("Current Cursed Output"),maxCursedOutput/2);
+
+
         this.cursedEfficiency = setValueOrMakeNew(readView.getInt("Cursed Efficiency"),0);
     }
 

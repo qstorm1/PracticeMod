@@ -12,6 +12,7 @@ import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class Limitless extends Sorcery {
         }
 
         PracticeMod.LOGGER.info("New Limitless player added!");
+        if(!player.getTags().contains(Sorcery.SORCERER_TAG)) player.addTag(Sorcery.SORCERER_TAG);
         new Limitless(player);
 
 
@@ -151,4 +153,6 @@ public class Limitless extends Sorcery {
         // all players are paused and their screens get cracked (take whatever image was at the last it is then cracked) until all players are loaded back into the world
         // after which onDomainEnd() is run
     }
+
+
 }

@@ -17,11 +17,11 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.Component;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
-import org.ladysnake.cca.api.v3.component.ComponentRegistryV3;
-import org.ladysnake.cca.api.v3.component.ComponentV3;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
+import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,9 +45,10 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
     int constantAbilityTickCost =0;
 
 
+    public static final String SORCERER_TAG = "Sorcerer_Tag";
 
     public UUID storedPlayerUUID;
-    public final Player storedPlayer;
+    public Player storedPlayer;
 
     /**
      * Abilities of player
@@ -89,7 +90,8 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
 
     private Sorcery(Player player){
-        this.storedPlayer=player;
+        if(!player.getTags().contains(SORCERER_TAG)) return;
+        this.storedPlayer = player;
 
         if(!Minecraft.getInstance().isSingleplayer()||!player.level().isClientSide())
             sorcerers.put(player.getUUID(),this);
@@ -107,7 +109,7 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
 
     protected void serverSideInitCode(ServerPlayer serverPlayer){
-        this.storedPlayer =serverPlayer;
+
         ServerPlayNetworking.send(serverPlayer, new Packet.ActivateSorceryRender(
                 PlayerInfo.playerInfoHashMap.get(serverPlayer.getUUID()).cursedEnergy,
                 PlayerInfo.getOutputAsPercent(serverPlayer.getUUID())));
@@ -141,7 +143,7 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
             return !hasInitializedOnClient.get(player.getUUID());
         }
-        return !sorceryInMap(player.getUUID());
+        return !isSorcerer(player.getUUID());
     }
 
     /**
@@ -149,7 +151,7 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
      * @param playerUUID UUID of player checking
      * @return if the player input already has a sorcery object in memory
      */
-    protected static boolean sorceryInMap(UUID playerUUID){
+    protected static boolean isSorcerer(UUID playerUUID){
         return sorcerers.get(playerUUID)!=null;
     }
 
@@ -330,8 +332,9 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
 
 
-    public static final ComponentKey<ComponentV3> HAS_INNATE_TECHNIQUE =
-            ComponentRegistryV3.INSTANCE.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"string"),ComponentV3.class);
+    ComponentKey<Component> SORCERY_DATA =
+            ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"sorcery-data"),Component.class);
+
 
 
     @Override
@@ -339,18 +342,22 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
         this.hasInnateTechnique=readView.getBooleanOr("HasInnateTechnique",false);
         this.canUseInnateDomain=readView.getBooleanOr("CanUseInnateDomain",false);
         this.canUseDomain=readView.getBooleanOr("CanUseDomain",false);
+        superReadData(readView);
     }
+    public void superReadData(ValueInput readInput){}
 
     @Override
     public void writeData(ValueOutput writeView) {
         writeView.putBoolean("HasInnateTechnique",hasInnateTechnique);
         writeView.putBoolean("CanUseInnateDomain",canUseInnateDomain);
         writeView.putBoolean("CanUseDomain",canUseDomain);
-        writeView.putString("Class",this.getClass().toString());
+        superWriteData(writeView);
     }
+
+    public void superWriteData(ValueOutput writeOutput){}
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(HAS_INNATE_TECHNIQUE,ComponentV3::new);
+        registry.registerForPlayers(SORCERY_DATA, Sorcery::new, RespawnCopyStrategy.ALWAYS_COPY);
     }
 }
