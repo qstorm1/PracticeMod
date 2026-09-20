@@ -1,11 +1,9 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.powers.Ability;
-import com.qstorm.powers.Combo;
+import com.qstorm.powers.combo.Combo;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-
-import java.util.UUID;
 
 public class CursedStrengthening extends Ability {
 

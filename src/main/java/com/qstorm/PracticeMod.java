@@ -7,7 +7,7 @@ import com.qstorm.item.ModItems;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.potion.ModPotions;
-import com.qstorm.powers.ComboKey;
+import com.qstorm.powers.combo.ComboKey;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.api.ModInitializer;

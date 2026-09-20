@@ -2,8 +2,8 @@ package com.qstorm.powers.cursedtechnique.limitless;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
-import com.qstorm.powers.Combo;
-import com.qstorm.powers.ComboClient;
+import com.qstorm.powers.combo.Combo;
+import com.qstorm.powers.combo.ComboClient;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
@@ -25,7 +25,6 @@ public class Limitless extends Sorcery {
 
     public static String tag= "Limitless User";
     public int innateTechniquePower=10;
-
 
 
     //generate a limitless technique

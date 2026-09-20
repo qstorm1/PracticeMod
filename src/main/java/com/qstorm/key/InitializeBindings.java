@@ -2,7 +2,7 @@ package com.qstorm.key;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.qstorm.PracticeMod;
-import com.qstorm.powers.ComboKey;
+import com.qstorm.powers.combo.ComboKey;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

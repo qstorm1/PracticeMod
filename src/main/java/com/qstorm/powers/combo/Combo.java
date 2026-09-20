@@ -1,7 +1,8 @@
-package com.qstorm.powers;
+package com.qstorm.powers.combo;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.Ability;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
@@ -39,7 +40,7 @@ public class Combo {
 
 
     //do an action whenever current=Integer
-    public HashMap<Integer,Ability> actionOnKey = new HashMap<>();
+    public HashMap<Integer, Ability> actionOnKey = new HashMap<>();
     //the amount into the combo
     int current=0;
 

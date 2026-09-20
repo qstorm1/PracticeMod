@@ -1,5 +1,6 @@
 package com.qstorm.powers;
 
+import com.qstorm.powers.combo.Combo;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import com.zigythebird.playeranim.api.PlayerAnimationFactory;
@@ -136,10 +137,10 @@ public abstract class Ability {
         power=(rate*playerInfo.cursedOutput);
         percentPower=power/rate*playerInfo.maxCursedOutput;
 
-
+        //if the power isn't enough to run the abilities initial cost
         if(power<initial){
             return;
-        }
+        }//if this is records times
         if (times.isEmpty()) {
             run(player);
         } else {

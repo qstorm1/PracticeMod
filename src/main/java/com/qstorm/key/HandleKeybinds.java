@@ -3,7 +3,7 @@ package com.qstorm.key;
 import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.packets.Packet;
-import com.qstorm.powers.ComboKey;
+import com.qstorm.powers.combo.ComboKey;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;

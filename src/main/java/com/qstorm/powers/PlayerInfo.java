@@ -1,25 +1,45 @@
 package com.qstorm.powers;
 
+import com.qstorm.PracticeMod;
+import com.qstorm.TestComponent;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
+import org.ladysnake.cca.api.v3.component.Component;
+import org.ladysnake.cca.api.v3.component.ComponentKey;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
+import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
+import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
+import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class PlayerInfo {
+public class PlayerInfo implements EntityComponentInitializer, TestComponent {
 
     //you can only train up to this value of cursed efficiency (items and abilities like six eyes can further improve this value)
     public static final int maxCursedEfficiency = 50;
 
     //basic information
+    static ComponentKey<TestComponent> playerInfoData =
+            ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"player-data"),TestComponent.class);
+
     public int cursedEnergy = 0;
     public int cursedEnergyReserve=0;
     public int cursedOutput = 0;
     public int maxCursedOutput = 0;
-    public double cursedOutputPercentage=0;
 
     //concentration: decreases as you move around and do things (this decrease is removed if hit a black flash or a pet dies)
     public int concentration = 0;
@@ -29,16 +49,12 @@ public class PlayerInfo {
     public int cursedEfficiency = 0;
     public int otherEfficiency=0;
 
-    public boolean canUseReversed=true;
-
-
-
 
 
 
     public static HashMap<UUID,PlayerInfo> playerInfoHashMap = new HashMap<>();
 
-
+    Player playerAttached;
 
     public void useEnergy(ServerPlayer player, int energyUsed){
         this.cursedEnergy-=(int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0));
@@ -121,4 +137,69 @@ public class PlayerInfo {
         this.cursedOutput=maxCursedOutput/2;
 
     }
+
+    public PlayerInfo(int efficiency, int maxEnergy, int maxOutput){
+        this.cursedEfficiency=efficiency;
+        this.cursedEnergyReserve=maxEnergy;
+        this.cursedEnergy=maxEnergy;
+        this.maxCursedOutput=maxOutput;
+        this.cursedOutput=maxCursedOutput/2;
+    }
+
+    public void onPlayerJoin(ServerPlayer player){
+        if()
+
+    }
+
+    public void onPlayerLeave(ServerPlayer player){
+
+    }
+
+    BiFunction<Integer,Integer,Integer> generateEnergy =
+            (BornLuck,IncreasedLuck)->(int)(Math.abs(new Random().nextGaussian(500000+BornLuck,200000))*(1+IncreasedLuck/100.0));
+
+    private Integer getOutput(){
+
+    }
+
+
+    @Override
+    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
+        registry.registerForPlayers(playerInfoData,player -> new PlayerInfo(), RespawnCopyStrategy.ALWAYS_COPY);
+    }
+
+
+
+
+
+    public <T> T setValueOrMakeNew(Optional<T> value, Supplier<T> onNew){
+        return value.orElseGet(onNew);
+    }
+    public <T> T setValueOrMakeNew(Optional<T> value, T valueElse){
+        return value.orElse(valueElse);
+    }
+
+    @Override
+    public void readData(ValueInput readView) {
+        this.cursedEnergyReserve = setValueOrMakeNew(readView.getInt("Max Cursed Energy"),);
+        this.cursedEnergy = setValueOrMakeNew(readView.getInt("Current Cursed Energy"),cursedEnergyReserve);
+        this.maxCursedOutput = setValueOrMakeNew(readView.getInt("Max Cursed Output"),);
+        this.cursedOutput = setValueOrMakeNew(readView.getInt("Current Cursed Output"),maxCursedOutput/2);
+        this.cursedEfficiency = setValueOrMakeNew(readView.getInt("Cursed Efficiency"),0);
+    }
+
+    @Override
+    public void writeData(ValueOutput writeView) {
+        writeView.putInt("Max Cursed Energy",this.cursedEnergyReserve);
+        writeView.putInt("Current Cursed Energy",this.cursedEnergy);
+        writeView.putInt("Max Cursed Output",this.maxCursedOutput);
+        writeView.putInt("Current Cursed Output",this.cursedOutput);
+        writeView.putInt("Cursed Efficiency",this.cursedEfficiency);
+    }
+
+
+    //TODO: save playerInfo stuff to the player entity
+
 }
+
+

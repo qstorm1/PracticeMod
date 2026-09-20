@@ -1,8 +1,7 @@
-package com.qstorm.powers;
+package com.qstorm.powers.combo;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.key.HandleKeybinds;
-import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

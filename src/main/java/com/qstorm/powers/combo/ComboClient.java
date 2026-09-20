@@ -1,4 +1,4 @@
-package com.qstorm.powers;
+package com.qstorm.powers.combo;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.packets.Packet;
@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class ComboClient {
     static Identifier stuffInBoxIdentifier=Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"combo_hud_box");;
@@ -24,19 +23,6 @@ public class ComboClient {
 
     //the comparator mode from the settings
 
-
-    public static final Identifier TEXTURECOMBO1 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/1.png");
-    public static final Identifier TEXTURECOMBO2 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/2.png");
-    public static final Identifier TEXTURECOMBO3 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/3.png");
-    public static final Identifier TEXTURECOMBO4 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/4.png");
-
-
-    public static final Identifier BLACKTEXTURECOMBO1 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/1.png");
-    public static final Identifier BLACKTEXTURECOMBO2 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/2.png");
-    public static final Identifier BLACKTEXTURECOMBO3 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/3.png");
-    public static final Identifier BLACKTEXTURECOMBO4 = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"textures/gui/combokeys/4.png");
-
-    public static final Identifier TESTIDENTIFIER = Identifier.fromNamespaceAndPath("minecraft", "textures/blocks/deepslate.png");
 
     public static ArrayList<String> comboNames= new ArrayList<>();
     public static ArrayList<Integer> idOfKeysToRender = new ArrayList<>();
