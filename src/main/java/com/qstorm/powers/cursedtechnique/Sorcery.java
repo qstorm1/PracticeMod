@@ -31,6 +31,9 @@ import java.util.UUID;
 //any players that can use cursed energy is added to the list of players
 public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent, Component {
 
+
+    public static final int CLASS_ID = 0;
+
     //data on weather the player can use things
     public boolean hasInnateTechnique = false;
 
@@ -168,6 +171,12 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
     public static void init(){
         registerServerNetworking();
+    }
+
+
+    protected boolean isInstantiated=false;
+    protected static boolean isInstance(Player player){
+        return !player.getTags().contains(SORCERER_TAG);
     }
 
 
@@ -329,7 +338,7 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
     }
 
-
+    protected Class<? extends Sorcery> classType=Sorcery.class;
 
 
     ComponentKey<Component> SORCERY_DATA =
@@ -358,6 +367,14 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(SORCERY_DATA, Sorcery::new, RespawnCopyStrategy.ALWAYS_COPY);
+        registry.registerForPlayers(SORCERY_DATA, player -> {
+            Sorcery value=null;
+            if(isInstance(player)){
+                value = new Sorcery(player);
+            }
+            return value;
+        }, RespawnCopyStrategy.ALWAYS_COPY);
+
+
     }
 }

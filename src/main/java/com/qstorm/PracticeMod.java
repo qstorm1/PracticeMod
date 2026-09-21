@@ -7,6 +7,7 @@ import com.qstorm.item.ModItems;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.potion.ModPotions;
+import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.combo.ComboKey;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
@@ -88,13 +89,12 @@ public class PracticeMod implements ModInitializer {
 	public static void onPlayerJoin(Player player){
 		InitializeBindings.onPlayerJoin(player);
 		ComboKey.registerPlayer(player.getUUID());
-		PlayerInfo.initNewPlayer(player.getUUID());
 	}
 
 	public static void onPlayerLeave(Player player){
 		PracticeMod.LOGGER.info(player.getDisplayName().getString() + " has left");
-
 		InitializeBindings.onPlayerLeave(player);
+		Combo.deregisterPlayerCombos(player.getUUID());
 		ComboKey.deregisterPlayer(player.getUUID());
 
 

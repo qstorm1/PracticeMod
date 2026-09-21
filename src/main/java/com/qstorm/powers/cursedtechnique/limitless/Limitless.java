@@ -23,6 +23,7 @@ import java.util.UUID;
  */
 public class Limitless extends Sorcery {
 
+    public static final int CLASS_ID = 10;
 
     public static String tag= "Limitless User";
     public int innateTechniquePower=10;
@@ -32,6 +33,7 @@ public class Limitless extends Sorcery {
     private Limitless(Player player){
         super(new LimitlessInnate(player.getUUID(),0),player,100000,10);
         UUID playerUUID = player.getUUID();
+        this.classType= Limitless.class;
         addAbility(
                 new Blue(playerUUID,0),
                 Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)

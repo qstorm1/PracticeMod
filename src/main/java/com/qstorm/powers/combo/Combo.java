@@ -57,19 +57,19 @@ public class Combo {
 
 
     //the player this combo is attached to (used to detect ComboKey's)
-    UUID playerUUID;
+    public UUID playerUUID;
     ServerPlayer storePlayer;
 
     Ability action;
 
-
+    boolean registered;
 
     /**
      * ASSUME THAT COMBO KEYS HAVE BEEN REGISTERED AND ARE FUCNTIONAL
      */
     private Combo(Player player,String name){
         playerUUID =player.getUUID();
-
+        registered=true;
 
         if(!Minecraft.getInstance().isSingleplayer()||!player.level().isClientSide()) {
             this.name = name;
@@ -84,8 +84,10 @@ public class Combo {
 
             //update the state of the combo every tick from the server
             ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
-                server.execute(() -> tick(server.getPlayerList().getPlayer(playerUUID)));
+                if(registered)
+                    server.execute(() -> tick(server.getPlayerList().getPlayer(playerUUID)));
             });
+
         }
 
     }
@@ -188,6 +190,10 @@ public class Combo {
         return this;
     }
 
+    /**
+     * Set Last key pressed to run an action
+     * @param ability the action running
+     */
     public Combo keyAction(Ability ability){
         this.actionOnKey.put(comboKeys.size() - 1,ability);
         return this;
@@ -242,6 +248,28 @@ public class Combo {
 
     }
 
+
+
+
+    public static void deregisterPlayerCombos(UUID playerUUID){
+        Combo.playerCombos.forEach((id,combos)->{
+            for(Combo combo:combos){
+                if(combo.playerUUID.equals(playerUUID)){
+                    combo.deregisterCombo();
+                }
+            }
+        });
+    }
+
+
+
+    /**
+     * Remove this combo from handling
+     */
+    public void deregisterCombo(){
+        this.registered=false;
+        playerCombos.remove(playerUUID);
+    }
 
 
     /**

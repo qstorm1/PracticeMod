@@ -46,35 +46,55 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
 
 
 
-
     public static HashMap<UUID,PlayerInfo> playerInfoHashMap = new HashMap<>();
 
-    Player playerAttached;
 
-    public void useEnergy(ServerPlayer player, int energyUsed){
-        this.cursedEnergy-=(int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0));
-        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(player.getUUID())));
+
+
+
+    public PlayerInfo(UUID playerUUID,int bornLuck, int increaseLuck){
+        this(playerUUID);
+        //a random number between 0-1 with a higher chance of being close to one based on bornLuck stat
+        //tbh this is kinda more vibes based
+
+        //how much cursed energy the player has
+        this.cursedEnergyReserve = generateCursedEnergyStat(bornLuck,increaseLuck);
+        this.cursedEnergy=cursedEnergyReserve;
+
+        maxCursedOutput= generateCursedOutputStat(cursedEnergyReserve);
+        this.cursedOutput=maxCursedOutput/2;
+
     }
+
+    public PlayerInfo(Player player,int efficiency, int maxEnergy, int maxOutput){
+        this(player.getUUID());
+        this.cursedEfficiency=efficiency;
+        this.cursedEnergyReserve=maxEnergy;
+        this.cursedEnergy=maxEnergy;
+        this.maxCursedOutput=maxOutput;
+        this.cursedOutput=maxCursedOutput/2;
+    }
+
+    private PlayerInfo(UUID playerUUID){playerInfoHashMap.putIfAbsent(playerUUID,this);}
+
 
 
     public static void initNewPlayer(UUID playerUUID){
-        playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(0,0));
+        playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(playerUUID,0,0));
     }
 
     public static void initNewPlayer(UUID playerUUID,int bornLuck,int increaseLuck){
-        playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(bornLuck,increaseLuck));
+        playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(playerUUID,bornLuck,increaseLuck));
     }
 
     public static void regenPlayerInfo(UUID playerUUID){
         if(playerInfoHashMap.get(playerUUID)==null) return;
-        playerInfoHashMap.put(playerUUID,new PlayerInfo(0,0));
+        playerInfoHashMap.put(playerUUID,new PlayerInfo(playerUUID,0,0));
     }
 
     public static void regenPlayerInfo(UUID playerUUID,int bornLuck, int increaseLuck){
         if(playerInfoHashMap.get(playerUUID)==null) return;
-        playerInfoHashMap.put(playerUUID,new PlayerInfo(bornLuck,increaseLuck));
+        playerInfoHashMap.put(playerUUID,new PlayerInfo(playerUUID,bornLuck,increaseLuck));
     }
 
 
@@ -90,41 +110,6 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
     }
 
 
-    @Override
-    public String toString(){
-        return  "Total Cursed Energy = "+cursedEnergyReserve + "Current Cursed Energy = " + cursedEnergy +
-                "\nTotal Cursed Output = "+ maxCursedOutput +" Current Cursed Output = "+cursedOutput +
-                "\nCurrent Cursed Efficiency = "+cursedEfficiency;
-    }
-
-
-    public static Double getOutputAsPercent(UUID player){
-        return ((double)(playerInfoHashMap.get(player).cursedOutput)/(playerInfoHashMap.get(player).maxCursedOutput));
-    }
-
-
-
-    public PlayerInfo(int bornLuck, int increaseLuck){
-
-        //a random number between 0-1 with a higher chance of being close to one based on bornLuck stat
-        //tbh this is kinda more vibes based
-
-        //how much cursed energy the player has
-        this.cursedEnergyReserve = generateCursedEnergyStat(bornLuck,increaseLuck);
-        this.cursedEnergy=cursedEnergyReserve;
-
-        maxCursedOutput= generateCursedOutputStat(cursedEnergyReserve);
-        this.cursedOutput=maxCursedOutput/2;
-
-    }
-
-    public PlayerInfo(int efficiency, int maxEnergy, int maxOutput){
-        this.cursedEfficiency=efficiency;
-        this.cursedEnergyReserve=maxEnergy;
-        this.cursedEnergy=maxEnergy;
-        this.maxCursedOutput=maxOutput;
-        this.cursedOutput=maxCursedOutput/2;
-    }
 
 
 
@@ -153,10 +138,35 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
 
 
 
+    public void useEnergy(ServerPlayer player, int energyUsed){
+        this.cursedEnergy-=(int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0));
+        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
+                PlayerInfo.getOutputAsPercent(player.getUUID())));
+    }
+
+
+    @Override
+    public String toString(){
+        return  "Total Cursed Energy = "+cursedEnergyReserve + "Current Cursed Energy = " + cursedEnergy +
+                "\nTotal Cursed Output = "+ maxCursedOutput +" Current Cursed Output = "+cursedOutput +
+                "\nCurrent Cursed Efficiency = "+cursedEfficiency;
+    }
+
+
+
+
+    public static Double getOutputAsPercent(UUID player){
+        return ((double)(playerInfoHashMap.get(player).cursedOutput)/(playerInfoHashMap.get(player).maxCursedOutput));
+    }
+
+
+
+
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(playerInfoData,player -> new PlayerInfo(0,0), RespawnCopyStrategy.ALWAYS_COPY);
+        registry.registerForPlayers(playerInfoData,player -> new PlayerInfo(player.getUUID(),0,0), RespawnCopyStrategy.ALWAYS_COPY);
     }
 
 
