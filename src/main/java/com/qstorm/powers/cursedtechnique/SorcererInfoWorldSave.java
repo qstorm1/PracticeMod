@@ -1,18 +1,16 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.Component;
 import org.ladysnake.cca.api.v3.world.WorldComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class SorcerorInfoWorldSave implements WorldComponentInitializer, Component {
+public class SorcererInfoWorldSave implements WorldComponentInitializer, Component {
     //player info to integer where integer is the stored class ID
     public static HashMap<UUID, Integer> playerSorceryInfo= new HashMap<>();
 
@@ -37,10 +35,7 @@ public class SorcerorInfoWorldSave implements WorldComponentInitializer, Compone
     @Override
     public void readData(ValueInput readView) {
         playerSorceryInfo.clear();
-        playerSorceryInfo.put()
         HashMap<UUID,Class<? extends Sorcery>> updated = new HashMap<>();
-        playerSorceryInfo.values().forEach(
-                aClass -> getClassFromID(aClass);
     }
 
     @Override
@@ -51,7 +46,6 @@ public class SorcerorInfoWorldSave implements WorldComponentInitializer, Compone
             playerSorceryIntArray[i]=test[i];
         }
         writeView.putIntArray("player-sorcery-types",playerSorceryIntArray);
-        playerSorceryInfo.keySet().forEach((e)->e.);
         writeView.putIntArray("player-sorcery-uuids",playerSorceryIntArray);
     }
 }

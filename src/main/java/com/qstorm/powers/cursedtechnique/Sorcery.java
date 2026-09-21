@@ -95,6 +95,7 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
     private Sorcery(Player player){
         if(!player.getTags().contains(SORCERER_TAG)) return;
         this.storedPlayer = player;
+        isInstantiated=true;
 
         if(!Minecraft.getInstance().isSingleplayer()||!player.level().isClientSide())
             sorcerers.put(player.getUUID(),this);
@@ -116,17 +117,20 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
         ServerPlayNetworking.send(serverPlayer, new Packet.ActivateSorceryRender(
                 PlayerInfo.playerInfoHashMap.get(serverPlayer.getUUID()).cursedEnergy,
                 PlayerInfo.getOutputAsPercent(serverPlayer.getUUID())));
-        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA,
-                (server) -> {
-                    this.tick(serverPlayer);
-                });
+        ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, (server) -> {
+            if(isInstantiated)
+                this.tick(serverPlayer);
+        });
     }
 
 
     protected void clientSideInitCode(Player player){
         hasInitializedOnClient.put(player.getUUID(),true);
         ClientTickEvents.END_CLIENT_TICK.register(
-                client -> this.tick(player)
+
+                client -> {
+                    if(isInstantiated) this.tick(player);
+                }
         );
 
     }
@@ -146,17 +150,9 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
             return !hasInitializedOnClient.get(player.getUUID());
         }
-        return !isSorcerer(player.getUUID());
+        return !isSorcerer(player);
     }
 
-    /**
-     * Checks if the sorcerers map contains this element
-     * @param playerUUID UUID of player checking
-     * @return if the player input already has a sorcery object in memory
-     */
-    protected static boolean isSorcerer(UUID playerUUID){
-        return sorcerers.get(playerUUID)!=null;
-    }
 
 
     protected void addAbility(Ability ability, Combo combo){
@@ -175,7 +171,12 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
 
     protected boolean isInstantiated=false;
-    protected static boolean isInstance(Player player){
+    /**
+     * Checks if the sorcerer is considered official
+     * @param player Player of Tag
+     * @return if the player input already has a sorcery object in memory
+     */
+    protected static boolean isSorcerer(Player player){
         return !player.getTags().contains(SORCERER_TAG);
     }
 
@@ -331,11 +332,17 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
 
 
-
     // If the player starts getting emotional they increase in power
     // To be added next update
     public void onPetDeath(){
 
+    }
+
+
+    public static void onPlayerLeave(Player playerLeaving){
+        if(sorcerers.get(playerLeaving.getUUID())!=null) sorcerers.get(playerLeaving.getUUID()).isInstantiated=false;
+        sorcerers.remove(playerLeaving.getUUID());
+        hasInitializedOnClient.remove(playerLeaving.getUUID());
     }
 
     protected Class<? extends Sorcery> classType=Sorcery.class;
@@ -369,7 +376,7 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
         registry.registerForPlayers(SORCERY_DATA, player -> {
             Sorcery value=null;
-            if(isInstance(player)){
+            if(isSorcerer(player)){
                 value = new Sorcery(player);
             }
             return value;

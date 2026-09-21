@@ -93,10 +93,13 @@ public class PracticeMod implements ModInitializer {
 
 	public static void onPlayerLeave(Player player){
 		PracticeMod.LOGGER.info(player.getDisplayName().getString() + " has left");
+
 		InitializeBindings.onPlayerLeave(player);
+
 		Combo.deregisterPlayerCombos(player.getUUID());
 		ComboKey.deregisterPlayer(player.getUUID());
 
+		Sorcery.onPlayerLeave(player);
 
 	}
 
