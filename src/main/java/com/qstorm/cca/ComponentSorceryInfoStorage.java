@@ -1,60 +1,42 @@
 package com.qstorm.cca;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.TestComponent;
-import com.qstorm.powers.cursedtechnique.Sorcery;
-import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
-import org.ladysnake.cca.api.v3.component.Component;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-
-public class ComponentSorceryInfoStorage implements TestComponent, EntityComponentInitializer {
-
-//    public static HashMap<UUID,ComponentSorceryInfoStorage> infoList= new HashMap<>();
+public class ComponentSorceryInfoStorage implements SorceryDataInterface, EntityComponentInitializer {
+    //TODO: implement AutoSynced thing
 
     //data on weather the player can use things
     public boolean hasInnateTechnique = false;
-
     public boolean canUseInnateDomain=false;
     public boolean canUseDomain=false;
 
-
-    public String powerType="null";
-
-    public static ComponentKey<TestComponent> sorceryInfoData =
-            ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"sorcery-info-data"),TestComponent.class);
+    //the power that this player is using, "null" = no power
+    public static final String nullSorceryString="null";
+    public String powerType=nullSorceryString;
 
 
+    public static ComponentKey<SorceryDataInterface> sorceryInfoData =
+            ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"sorcery-info-data"),SorceryDataInterface.class);
 
-    public static void initPowerType(Player player){
 
-//        if(infoList.get(player.getUUID()).powerType.equals("null")){
-//
-//        }
-//        else if (infoList.get(player.getUUID()).powerType.equals(Limitless.SORCERER_TAG)){
-//            Limitless.initLimitlessPlayer(player);
-//        }
-
-    }
 
     @Override
     public void readData(ValueInput readView) {
         this.hasInnateTechnique=readView.getBooleanOr("HasInnateTechnique",false);
         this.canUseInnateDomain=readView.getBooleanOr("CanUseInnateDomain",false);
         this.canUseDomain=readView.getBooleanOr("CanUseDomain",false);
-        this.powerType=readView.getStringOr("Power","null");
+        this.powerType=readView.getStringOr("Power",nullSorceryString);
+
     }
 
     @Override
@@ -62,12 +44,38 @@ public class ComponentSorceryInfoStorage implements TestComponent, EntityCompone
         writeView.putBoolean("HasInnateTechnique",hasInnateTechnique);
         writeView.putBoolean("CanUseInnateDomain",canUseInnateDomain);
         writeView.putBoolean("CanUseDomain",canUseDomain);
-        if(powerType!=null&&!powerType.equals("null")) writeView.putString("Power",powerType);
+        if(powerType!=null&&!powerType.equals(nullSorceryString)) writeView.putString("Power",powerType);
     }
 
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
         registry.registerForPlayers(sorceryInfoData, player -> new ComponentSorceryInfoStorage(), RespawnCopyStrategy.ALWAYS_COPY);
+    }
+
+
+    @Override
+    public boolean hasInnateTechnique() {
+        return hasInnateTechnique;
+    }
+
+    @Override
+    public boolean getInnateStatus() {
+        return canUseInnateDomain;
+    }
+
+    @Override
+    public boolean getDomainStatus() {
+        return canUseDomain;
+    }
+
+    @Override
+    public String getSorceryType() {
+        return powerType;
+    }
+
+    @Override
+    public void setSorceryType(String powerType) {
+        this.powerType = powerType;
     }
 }

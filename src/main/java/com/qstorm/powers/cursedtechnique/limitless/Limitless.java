@@ -22,9 +22,7 @@ import java.util.UUID;
  */
 public class Limitless extends Sorcery {
 
-    public static final int CLASS_ID = 10;
-
-    public static String SORCERER_TAG = "Limitless User";
+    private static String SORCERER_ID = "Limitless User";
     public int innateTechniquePower=10;
 
 
@@ -100,6 +98,10 @@ public class Limitless extends Sorcery {
     }
 
 
+
+    public static String getSorcererID() {
+        return SORCERER_ID==null ? SORCERER_TAG:SORCERER_ID;
+    }
 
 
     //Does the action of the player running

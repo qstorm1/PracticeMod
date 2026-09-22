@@ -20,7 +20,7 @@ public class SoulEffect extends MobEffect {
     @Override
     public void onEffectAdded(MobEffectInstance effectInstance, LivingEntity entity) {
         super.onEffectAdded(effectInstance, entity);
-        entity.addTag(Limitless.SORCERER_TAG);
+        entity.addTag(Limitless.getSorcererID());
         if(entity instanceof Player player){
             Limitless.initLimitlessPlayer(player);
             if(player.getTags().contains("cheat")){}

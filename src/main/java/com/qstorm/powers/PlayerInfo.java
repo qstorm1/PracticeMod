@@ -1,7 +1,7 @@
 package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.TestComponent;
+import com.qstorm.cca.TestComponent;
 import com.qstorm.packets.Packet;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.player.LocalPlayer;
@@ -12,15 +12,11 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
-import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
-import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
-import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class PlayerInfo implements TestComponent {

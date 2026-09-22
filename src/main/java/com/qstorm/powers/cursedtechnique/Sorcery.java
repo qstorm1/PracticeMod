@@ -1,11 +1,13 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.cca.ComponentSorceryInfoStorage;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.PlayerInfo;
+import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -31,8 +33,12 @@ import java.util.UUID;
 
 //player specific
 //any players that can use cursed energy is added to the list of players
-public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent, Component {
 
+/**
+ * A method that handles all the background stuff surrounding the power system.
+ * Data stored in the ComponentSorceryInfoStorage class
+ */
+public class Sorcery {
 
     public static final int CLASS_ID = 0;
 
@@ -50,7 +56,7 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
     int constantAbilityTickCost =0;
 
 
-    public static final String SORCERER_TAG = "Sorcerer_Tag";
+    public static final String SORCERER_TAG = "Sorceror.TAG";
 
     public UUID storedPlayerUUID;
     public Player storedPlayer;
@@ -170,9 +176,16 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
     public static void init(){
         registerServerNetworking();
         ServerTickEvents.END_SERVER_TICK.register((server)->{
+
+
             Collection<ServerPlayer> players = PlayerLookup.all(server);
             for(ServerPlayer player:players){
-                if (player.)
+                String sorcertyType = ComponentSorceryInfoStorage.sorceryInfoData.get(player).getSorceryType();
+                if(sorcertyType.equals(Limitless.getSorcererID())){
+                    if(sorcerers.get(player.getUUID())!=null){
+                        Limitless.initLimitlessPlayer(player);
+                    }
+                }
             }
         });
     }
@@ -351,45 +364,5 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
         if(sorcerers.get(playerLeaving.getUUID())!=null) sorcerers.get(playerLeaving.getUUID()).isInstantiated=false;
         sorcerers.remove(playerLeaving.getUUID());
         hasInitializedOnClient.remove(playerLeaving.getUUID());
-    }
-
-    protected Class<? extends Sorcery> classType=Sorcery.class;
-
-
-    ComponentKey<Component> SORCERY_DATA =
-            ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"sorcery-data"),Component.class);
-
-
-
-    @Override
-    public void readData(ValueInput readView) {
-        this.hasInnateTechnique=readView.getBooleanOr("HasInnateTechnique",false);
-        this.canUseInnateDomain=readView.getBooleanOr("CanUseInnateDomain",false);
-        this.canUseDomain=readView.getBooleanOr("CanUseDomain",false);
-        superReadData(readView);
-    }
-    public void superReadData(ValueInput readInput){}
-
-    @Override
-    public void writeData(ValueOutput writeView) {
-        writeView.putBoolean("HasInnateTechnique",hasInnateTechnique);
-        writeView.putBoolean("CanUseInnateDomain",canUseInnateDomain);
-        writeView.putBoolean("CanUseDomain",canUseDomain);
-        superWriteData(writeView);
-    }
-
-    public void superWriteData(ValueOutput writeOutput){}
-
-    @Override
-    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(SORCERY_DATA, player -> {
-            Sorcery value=null;
-            if(isSorcerer(player)){
-                value = new Sorcery(player);
-            }
-            return value;
-        }, RespawnCopyStrategy.ALWAYS_COPY);
-
-
     }
 }

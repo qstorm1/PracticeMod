@@ -44,7 +44,7 @@
 	"custom": {
 		"cardinal-components": [
 			"practice-mod:player-data",
-			"practice-mod:sorcery-data"
+			"practice-mod:sorcery-info-data"
 		]
 	}
 }

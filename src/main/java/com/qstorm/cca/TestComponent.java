@@ -1,4 +1,4 @@
-package com.qstorm;
+package com.qstorm.cca;
 
 import org.ladysnake.cca.api.v3.component.Component;
 
