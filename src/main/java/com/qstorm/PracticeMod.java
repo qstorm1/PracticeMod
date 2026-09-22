@@ -76,9 +76,6 @@ public class PracticeMod implements ModInitializer {
 		Sorcery.init();
 
 	}
-	public static void test(){
-
-	}
 
 
 

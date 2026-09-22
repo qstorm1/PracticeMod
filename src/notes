@@ -73,3 +73,6 @@ i had to get good at mixins
 I had some issues trying to get the Player Animation Library (PAL) mod to work, the most vital of which was the fact that animations wouldn't load on startup.
 The PAL mod runs after my mod including all of the important initialization functions that take the .json data and put them into static variables.
 I fixed it by making my mod initialize player animations when creating a new sorcerer.
+
+I spent live 100 hours dealing with a stupid error where fabric the EntityComponent for cca had to be init in the fabricmod.json entrypoint
+cause it wasn't anywhere in the docs

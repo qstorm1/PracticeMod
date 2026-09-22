@@ -8,6 +8,7 @@ import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.PlayerInfo;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
@@ -24,6 +25,7 @@ import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -167,6 +169,12 @@ public class Sorcery implements EntityComponentInitializer, AutoSyncedComponent,
 
     public static void init(){
         registerServerNetworking();
+        ServerTickEvents.END_SERVER_TICK.register((server)->{
+            Collection<ServerPlayer> players = PlayerLookup.all(server);
+            for(ServerPlayer player:players){
+                if (player.)
+            }
+        });
     }
 
 

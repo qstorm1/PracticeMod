@@ -12,7 +12,6 @@ import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class Limitless extends Sorcery {
 
     public static final int CLASS_ID = 10;
 
-    public static String tag= "Limitless User";
+    public static String SORCERER_TAG = "Limitless User";
     public int innateTechniquePower=10;
 
 

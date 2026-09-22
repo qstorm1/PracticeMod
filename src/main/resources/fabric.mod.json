@@ -23,6 +23,10 @@
 		],
 		"fabric-datagen": [
 			"com.qstorm.PracticeModDataGenerator"
+		],
+		"cardinal-components-entity": [
+			"com.qstorm.cca.EntityComponentInitializer",
+			"com.qstorm.cca.ComponentSorceryInfoStorage"
 		]
 	},
 	"mixins": [
@@ -31,13 +35,16 @@
 	"depends": {
 		"fabricloader": ">=0.19.3",
 		"player_animation_library": "*",
+		"cardinal-components-base": "*",
+		"cardinal-components-entity": "*",
 		"minecraft": "~1.21.11",
 		"java": ">=21",
 		"fabric-api": "*"
 	},
 	"custom": {
 		"cardinal-components": [
-			"practice_mod:player-data"
+			"practice-mod:player-data",
+			"practice-mod:sorcery-data"
 		]
 	}
 }

@@ -41,7 +41,7 @@ dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
-	//has loom set the mappings to a new mapping that is a dependancy
+	//has loom set the mappings to a new mapping that is a dependency
 	//this is called the official mojang mappings and adding to it is parchment, a more readable thing
 	mappings loom.layered() {
 		officialMojangMappings()

@@ -13,27 +13,42 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.OutgoingChatMessage;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
+import net.minecraft.world.entity.player.Player;
+
+import java.util.UUID;
 
 public class Commands {
     public static int regenPlayerInfo2V(int v1,int v2,CommandContext<CommandSourceStack> context){
         context.getSource().sendSuccess(()-> Component.literal("RenderedPlayerInfo"),false);
         if(context.getSource().isPlayer()){
-            PlayerInfo.regenPlayerInfo(context.getSource().getPlayer().getUUID(),v1,v2);
+            PlayerInfo.regenPlayerInfo(context.getSource().getPlayer(),v1,v2);
         }
         return 1;
     }
     public static int regenPlayerInfo(CommandContext<CommandSourceStack> context){
         context.getSource().sendSuccess(()-> Component.literal("RenderedPlayerInfo"),false);
         if(context.getSource().isPlayer()){
-            PlayerInfo.regenPlayerInfo(context.getSource().getPlayer().getUUID());
+            PlayerInfo.regenPlayerInfo(context.getSource().getPlayer());
         }
         return 1;
     }
 
     public static int showStats(CommandContext<CommandSourceStack> context){
+        UUID test = context.getSource().getPlayer().getUUID();
+        Player test3 = context.getSource().getPlayer();
+        String test2 = PlayerInfo.playerInfoHashMap.get(context.getSource().getPlayer().getUUID()).toString();
         ServerPlayNetworking.send(context.getSource().getPlayer(),
-                new Packet.SendClientMessage(PlayerInfo.playerInfoHashMap.get(context.getSource().getPlayer().getUUID()).toString()));
+                new Packet.SendClientMessage(new String(PlayerInfo.playerInfoHashMap.get(context.getSource().getPlayer().getUUID()).toString())));
         context.getSource().sendSuccess(()->Component.literal("stats"),false);
+        return 1;
+    }
+
+    public static int showUUID(CommandContext<CommandSourceStack> context){
+
+        ServerPlayNetworking.send(context.getSource().getPlayer(),
+                new Packet.SendClientMessage(context.getSource().getPlayer().getStringUUID()));
+
+        context.getSource().sendSuccess(()->Component.literal("JJK_UUID"),false);
         return 1;
     }
 
@@ -60,7 +75,12 @@ public class Commands {
         CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
             dispatcher.register(net.minecraft.commands.Commands.literal("stats")
                     .executes(Commands::showStats)
+            );
+        }));
 
+        CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(net.minecraft.commands.Commands.literal("JJK_UUID")
+                    .executes(Commands::showUUID)
             );
         }));
 

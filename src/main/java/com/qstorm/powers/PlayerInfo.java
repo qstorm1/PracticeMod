@@ -4,6 +4,7 @@ import com.qstorm.PracticeMod;
 import com.qstorm.TestComponent;
 import com.qstorm.packets.Packet;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -22,13 +23,13 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class PlayerInfo implements EntityComponentInitializer, TestComponent {
+public class PlayerInfo implements TestComponent {
 
     //you can only train up to this value of cursed efficiency (items and abilities like six eyes can further improve this value)
     public static final int maxCursedEfficiency = 50;
 
     //basic information
-    static ComponentKey<TestComponent> playerInfoData =
+    public static ComponentKey<TestComponent> playerInfoData =
             ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"player-data"),TestComponent.class);
 
     public int cursedEnergy = 0;
@@ -52,8 +53,9 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
 
 
 
-    public PlayerInfo(UUID playerUUID,int bornLuck, int increaseLuck){
-        this(playerUUID);
+    public PlayerInfo(Player player,int bornLuck, int increaseLuck){
+         this(player);
+         if(player instanceof LocalPlayer) return;
         //a random number between 0-1 with a higher chance of being close to one based on bornLuck stat
         //tbh this is kinda more vibes based
 
@@ -67,7 +69,7 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
     }
 
     public PlayerInfo(Player player,int efficiency, int maxEnergy, int maxOutput){
-        this(player.getUUID());
+        this(player);
         this.cursedEfficiency=efficiency;
         this.cursedEnergyReserve=maxEnergy;
         this.cursedEnergy=maxEnergy;
@@ -75,26 +77,22 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
         this.cursedOutput=maxCursedOutput/2;
     }
 
-    private PlayerInfo(UUID playerUUID){playerInfoHashMap.putIfAbsent(playerUUID,this);}
-
-
-
-    public static void initNewPlayer(UUID playerUUID){
-        playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(playerUUID,0,0));
+    private PlayerInfo(Player player){
+        if(player instanceof LocalPlayer) return;;
+        playerInfoHashMap.putIfAbsent(player.getUUID(),this);
     }
 
-    public static void initNewPlayer(UUID playerUUID,int bornLuck,int increaseLuck){
-        playerInfoHashMap.putIfAbsent(playerUUID,new PlayerInfo(playerUUID,bornLuck,increaseLuck));
+
+
+
+    public static void regenPlayerInfo(Player player){
+        if(playerInfoHashMap.get(player.getUUID())==null) return;
+        playerInfoHashMap.put(player.getUUID(),new PlayerInfo(player,0,0));
     }
 
-    public static void regenPlayerInfo(UUID playerUUID){
-        if(playerInfoHashMap.get(playerUUID)==null) return;
-        playerInfoHashMap.put(playerUUID,new PlayerInfo(playerUUID,0,0));
-    }
-
-    public static void regenPlayerInfo(UUID playerUUID,int bornLuck, int increaseLuck){
-        if(playerInfoHashMap.get(playerUUID)==null) return;
-        playerInfoHashMap.put(playerUUID,new PlayerInfo(playerUUID,bornLuck,increaseLuck));
+    public static void regenPlayerInfo(Player player,int bornLuck, int increaseLuck){
+        if(playerInfoHashMap.get(player.getUUID())==null) return;
+        playerInfoHashMap.put(player.getUUID(),new PlayerInfo(player,bornLuck,increaseLuck));
     }
 
 
@@ -164,10 +162,7 @@ public class PlayerInfo implements EntityComponentInitializer, TestComponent {
 
 
 
-    @Override
-    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(playerInfoData,player -> new PlayerInfo(player.getUUID(),0,0), RespawnCopyStrategy.ALWAYS_COPY);
-    }
+
 
 
     public <T> T setValueOrMakeNew(Optional<T> value, Supplier<T> onNew){
