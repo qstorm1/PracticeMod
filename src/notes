@@ -76,3 +76,5 @@ I fixed it by making my mod initialize player animations when creating a new sor
 
 I spent live 100 hours dealing with a stupid error where fabric the EntityComponent for cca had to be init in the fabricmod.json entrypoint
 cause it wasn't anywhere in the docs
+
+I don't think anyone understands the messed up satisfaction that comes from deleting the most important part of your code. Thats what I felt when I deleted the static variables I was using which previously held ALL of the data

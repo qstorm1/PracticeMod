@@ -1,7 +1,6 @@
 package com.qstorm.effects.custom;
 
-import com.qstorm.cca.ComponentSorceryInfoStorage;
-import com.qstorm.cca.SorceryComponent;
+import com.qstorm.cca.SorceryInfoStorage;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.minecraft.world.effect.MobEffect;
@@ -25,8 +24,7 @@ public class SoulEffect extends MobEffect {
         super.onEffectAdded(effectInstance, entity);
         entity.addTag(Limitless.getSorcererID());
         if(entity instanceof Player player){
-            ComponentSorceryInfoStorage.sorceryInfoData.get(player).setSorceryType(Limitless.SORCERER_ID);
-            Limitless.initLimitlessPlayer(player);
+            SorceryInfoStorage.sorceryData.get(player).setSorceryType(Limitless.SORCERER_ID);
             if(player.getTags().contains("cheat"))
                 PlayerInfo.setCheatMode(player);
         }

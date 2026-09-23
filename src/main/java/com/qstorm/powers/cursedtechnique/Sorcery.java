@@ -1,9 +1,9 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.cca.ComponentSorceryInfoStorage;
+import com.qstorm.cca.SorceryDataContext;
+import com.qstorm.cca.SorceryInfoStorage;
 import com.qstorm.cca.PlayerInfoContext;
-import com.qstorm.cca.SorceryComponent;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
@@ -23,8 +22,6 @@ import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.UUID;
 
 //player specific
 //any players that can use cursed energy is added to the list of players
@@ -33,29 +30,29 @@ import java.util.UUID;
  * A method that handles all the background stuff surrounding the power system.
  * Data stored in the ComponentSorceryInfoStorage class
  */
-public class Sorcery implements SorceryComponent, AutoSyncedComponent {
-    //data on weather the player can use things
-    public boolean hasInnateTechnique = false;
-
-    public boolean canUseInnateDomain=false;
-    public boolean canUseDomain=false;
+public class Sorcery {
 
     //Sorcery specific data
-    public int domainEnergyCost=0;//use for innate domain as well
+    private int domainEnergyCost=0;//use for innate domain as well
+
     /**
      * the cursed energy used per tick innate techinque is active
      */
     int constantAbilityTickCost =0;
 
 
+    /**
+     * All players who can use cursed energy have this tag
+     */
     public static final String SORCERER_TAG = "Sorceror.TAG";
 
-    public UUID storedPlayerUUID;
-    public Player storedPlayer;
 
     /**
      * Abilities of player
      * get(0) = Innate technique
+     * MUST BE INIT ON CLIENT SIDE CORRECTLY BECAUSE
+     * -lockHotbar in Scroll Mixin class
+     * TODO: all abilities delete themselves on un-initialized
      */
     public ArrayList<Ability> abilities = new ArrayList<>();
     public Ability innate;
@@ -67,9 +64,6 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
 
 
     //a global list of each player's sorcery data (All sorcery objects)
-    //TODO: remove inplace of the AutoSyncedComponent thing
-    public static HashMap<UUID,Sorcery> sorcerers = new HashMap<>();
-    public static HashMap<UUID,Boolean> hasInitializedOnClient = new HashMap<>();
 
 
 
@@ -82,7 +76,6 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
         //sets all the important values
         this.domainEnergyCost=domainEnergyCost;
         this.constantAbilityTickCost = constantAbilityTickCost;
-        hasInnateTechnique=ComponentSorceryInfoStorage.sorceryInfoData.get(player).hasInnateTechnique();;
 
 
         //set innate ability to be first
@@ -95,17 +88,13 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
 
 
     private Sorcery(Player player){
+        //if already a sorcerer ignore cause I haven't handled that yet
         if(!player.getTags().contains(SORCERER_TAG)) return;
-        this.storedPlayer = player;
-        isInstantiated=true;
-
-        if(!Minecraft.getInstance().isSingleplayer()||!player.level().isClientSide())
-            sorcerers.put(player.getUUID(),this);
-        hasInitializedOnClient.putIfAbsent(player.getUUID(),false);
+        //register sorcerer to data
+        SorceryInfoStorage.sorceryData.get(player).setSorcerer(this);
 
         if(player instanceof ServerPlayer serverPlayer) {
             serverSideInitCode(serverPlayer);
-
         }
         else{
             clientSideInitCode(player);
@@ -115,22 +104,20 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
 
 
     protected void serverSideInitCode(ServerPlayer serverPlayer){
-
+        //initial loading of box in the bottom left
         updateEnergyOutputInfo(serverPlayer);
 
+        //handle ticking
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, (server) -> {
-            if(isInstantiated)
-                this.tick(serverPlayer);
+            this.tick(serverPlayer);
         });
     }
 
 
     protected void clientSideInitCode(Player player){
-        hasInitializedOnClient.put(player.getUUID(),true);
         ClientTickEvents.END_CLIENT_TICK.register(
-
                 client -> {
-                    if(isInstantiated) this.tick(player);
+                    this.tick(player);
                 }
         );
 
@@ -138,21 +125,6 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
 
 
 
-
-    /**
-     * Checks if the sorcerer already exists
-     * @return 0 if a sorcerer hasn't been initialized, 1 if client needs to be initialized on an integrated server, 2 if doesn't need to be initialized
-     */
-    protected static boolean checkIfAlreadyHasTechnique(Player player){
-        //we are in an environment where the sorcerer hasn't been initialized
-        if(Minecraft.getInstance().isSingleplayer()&&!(player instanceof ServerPlayer)) {
-            if(hasInitializedOnClient.get(player.getUUID())==null)
-                return true;
-
-            return !hasInitializedOnClient.get(player.getUUID());
-        }
-        return !isSorcerer(player);
-    }
 
 
 
@@ -171,35 +143,31 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
     public static void init(){
         registerServerNetworking();
         ServerTickEvents.END_SERVER_TICK.register((server)->{
-
-
             Collection<ServerPlayer> players = PlayerLookup.all(server);
             for(ServerPlayer player:players){
-                String sorceryType = ComponentSorceryInfoStorage.sorceryInfoData.get(player).getSorceryType();
-                if(sorceryType.equals(Limitless.getSorcererID())){
-                    if(sorcerers.get(player.getUUID())!=null){
-                        Limitless.initLimitlessPlayer(player);
-                    }
+                SorceryDataContext context = SorceryInfoStorage.sorceryData.get(player);
+                if(context.getSorceryType().equals(Limitless.getSorcererID())){
+                    Limitless.initLimitlessPlayer(player);
                 }
             }
         });
     }
 
 
-    protected boolean isInstantiated=false;
     /**
      * Checks if the sorcerer is considered official
      * @param player Player of Tag
      * @return if the player input already has a sorcery object in memory
      */
-    protected static boolean isSorcerer(Player player){
-        return !player.getTags().contains(SORCERER_TAG);
+    public static boolean isSorcerer(Player player){
+        return !SorceryInfoStorage.sorceryData.get(player).getSorceryType().equals(SorceryInfoStorage.nullSorceryString)
+                && !player.getTags().contains(SORCERER_TAG);
     }
 
 
     public boolean innateOn =false;
-    public boolean reversedOn=false;
-    public boolean energyKeyOn=false;
+    protected boolean reversedOn=false;
+    protected boolean energyKeyOn=false;
 
 
     /**
@@ -211,8 +179,8 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.ActivateReversed.TYPE, (payload, context) -> {
             //says to run it on server
             context.server().execute(() -> {
-                if(sorcerers.get(context.player().getUUID())!=null)
-                    sorcerers.get(context.player().getUUID()).changeReversed();
+                if(isSorcerer(context.player()))
+                    SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().changeReversed();
             });
         });
 
@@ -222,16 +190,16 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
             //says to run it on server
             context.server().execute(() -> {
                 //if the player changes the state of their innate technique
-                if(sorcerers.get(context.player().getUUID()) !=null)
-                    sorcerers.get(context.player().getUUID()).activateInnate();
+                if(isSorcerer(context.player()))
+                    SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().activateInnate();
             });
         });
 
         //when a player scrolls
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.HandleScroll.TYPE,(payload, context)->{
             context.server().execute(()->{
-                Sorcery sorcery =sorcerers.get(context.player().getUUID());
-                if(sorcery==null) return;
+                Sorcery sorcery = SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer();
+                if(!isSorcerer(context.player())) return;
                 if(sorcery.energyKeyOn){
                     sorcery.changeOutput(context.player(),payload.scrollAmount());
                 }
@@ -239,7 +207,7 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
                 if(sorcery.innateOn){
                     sorcery.changeInnateAmount(payload.scrollAmount());
                 }
-                for(Ability s:sorcerers.get(context.player().getUUID()).abilities){
+                for(Ability s:sorcery.abilities){
                     if(s.isScroll){
                         s.onScroll(payload.scrollAmount());
                     }
@@ -250,22 +218,28 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
         //when the energy key is pressed, handle that
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKeyOn.TYPE,(payload, context)->{
             context.server().execute(()->{
-                if(sorcerers.get(context.player().getUUID())==null) return;
-                sorcerers.get(context.player().getUUID()).energyKeyOn=true;
-                PracticeMod.LOGGER.info("Energy Key: {}" ,sorcerers.get(context.player().getUUID()).energyKeyOn);
+                if(isSorcerer(context.player())) return;
+                SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().energyKeyOn=true;
+                PracticeMod.LOGGER.info("Energy Key: {}" ,SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().energyKeyOn);
             });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKeyOff.TYPE,((payload, context) -> {
             context.server().execute(()->{
-                if(sorcerers.get(context.player().getUUID())==null) return;
-                sorcerers.get(context.player().getUUID()).energyKeyOn=false;
-                PracticeMod.LOGGER.info("Energy Key: {}" ,sorcerers.get(context.player().getUUID()).energyKeyOn);
+                if(isSorcerer(context.player())) return;
+                SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().energyKeyOn=false;
+                PracticeMod.LOGGER.info("Energy Key: {}" , SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().energyKeyOn);
             });
         }));
     }
 
+    public void serverTick(Player contextPlayer){
 
+    }
+
+    public void clientTick(Player contextPlayer){
+
+    }
 
     public void tick(Player contextPlayer){
         if(abilities.isEmpty()) return;
@@ -369,21 +343,6 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
 
 
     public static void onPlayerLeave(Player playerLeaving){
-        if(sorcerers.get(playerLeaving.getUUID())!=null) sorcerers.get(playerLeaving.getUUID()).isInstantiated=false;
-        sorcerers.remove(playerLeaving.getUUID());
-        hasInitializedOnClient.remove(playerLeaving.getUUID());
     }
 
-
-
-
-    @Override
-    public void readData(ValueInput readView) {
-
-    }
-
-    @Override
-    public void writeData(ValueOutput writeView) {
-
-    }
 }

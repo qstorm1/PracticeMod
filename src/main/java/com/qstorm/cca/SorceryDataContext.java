@@ -1,8 +1,12 @@
 package com.qstorm.cca;
 
+import com.qstorm.powers.cursedtechnique.Sorcery;
 import org.ladysnake.cca.api.v3.component.Component;
 
-public interface SorceryDataInterface extends Component {
+/**
+ * Sorcery Data that all players have
+ */
+public interface SorceryDataContext extends Component {
     boolean hasInnateTechnique();
     void setHasInnateTechnique(boolean has);
     boolean getInnateStatus();
@@ -11,4 +15,6 @@ public interface SorceryDataInterface extends Component {
     void setDomainStatus(boolean status);
     String getSorceryType();
     void setSorceryType(String powerType);
+    Sorcery getSorcerer();
+    void setSorcerer(Sorcery storedSorcerer);
 }

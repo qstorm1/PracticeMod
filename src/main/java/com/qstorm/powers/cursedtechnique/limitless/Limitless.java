@@ -1,6 +1,7 @@
 package com.qstorm.powers.cursedtechnique.limitless;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.cca.SorceryInfoStorage;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.combo.ComboClient;
@@ -9,7 +10,9 @@ import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -62,7 +65,7 @@ public class Limitless extends Sorcery {
     public static void initLimitlessPlayer(Player player){
         //non-resetable
         //TODO: make it resetable (remove all the combos and stuff
-        if(!checkIfAlreadyHasTechnique(player)){
+        if(!isSorcerer(player)){
             return;
         }
 
@@ -84,23 +87,25 @@ public class Limitless extends Sorcery {
 
     }
 
-    public static Limitless getClosestLimitlessPosition(Vec3 position){
+    //TODO: make this a variable that constantly get sent to all clients for more efficiency in mixin stuff
+    public static Limitless getClosestLimitlessPosition(ServerLevel level, Vec3 position){
         ArrayList<Double> smallestDistance = new ArrayList<>();//uses arraylist cause lambdas are stupid
-        ArrayList<UUID> uuidFinal = new ArrayList<>();
+        ArrayList<Sorcery> finalSorcery = new ArrayList<>();
         smallestDistance.add(-1.0);
-        sorcerers.forEach((uuid,sorcery)->{
+        for(ServerPlayer player:PlayerLookup.world(level)){
+            Sorcery sorcery = SorceryInfoStorage.sorceryData.get(player).getSorcerer();
             if(sorcery instanceof Limitless && sorcery.innateOn){
-                if(smallestDistance.getFirst()<sorcery.storedPlayer.position().distanceTo(position)){
-                    smallestDistance.set(0,sorcery.storedPlayer.position().distanceTo(position));
-                    uuidFinal.add(uuid);
+                if(smallestDistance.getFirst()<player.position().distanceTo(position)){
+                    smallestDistance.set(0,player.position().distanceTo(position));
+                    finalSorcery.add(sorcery);
 
                 }
             }
-        });
-        if(uuidFinal.isEmpty()){
+        }
+        if(finalSorcery.isEmpty()){
             return null;
         }
-        return (Limitless) sorcerers.get(uuidFinal.getFirst());
+        return (Limitless) finalSorcery.getFirst();
     }
 
 

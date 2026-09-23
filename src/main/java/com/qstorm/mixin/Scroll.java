@@ -1,5 +1,6 @@
 package com.qstorm.mixin;
 
+import com.qstorm.cca.SorceryInfoStorage;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.powers.Ability;
@@ -29,7 +30,8 @@ public class Scroll {
             target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedSlot(I)V"
     ),cancellable = true)
     private void lockHotbar(long windowPointer, double xOffset, double yOffset, CallbackInfo ci){
-        for(Ability ab: Sorcery.sorcerers.get(Minecraft.getInstance().player.getUUID()).abilities){
+        assert Minecraft.getInstance().player != null;
+        for(Ability ab: SorceryInfoStorage.sorceryData.get(Minecraft.getInstance().player).getSorcerer().abilities){
             if(ab.locksHotBarScroll&&ab.isScroll){
                 ci.cancel();
             }

@@ -1,10 +1,13 @@
 package com.qstorm.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.qstorm.cca.SorceryInfoStorage;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
@@ -29,15 +32,15 @@ public class LLInnateProjectile {
         at=@At(value="RETURN",ordinal=1),cancellable = true)
     private static void getEntityHitResult(Level level, Entity projectile, Vec3 startVec, Vec3 endVec, AABB boundingBox, Predicate<Entity> filter, float inflationAmount,
                                        CallbackInfoReturnable<EntityHitResult> cir, @Local(ordinal = 0, argsOnly = true) Entity entity){
-        if(Sorcery.sorcerers.get(entity.getUUID()) != null){
+        if(entity instanceof Player player && Sorcery.isSorcerer(player)){
             //if the target is a sorcerer
-            Sorcery.sorcerers.get(entity.getUUID()).abilities.forEach((ability -> {
+            SorceryInfoStorage.sorceryData.get(entity).getSorcerer().abilities.forEach(ability -> {
                 if (ability instanceof LimitlessInnate li && li.isTicked) {
                     cir.setReturnValue(null);
 //                    if(!projectile.getTags().contains(LimitlessInnate.TAG))
 //                        projectile.addTag(LimitlessInnate.TAG);
                 }
-            }));
+            });
 
         }
 
