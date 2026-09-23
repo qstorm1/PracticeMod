@@ -28,8 +28,7 @@ public class SoulEffect extends MobEffect {
             ComponentSorceryInfoStorage.sorceryInfoData.get(player).setSorceryType(Limitless.SORCERER_ID);
             Limitless.initLimitlessPlayer(player);
             if(player.getTags().contains("cheat"))
-                PlayerInfo.playerInfoData.get(player).setEnergy(PlayerInfo.);
-                //PlayerInfo.playerInfoHashMap.get(player.getUUID()).cheatMode();
+                PlayerInfo.setCheatMode(player);
         }
     }
 }

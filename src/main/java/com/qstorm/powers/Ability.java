@@ -52,11 +52,6 @@ public abstract class Ability {
      */
     public final int textColor;
 
-    //JJK Specific
-    /**
-     * The info of the player
-     */
-    public PlayerInfo playerInfo;
     /**
      * the amount of energy needed for the ability to run,
      * ex: if your output is 1000 energy and this value is 1100 then the ability will not run and you will not lose any energy,
@@ -136,9 +131,9 @@ public abstract class Ability {
 
 
     public void Do(Player player){
-        playerInfo=PlayerInfo.playerInfoHashMap.get(playerUUID);
-        power=(rate*playerInfo.cursedOutput);
-        percentPower=power/rate*playerInfo.maxCursedOutput;
+        PlayerInfoContext context = PlayerInfo.playerInfoData.get(player);
+        power=(rate*context.getOutput());
+        percentPower=power/rate*context.getMaxOutput();
 
         //if the power isn't enough to run the abilities initial cost
         if(power<initial){

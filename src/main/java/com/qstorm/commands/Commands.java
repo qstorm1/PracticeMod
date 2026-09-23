@@ -19,14 +19,14 @@ import java.util.UUID;
 
 public class Commands {
     public static int regenPlayerInfo2V(int v1,int v2,CommandContext<CommandSourceStack> context){
-        context.getSource().sendSuccess(()-> Component.literal("RenderedPlayerInfo"),false);
+        context.getSource().sendSuccess(()-> Component.literal("Regenerated"),false);
         if(context.getSource().isPlayer()){
             PlayerInfo.regenPlayerInfo(context.getSource().getPlayer(),v1,v2);
         }
         return 1;
     }
     public static int regenPlayerInfo(CommandContext<CommandSourceStack> context){
-        context.getSource().sendSuccess(()-> Component.literal("RenderedPlayerInfo"),false);
+        context.getSource().sendSuccess(()-> Component.literal("Regenerated"),false);
         if(context.getSource().isPlayer()){
             PlayerInfo.regenPlayerInfo(context.getSource().getPlayer());
         }
@@ -35,9 +35,6 @@ public class Commands {
 
     public static int showStats(CommandContext<CommandSourceStack> context){
         if(!context.getSource().isPlayer()) return 0;
-        UUID test = context.getSource().getPlayer().getUUID();
-        Player test3 = context.getSource().getPlayer();
-        String test2 = PlayerInfo.playerInfoHashMap.get(context.getSource().getPlayer().getUUID()).toString();
         ServerPlayNetworking.send(context.getSource().getPlayer(),
                 new Packet.SendClientMessage(PlayerInfo.playerInfoData.get(context.getSource().getPlayer()).toString()));
         context.getSource().sendSuccess(()->Component.literal("stats"),false);
@@ -45,7 +42,7 @@ public class Commands {
     }
 
     public static int showUUID(CommandContext<CommandSourceStack> context){
-
+        if(!context.getSource().isPlayer()) return 0;
         ServerPlayNetworking.send(context.getSource().getPlayer(),
                 new Packet.SendClientMessage(context.getSource().getPlayer().getStringUUID()));
 
@@ -56,7 +53,7 @@ public class Commands {
     public static void init(){
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(
-                        (net.minecraft.commands.Commands.literal("JJKInitPlayerInfo").requires(commandSourceStack -> commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_ADMIN)))
+                        (net.minecraft.commands.Commands.literal("JJKRegenPlayerInfo").requires(commandSourceStack -> commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_ADMIN)))
                                 .executes(Commands::regenPlayerInfo)
                                 .then(net.minecraft.commands.Commands.argument("born_luck", IntegerArgumentType.integer(0))
                                         .then(net.minecraft.commands.Commands.argument("increased_luck", IntegerArgumentType.integer(0))

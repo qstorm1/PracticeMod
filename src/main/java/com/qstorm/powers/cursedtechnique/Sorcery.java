@@ -4,7 +4,6 @@ import com.qstorm.PracticeMod;
 import com.qstorm.cca.ComponentSorceryInfoStorage;
 import com.qstorm.cca.PlayerInfoContext;
 import com.qstorm.cca.SorceryComponent;
-import com.qstorm.cca.SorceryDataInterface;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
@@ -16,18 +15,11 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.ladysnake.cca.api.v3.component.Component;
-import org.ladysnake.cca.api.v3.component.ComponentKey;
-import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
-import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
-import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
-import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -124,9 +116,8 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
 
     protected void serverSideInitCode(ServerPlayer serverPlayer){
 
-        ServerPlayNetworking.send(serverPlayer, new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(serverPlayer.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(serverPlayer.getUUID())));
+        updateEnergyOutputInfo(serverPlayer);
+
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, (server) -> {
             if(isInstantiated)
                 this.tick(serverPlayer);
@@ -242,7 +233,7 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
                 Sorcery sorcery =sorcerers.get(context.player().getUUID());
                 if(sorcery==null) return;
                 if(sorcery.energyKeyOn){
-                    sorcery.changeOutput(PlayerInfo.playerInfoData.get(context.player()),payload.scrollAmount());
+                    sorcery.changeOutput(context.player(),payload.scrollAmount());
                 }
 
                 if(sorcery.innateOn){
@@ -314,13 +305,10 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
 
 
 
-    public void changeOutputPercent(PlayerInfoContext context,double percentAmount){
-        changeOutput(context,(int)(percentAmount*PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).maxCursedOutput));
+    public void changeOutput(ServerPlayer player,double percentAmount){
+        changeOutput(player,(int)(percentAmount/20.0F*PlayerInfo.playerInfoData.get(player).getMaxOutput()));
     }
 
-    public void changeOutput(PlayerInfoContext context, double percentAmount){
-        changeOutput(context,(int)((percentAmount/20.0F)*context.getMaxOutput()));
-    }
 
 
 
@@ -342,15 +330,11 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
     }
 
 
+
     //TODO: remember that the cost of energy increases faster then power but both increase exponentially
 
-
-
     private void changeOutput(ServerPlayer player, int amount){
-        changeOutput(PlayerInfo.playerInfoData.get(player),amount);
-    }
-
-    private void changeOutput(PlayerInfoContext context, int amount){
+        PlayerInfoContext context = PlayerInfo.playerInfoData.get(player);
         if(context.getOutput()+amount>=context.getMaxOutput()){
             context.setOutput(context.getMaxOutput());
         }
@@ -362,13 +346,19 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
         }
 
         PracticeMod.LOGGER.info("Changed amount by {}", context.getOutput());
-        ServerPlayNetworking.send((ServerPlayer) storedPlayer,new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(storedPlayer.getUUID())));
+        updateEnergyOutputInfo(player);
 
     }
 
 
+    private static void updateEnergyOutputInfo(ServerPlayer player){
+        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
+                PlayerInfo.playerInfoData.get(player).getEnergy(),
+                PlayerInfo.getOutputAsPercent(
+                        PlayerInfo.playerInfoData.get(player).getMaxOutput(),
+                        PlayerInfo.playerInfoData.get(player).getOutput())
+        ));
+    }
 
 
     // If the player starts getting emotional they increase in power
