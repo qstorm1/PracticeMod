@@ -1,11 +1,14 @@
 package com.qstorm.powers;
 
+import com.qstorm.cca.PlayerInfoContext;
+import com.qstorm.packets.Packet;
 import com.qstorm.powers.combo.Combo;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import com.zigythebird.playeranim.api.PlayerAnimationFactory;
 import com.zigythebird.playeranimcore.animation.Animation;
 import com.zigythebird.playeranimcore.animation.RawAnimation;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -189,7 +192,16 @@ public abstract class Ability {
     }
 
     protected void runServer(ServerPlayer player){
-        playerInfo.useEnergy(player, playerInfo.cursedOutput);
+        PlayerInfoContext context=PlayerInfo.playerInfoData.get(player);
+        runServer(context,player);
+    }
+
+    protected void runServer(PlayerInfoContext context,ServerPlayer player){
+        context.setEnergy(context.getEnergy()-context.getOutput());
+        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
+                context.getEnergy(),
+                PlayerInfo.getOutputAsPercent(context.getMaxOutput(),context.getOutput())
+        ));
     }
 
 

@@ -1,9 +1,7 @@
 package com.qstorm.powers;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.cca.TestComponent;
-import com.qstorm.packets.Packet;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import com.qstorm.cca.PlayerInfoContext;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,14 +17,14 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class PlayerInfo implements TestComponent {
+public class PlayerInfo implements PlayerInfoContext {
 
     //you can only train up to this value of cursed efficiency (items and abilities like six eyes can further improve this value)
     public static final int maxCursedEfficiency = 50;
 
     //basic information
-    public static ComponentKey<TestComponent> playerInfoData =
-            ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"player-data"),TestComponent.class);
+    public static ComponentKey<PlayerInfoContext> playerInfoData =
+            ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"player-data"), PlayerInfoContext.class);
 
     public int cursedEnergy = 0;
     public int cursedEnergyReserve=0;
@@ -130,13 +128,10 @@ public class PlayerInfo implements TestComponent {
 
 
 
-
-
+    @Deprecated
     public void useEnergy(ServerPlayer player, int energyUsed){
         this.cursedEnergy-=(int)(energyUsed*(1-(cursedEfficiency+otherEfficiency)/100.0));
-        ServerPlayNetworking.send(player,new Packet.ActivateSorceryRender(
-                PlayerInfo.playerInfoHashMap.get(player.getUUID()).cursedEnergy,
-                PlayerInfo.getOutputAsPercent(player.getUUID())));
+
     }
 
 
@@ -149,9 +144,13 @@ public class PlayerInfo implements TestComponent {
 
 
 
-
+    @Deprecated
     public static Double getOutputAsPercent(UUID player){
         return ((double)(playerInfoHashMap.get(player).cursedOutput)/(playerInfoHashMap.get(player).maxCursedOutput));
+    }
+
+    public static Double getOutputAsPercent(int max, int output){
+        return ((double)(output)/(max));
     }
 
 
@@ -192,9 +191,55 @@ public class PlayerInfo implements TestComponent {
         writeView.putInt("Cursed Efficiency",this.cursedEfficiency);
     }
 
+    @Override
+    public int getMaxEnergy() {
+        return this.cursedEnergyReserve;
+    }
 
-    //TODO: save playerInfo stuff to the player entity
+    @Override
+    public int getEnergy() {
+        return this.cursedEnergy;
+    }
 
+    @Override
+    public int getMaxOutput() {
+        return this.maxCursedOutput;
+    }
+
+    @Override
+    public int getOutput() {
+        return this.cursedOutput;
+    }
+
+    @Override
+    public int getEfficiency() {
+        return this.cursedEfficiency;
+    }
+
+    @Override
+    public void setMaxEnergy(int energy) {
+        this.cursedEnergyReserve=energy;
+    }
+
+    @Override
+    public void setEnergy(int energy) {
+        this.cursedEnergy=energy;
+    }
+
+    @Override
+    public void setMaxOutput(int output) {
+        this.maxCursedOutput=output;
+    }
+
+    @Override
+    public void setOutput(int output) {
+        this.cursedOutput=output;
+    }
+
+    @Override
+    public void setEfficiency(int increase) {
+        this.cursedEfficiency=increase;
+    }
 }
 
 

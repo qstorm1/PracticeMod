@@ -60,13 +60,28 @@ public class ComponentSorceryInfoStorage implements SorceryDataInterface, Entity
     }
 
     @Override
+    public void setHasInnateTechnique(boolean hasInnateTechnique) {
+        this.hasInnateTechnique=hasInnateTechnique;
+    }
+
+    @Override
     public boolean getInnateStatus() {
         return canUseInnateDomain;
     }
 
     @Override
+    public void setInnateStatus(boolean status) {
+        this.canUseInnateDomain=status;
+    }
+
+    @Override
     public boolean getDomainStatus() {
         return canUseDomain;
+    }
+
+    @Override
+    public void setDomainStatus(boolean status) {
+        this.canUseDomain=status;
     }
 
     @Override

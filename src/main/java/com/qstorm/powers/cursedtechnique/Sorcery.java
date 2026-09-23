@@ -2,6 +2,9 @@ package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.cca.ComponentSorceryInfoStorage;
+import com.qstorm.cca.PlayerInfoContext;
+import com.qstorm.cca.SorceryComponent;
+import com.qstorm.cca.SorceryDataInterface;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
@@ -38,10 +41,7 @@ import java.util.UUID;
  * A method that handles all the background stuff surrounding the power system.
  * Data stored in the ComponentSorceryInfoStorage class
  */
-public class Sorcery {
-
-    public static final int CLASS_ID = 0;
-
+public class Sorcery implements SorceryComponent, AutoSyncedComponent {
     //data on weather the player can use things
     public boolean hasInnateTechnique = false;
 
@@ -86,10 +86,12 @@ public class Sorcery {
     public Sorcery(Ability innate,Player player,int domainEnergyCost,int constantAbilityTickCost){
         this(player);
 
+
         //sets all the important values
         this.domainEnergyCost=domainEnergyCost;
         this.constantAbilityTickCost = constantAbilityTickCost;
-        hasInnateTechnique=true;
+        hasInnateTechnique=ComponentSorceryInfoStorage.sorceryInfoData.get(player).hasInnateTechnique();;
+
 
         //set innate ability to be first
         if(!abilities.isEmpty()){
@@ -180,8 +182,8 @@ public class Sorcery {
 
             Collection<ServerPlayer> players = PlayerLookup.all(server);
             for(ServerPlayer player:players){
-                String sorcertyType = ComponentSorceryInfoStorage.sorceryInfoData.get(player).getSorceryType();
-                if(sorcertyType.equals(Limitless.getSorcererID())){
+                String sorceryType = ComponentSorceryInfoStorage.sorceryInfoData.get(player).getSorceryType();
+                if(sorceryType.equals(Limitless.getSorcererID())){
                     if(sorcerers.get(player.getUUID())!=null){
                         Limitless.initLimitlessPlayer(player);
                     }
@@ -238,7 +240,7 @@ public class Sorcery {
                 Sorcery sorcery =sorcerers.get(context.player().getUUID());
                 if(sorcery==null) return;
                 if(sorcery.energyKeyOn){
-                    sorcery.changeOutput(payload.scrollAmount());
+                    sorcery.changeOutput(PlayerInfo.playerInfoData.get(context.player()),payload.scrollAmount());
                 }
 
                 if(sorcery.innateOn){
@@ -303,12 +305,19 @@ public class Sorcery {
         PracticeMod.LOGGER.info("Used domain");
     }
 
-    public void changeOutputPercent(double percentAmount){
-        changeOutput((int)(percentAmount*PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).maxCursedOutput));
+
+
+
+
+
+
+
+    public void changeOutputPercent(PlayerInfoContext context,double percentAmount){
+        changeOutput(context,(int)(percentAmount*PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).maxCursedOutput));
     }
 
-    public void changeOutput(double percentAmount){
-        changeOutput((int)((percentAmount/20.0F)*PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).maxCursedOutput));
+    public void changeOutput(PlayerInfoContext context, double percentAmount){
+        changeOutput(context,(int)((percentAmount/20.0F)*context.getMaxOutput()));
     }
 
 
@@ -329,21 +338,28 @@ public class Sorcery {
         PracticeMod.LOGGER.info("Activated reversed");
         reversedOn=!reversedOn;
     }
-    //TODO: remember that the cost of energy increases faster then the power
 
-    private void changeOutput(int amount){
-        PlayerInfo playerInfo = PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID());
 
-        if(playerInfo.cursedOutput+amount>=playerInfo.maxCursedOutput){
-            playerInfo.cursedOutput= playerInfo.maxCursedOutput;
+    //TODO: remember that the cost of energy increases faster then power but both increase exponentially
+
+
+
+    private void changeOutput(ServerPlayer player, int amount){
+        changeOutput(PlayerInfo.playerInfoData.get(player),amount);
+    }
+
+    private void changeOutput(PlayerInfoContext context, int amount){
+        if(context.getOutput()+amount>=context.getMaxOutput()){
+            context.setOutput(context.getMaxOutput());
         }
-        else if(playerInfo.cursedOutput+amount<0){
-            playerInfo.cursedOutput=0;
+        else if(context.getOutput()+amount<0){
+            context.setOutput(0);
         }
         else {
-            playerInfo.cursedOutput += amount;
+            context.setOutput(context.getOutput() + amount);
         }
-        PracticeMod.LOGGER.info("Amount {}", playerInfo.cursedOutput);
+
+        PracticeMod.LOGGER.info("Changed amount by {}", context.getOutput());
         ServerPlayNetworking.send((ServerPlayer) storedPlayer,new Packet.ActivateSorceryRender(
                 PlayerInfo.playerInfoHashMap.get(storedPlayer.getUUID()).cursedEnergy,
                 PlayerInfo.getOutputAsPercent(storedPlayer.getUUID())));
@@ -364,5 +380,18 @@ public class Sorcery {
         if(sorcerers.get(playerLeaving.getUUID())!=null) sorcerers.get(playerLeaving.getUUID()).isInstantiated=false;
         sorcerers.remove(playerLeaving.getUUID());
         hasInitializedOnClient.remove(playerLeaving.getUUID());
+    }
+
+
+
+
+    @Override
+    public void readData(ValueInput readView) {
+
+    }
+
+    @Override
+    public void writeData(ValueOutput writeView) {
+
     }
 }

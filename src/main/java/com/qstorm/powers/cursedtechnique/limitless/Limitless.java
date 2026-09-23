@@ -22,7 +22,14 @@ import java.util.UUID;
  */
 public class Limitless extends Sorcery {
 
-    private static String SORCERER_ID = "Limitless User";
+    /**
+     * The ID of the class;
+     * used to check if the Stored Sorcery Type in ComponentSorceryInfoStorage is a limitless type
+     */
+    public static final String SORCERER_ID = "Limitless User";
+    /**
+     * The amount of energy it takes per tick innate is active
+     */
     public int innateTechniquePower=10;
 
 
@@ -30,7 +37,6 @@ public class Limitless extends Sorcery {
     private Limitless(Player player){
         super(new LimitlessInnate(player.getUUID(),0),player,100000,10);
         UUID playerUUID = player.getUUID();
-        this.classType= Limitless.class;
         addAbility(
                 new Blue(playerUUID,0),
                 Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)
@@ -100,7 +106,7 @@ public class Limitless extends Sorcery {
 
 
     public static String getSorcererID() {
-        return SORCERER_ID==null ? SORCERER_TAG:SORCERER_ID;
+        return SORCERER_ID;
     }
 
 
