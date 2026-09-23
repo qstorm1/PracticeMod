@@ -2,6 +2,7 @@ package com.qstorm.key;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
+import com.qstorm.packets.AnimationPacket;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.combo.ComboKey;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -28,7 +29,8 @@ public class HandleKeybinds {
         PayloadTypeRegistry.playC2S().register(HandleScroll.TYPE, HandleScroll.CODEC);
         PayloadTypeRegistry.playC2S().register(EnergyKeyOn.TYPE, EnergyKeyOn.CODEC);
         PayloadTypeRegistry.playC2S().register(EnergyKeyOff.TYPE, EnergyKeyOff.CODEC);
-
+        PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE, Packet.LimitlessInit.CODEC);
+        PayloadTypeRegistry.playS2C().register(AnimationPacket.SendAnimationUpdate.TYPE,AnimationPacket.SendAnimationUpdate.CODEC);
 
 
         PayloadTypeRegistry.playS2C().register(Packet.SendClientMessage.TYPE,Packet.SendClientMessage.CODEC);

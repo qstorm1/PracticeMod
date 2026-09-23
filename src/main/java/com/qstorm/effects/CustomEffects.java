@@ -17,8 +17,4 @@ public class CustomEffects {
         //registers a mobEffect into a holder
         return Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,name),mobEffect);
     }
-
-    public static void onInitialize(){
-
-    }
 }

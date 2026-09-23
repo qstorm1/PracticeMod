@@ -174,7 +174,9 @@ public class Sorcery implements SorceryComponent, AutoSyncedComponent {
         abilities.getLast().setCombo(combo);
     }
 
-
+    /**
+     * Handle what happens on keybinds and set up tick to init sorcery if the player data allows it
+     */
     public static void init(){
         registerServerNetworking();
         ServerTickEvents.END_SERVER_TICK.register((server)->{

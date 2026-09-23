@@ -40,13 +40,7 @@ public class PlayerInfo implements PlayerInfoContext {
     public int otherEfficiency=0;
 
 
-
-    public static HashMap<UUID,PlayerInfo> playerInfoHashMap = new HashMap<>();
-
-
-
-
-
+    //MUST ONLY BE RUN ON SERVER SIDE
     public PlayerInfo(Player player,int bornLuck, int increaseLuck){
          this(player);
          if(player instanceof LocalPlayer) return;
@@ -72,21 +66,23 @@ public class PlayerInfo implements PlayerInfoContext {
     }
 
     private PlayerInfo(Player player){
-        if(player instanceof LocalPlayer) return;;
-        playerInfoHashMap.putIfAbsent(player.getUUID(),this);
+        if(player instanceof LocalPlayer) return;
     }
 
 
 
 
     public static void regenPlayerInfo(Player player){
-        if(playerInfoHashMap.get(player.getUUID())==null) return;
-        playerInfoHashMap.put(player.getUUID(),new PlayerInfo(player,0,0));
+        regenPlayerInfo(player,0,0);
     }
 
     public static void regenPlayerInfo(Player player,int bornLuck, int increaseLuck){
-        if(playerInfoHashMap.get(player.getUUID())==null) return;
-        playerInfoHashMap.put(player.getUUID(),new PlayerInfo(player,bornLuck,increaseLuck));
+        PlayerInfo newValues = new PlayerInfo(player,0,0);
+        playerInfoData.get(player).setMaxEnergy(newValues.cursedEnergyReserve);
+        playerInfoData.get(player).setEnergy(newValues.cursedEnergy);
+        playerInfoData.get(player).setOutput(newValues.cursedOutput);
+        playerInfoData.get(player).setMaxOutput(newValues.maxCursedOutput);
+        playerInfoData.get(player).setEfficiency(newValues.cursedEfficiency);
     }
 
 
@@ -94,11 +90,12 @@ public class PlayerInfo implements PlayerInfoContext {
     /**
      * for debug or aura farming
      */
-    public void cheatMode(){
-        this.cursedEnergyReserve=999999999;
-        this.cursedEnergy= cursedEnergyReserve;
-        this.maxCursedOutput=1000000;
-        this.cursedOutput=maxCursedOutput/2;
+    public static void setCheatMode(Player player){
+        PlayerInfoContext pIC = playerInfoData.get(player);
+        pIC.setMaxEnergy(999999999);
+        pIC.setEnergy(999999999);
+        pIC.setMaxOutput(1000000);
+        pIC.setOutput(1000000/2);
     }
 
 
@@ -144,10 +141,10 @@ public class PlayerInfo implements PlayerInfoContext {
 
 
 
-    @Deprecated
-    public static Double getOutputAsPercent(UUID player){
-        return ((double)(playerInfoHashMap.get(player).cursedOutput)/(playerInfoHashMap.get(player).maxCursedOutput));
-    }
+
+//    public static Double getOutputAsPercent(UUID player){
+//        //return ((double)(playerInfoHashMap.get(player).cursedOutput)/(playerInfoHashMap.get(player).maxCursedOutput));
+//    }
 
     public static Double getOutputAsPercent(int max, int output){
         return ((double)(output)/(max));
@@ -167,6 +164,7 @@ public class PlayerInfo implements PlayerInfoContext {
         return value.orElse(valueElse);
     }
 
+    //TODO: Check if I need the suppliers to regen cursed energy info because it happens on player initialization
     @Override
     public void readData(ValueInput readView) {
         this.cursedEnergyReserve = setValueOrMakeNew(readView.getInt("Max Cursed Energy"),

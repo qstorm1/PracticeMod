@@ -28,9 +28,6 @@ public class ComboKey{
         this.id=id;
     }
 
-    public static void init(){
-
-    }
 
     //each key currently instantiated, once per player, to add to a combo do .key.get(player) maybe switch to UUID or something idk
     public static HashMap<UUID,ComboKey> key1= new HashMap<>();

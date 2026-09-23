@@ -24,8 +24,7 @@ public class ModPotions {
     public static Holder<Potion> register(String name, Potion potion ){
         return Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,name),potion);
     }
-    public static void onInitialize(){
-    }
+
 
 
 }

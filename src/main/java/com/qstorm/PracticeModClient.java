@@ -27,37 +27,26 @@ public class PracticeModClient implements ClientModInitializer {
     public void onInitializeClient() {
         //initialize all keyboard stuff
         InitializeBindings.init();
-        PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE, Packet.LimitlessInit.CODEC);
-        PayloadTypeRegistry.playS2C().register(AnimationPacket.SendAnimationUpdate.TYPE,AnimationPacket.SendAnimationUpdate.CODEC);
         initJJKClientRender();
         PALHandle.init();
 
 
-//        ClientTickEvents.END_CLIENT_TICK.register((client)->{
-//            PALHandle.testResource();
-//        });
-//
-//        PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(
-//                player, ANIMATION_LAYER_ID);
-//        controller.triggerAnimation(animationID);
-//
-//        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(PALHandle.ANIMATION_NAME_ID, 1000,
-//                player -> new PlayerAnimationController(player,
-//                        (controller, state, animSetter) -> {
-//                            if (state.isMoving()) return animSetter.setAnimation(PALHandle.DOMAIN_ONE);
-//
-//                            return PlayState.STOP;
-//                )
-//        );
+
+
+
+
         //when we recieve a thing saying to make this player a sorceror, render client
         ClientPlayNetworking.registerGlobalReceiver(Packet.LimitlessInit.TYPE,(packet, context)->{
             Limitless.initLimitlessPlayer(context.player());
         });
 
+        //client message sending
         ClientPlayNetworking.registerGlobalReceiver(Packet.SendClientMessage.TYPE,(packet,context)->{
             context.player().displayClientMessage(Component.literal(packet.message()),false);
         });
 
+
+        //draw the thing in the bottom left
         ClientPlayNetworking.registerGlobalReceiver(Packet.ActivateSorceryRender.TYPE,(packet, context)->{
             context.client().execute(()->{
                 cursedEnergy=packet.energy();

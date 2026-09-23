@@ -34,11 +34,12 @@ public class Commands {
     }
 
     public static int showStats(CommandContext<CommandSourceStack> context){
+        if(!context.getSource().isPlayer()) return 0;
         UUID test = context.getSource().getPlayer().getUUID();
         Player test3 = context.getSource().getPlayer();
         String test2 = PlayerInfo.playerInfoHashMap.get(context.getSource().getPlayer().getUUID()).toString();
         ServerPlayNetworking.send(context.getSource().getPlayer(),
-                new Packet.SendClientMessage(new String(PlayerInfo.playerInfoHashMap.get(context.getSource().getPlayer().getUUID()).toString())));
+                new Packet.SendClientMessage(PlayerInfo.playerInfoData.get(context.getSource().getPlayer()).toString()));
         context.getSource().sendSuccess(()->Component.literal("stats"),false);
         return 1;
     }

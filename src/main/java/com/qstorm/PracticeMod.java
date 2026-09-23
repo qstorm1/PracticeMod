@@ -44,11 +44,8 @@ public class PracticeMod implements ModInitializer {
 
 
 		ModItems.initialize();
-		CustomEffects.onInitialize();
-		ModPotions.onInitialize();
 
 
-		ComboKey.init();
 
 		Commands.init();
 
