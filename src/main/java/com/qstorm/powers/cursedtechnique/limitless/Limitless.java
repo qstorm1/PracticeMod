@@ -66,6 +66,7 @@ public class Limitless extends Sorcery {
     public static void initLimitlessPlayer(Player player){
         //non-resetable
         //TODO: make it resetable (remove all the combos and stuff
+        boolean test = isSorcerer(player);
         if(!isSorcerer(player)){
             return;
         }

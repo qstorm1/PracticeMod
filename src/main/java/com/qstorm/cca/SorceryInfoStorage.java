@@ -7,11 +7,9 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
-import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
-import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
-import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
-public class SorceryInfoStorage implements SorceryDataContext {
+public class SorceryInfoStorage implements SorceryDataContext, AutoSyncedComponent {
     //TODO: implement AutoSynced thing
 
     //data on weather the player can use things
@@ -25,7 +23,7 @@ public class SorceryInfoStorage implements SorceryDataContext {
     /**
      * The type of power the player is using
      */
-    public String powerType=nullSorceryString;
+    public String sorceryType =nullSorceryString;
     /**
      * weather the power has run through the new Sorcery stuff
      */
@@ -39,12 +37,13 @@ public class SorceryInfoStorage implements SorceryDataContext {
 
     private Sorcery storedSorcerer = null;
 
+
     @Override
     public void readData(ValueInput readView) {
         this.hasInnateTechnique=readView.getBooleanOr("HasInnateTechnique",false);
         this.canUseInnateDomain=readView.getBooleanOr("CanUseInnateDomain",false);
         this.canUseDomain=readView.getBooleanOr("CanUseDomain",false);
-        this.powerType=readView.getStringOr("Power",nullSorceryString);
+        this.sorceryType =readView.getStringOr("Power",nullSorceryString);
 
     }
 
@@ -53,7 +52,7 @@ public class SorceryInfoStorage implements SorceryDataContext {
         writeView.putBoolean("HasInnateTechnique",hasInnateTechnique);
         writeView.putBoolean("CanUseInnateDomain",canUseInnateDomain);
         writeView.putBoolean("CanUseDomain",canUseDomain);
-        writeView.putString("Power",powerType);
+        writeView.putString("Power", sorceryType);
     }
 
 
@@ -89,12 +88,12 @@ public class SorceryInfoStorage implements SorceryDataContext {
 
     @Override
     public String getSorceryType() {
-        return powerType;
+        return sorceryType;
     }
 
     @Override
     public void setSorceryType(String powerType) {
-        this.powerType = powerType;
+        this.sorceryType = powerType;
     }
 
     @Override

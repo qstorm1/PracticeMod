@@ -77,9 +77,9 @@ public abstract class LLInnateMovementHandle{
         }
 
         Limitless closest = Limitless.getClosestLimitless((ServerLevel) this.level,movement);
-        Vec3 closestPos = closest.getPos();
         this.needsSync = true;
-        if (closest != null&&closestPos!=null) {
+        if (closest != null) {
+            Vec3 closestPos = closest.getPos();
             double distanceFromPlayer = closestPos.distanceTo(position);
             LimitlessInnate innate = ((LimitlessInnate)closest.abilities.get(0));
 
@@ -112,8 +112,8 @@ public abstract class LLInnateMovementHandle{
 
     @Inject(method = "canBeHitByProjectile",at=@At("HEAD"),cancellable = true)
     public void canBeHitByProjectile(CallbackInfoReturnable<Boolean> cir){
-        if(!SorceryInfoStorage.sorceryData.get(this).getSorcerer()
-                .equals(SorceryInfoStorage.nullSorceryString)){
+        //if the sorcerer had been initialized
+        if((Object)this instanceof Player player && Sorcery.isSorcerer(player)){
 
             //if the target is a sorcerer
 

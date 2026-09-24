@@ -144,7 +144,7 @@ public class Sorcery {
     }
 
     public Vec3 getPos(){
-        return storedPlayer.position();
+        return storedPlayer==null ? null:storedPlayer.position();
     }
 
     /**
@@ -158,8 +158,7 @@ public class Sorcery {
             Collection<ServerPlayer> players = PlayerLookup.all(server);
             for(ServerPlayer player:players){
                 SorceryDataContext context = SorceryInfoStorage.sorceryData.get(player);
-                if(context.getSorceryType().equals(Limitless.getSorcererID())&&
-                        !SorceryInfoStorage.sorceryData.get(player).getSorcerer().equals(SorceryInfoStorage.nullSorceryString)){
+                if(context.getSorceryType().equals(Limitless.getSorcererID())&&Sorcery.isSorcerer(player)&&context.getSorcerer()==null){
                     Limitless.initLimitlessPlayer(player);
                 }
             }
@@ -174,7 +173,7 @@ public class Sorcery {
      */
     public static boolean isSorcerer(Player player){
         return !SorceryInfoStorage.sorceryData.get(player).getSorceryType().equals(SorceryInfoStorage.nullSorceryString)
-                && !player.getTags().contains(SORCERER_TAG);
+                && player.getTags().contains(SORCERER_TAG);
     }
 
 

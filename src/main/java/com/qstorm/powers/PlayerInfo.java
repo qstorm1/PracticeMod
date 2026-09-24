@@ -10,6 +10,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -134,8 +135,8 @@ public class PlayerInfo implements PlayerInfoContext {
 
     @Override
     public String toString(){
-        return  "Total Cursed Energy = "+cursedEnergyReserve + "Current Cursed Energy = " + cursedEnergy +
-                "\nTotal Cursed Output = "+ maxCursedOutput +" Current Cursed Output = "+cursedOutput +
+        return  "\nStats:\n\n\nTotal Cursed Energy = "+cursedEnergyReserve + "\nCurrent Cursed Energy = " + cursedEnergy +
+                "\nTotal Cursed Output = "+ maxCursedOutput +" \nCurrent Cursed Output = "+cursedOutput +
                 "\nCurrent Cursed Efficiency = "+cursedEfficiency;
     }
 

@@ -37,7 +37,7 @@ public class Commands {
         if(!context.getSource().isPlayer()) return 0;
         ServerPlayNetworking.send(context.getSource().getPlayer(),
                 new Packet.SendClientMessage(PlayerInfo.playerInfoData.get(context.getSource().getPlayer()).toString()));
-        context.getSource().sendSuccess(()->Component.literal("stats"),false);
+        //context.getSource().sendSuccess(()->Component.literal("stats"),false);
         return 1;
     }
 

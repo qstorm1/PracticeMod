@@ -25,6 +25,7 @@ public class ModPotions {
         return Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,name),potion);
     }
 
+    public static void init(){}
 
 
 }

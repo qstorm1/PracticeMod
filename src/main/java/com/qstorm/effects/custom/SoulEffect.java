@@ -2,6 +2,7 @@ package com.qstorm.effects.custom;
 
 import com.qstorm.cca.SorceryInfoStorage;
 import com.qstorm.powers.PlayerInfo;
+import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -22,7 +23,7 @@ public class SoulEffect extends MobEffect {
     @Override
     public void onEffectAdded(MobEffectInstance effectInstance, LivingEntity entity) {
         super.onEffectAdded(effectInstance, entity);
-        entity.addTag(Limitless.getSorcererID());
+        entity.addTag(Sorcery.SORCERER_TAG);
         if(entity instanceof Player player){
             //set the player sorcery type to be a sorcerer, this is saved permanently
             SorceryInfoStorage.sorceryData.get(player).setSorceryType(Limitless.SORCERER_ID);

@@ -4,6 +4,7 @@ import com.qstorm.PracticeMod;
 import com.qstorm.effects.CustomEffects;
 import com.qstorm.item.armor.LaserEyes;
 import com.qstorm.item.tools.SoulPickaxe;
+import com.qstorm.potion.ModPotions;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -65,6 +66,7 @@ public class ModItems {
 
     public static void initialize(){
         //needs to be ran for all static methods in this class to load
+        ModPotions.init();
 
         //modifies the CreativeModeTabs.INGREDIENTS entry as an event by registering ModItems.SOUL_ORE
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS)
