@@ -30,7 +30,6 @@ public class LimitlessInnate extends Ability {
 
     public LimitlessInnate(UUID playerUUID, int id) {
         super(playerUUID,id);
-        this.playerInfo= PlayerInfo.playerInfoHashMap.get(playerUUID);
     }
 
     @Override

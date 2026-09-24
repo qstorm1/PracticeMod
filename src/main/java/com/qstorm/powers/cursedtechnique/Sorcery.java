@@ -148,7 +148,9 @@ public class Sorcery {
     }
 
     /**
-     * Handle what happens on keybinds and set up tick to init sorcery if the player data allows it
+     * Handle what happens on keybinds
+     * Initializes sorcery when the data changes
+     * initLimitlessPlayer happens on the server side in this function
      */
     public static void init(){
         registerServerNetworking();
@@ -156,7 +158,8 @@ public class Sorcery {
             Collection<ServerPlayer> players = PlayerLookup.all(server);
             for(ServerPlayer player:players){
                 SorceryDataContext context = SorceryInfoStorage.sorceryData.get(player);
-                if(context.getSorceryType().equals(Limitless.getSorcererID())){
+                if(context.getSorceryType().equals(Limitless.getSorcererID())&&
+                        !SorceryInfoStorage.sorceryData.get(player).getSorcerer().equals(SorceryInfoStorage.nullSorceryString)){
                     Limitless.initLimitlessPlayer(player);
                 }
             }

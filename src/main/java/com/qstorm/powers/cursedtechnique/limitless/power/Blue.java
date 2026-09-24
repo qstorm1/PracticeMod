@@ -46,7 +46,6 @@ public class Blue extends Ability {
 
     public Blue(UUID playerUUID,int id) {
         super(playerUUID,id,100000,1,0xFF0000ff);
-        this.playerInfo=PlayerInfo.playerInfoHashMap.get(playerUUID);
     }
 
 

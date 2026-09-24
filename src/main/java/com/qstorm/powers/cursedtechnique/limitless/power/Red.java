@@ -11,7 +11,6 @@ import java.util.UUID;
 public class Red extends Ability {
     public Red(UUID playerUUID, int id) {
         super(playerUUID,id,0xFFdc143c);
-        this.playerInfo= PlayerInfo.playerInfoHashMap.get(playerUUID);
     }
 
     @Override

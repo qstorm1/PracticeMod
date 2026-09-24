@@ -11,7 +11,7 @@ import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
-public class SorceryInfoStorage implements SorceryDataContext, EntityComponentInitializer {
+public class SorceryInfoStorage implements SorceryDataContext {
     //TODO: implement AutoSynced thing
 
     //data on weather the player can use things
@@ -54,12 +54,6 @@ public class SorceryInfoStorage implements SorceryDataContext, EntityComponentIn
         writeView.putBoolean("CanUseInnateDomain",canUseInnateDomain);
         writeView.putBoolean("CanUseDomain",canUseDomain);
         writeView.putString("Power",powerType);
-    }
-
-
-    @Override
-    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(sorceryData, player -> new SorceryInfoStorage(), RespawnCopyStrategy.ALWAYS_COPY);
     }
 
 

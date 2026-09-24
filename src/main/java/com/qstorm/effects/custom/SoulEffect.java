@@ -24,6 +24,7 @@ public class SoulEffect extends MobEffect {
         super.onEffectAdded(effectInstance, entity);
         entity.addTag(Limitless.getSorcererID());
         if(entity instanceof Player player){
+            //set the player sorcery type to be a sorcerer, this is saved permanently
             SorceryInfoStorage.sorceryData.get(player).setSorceryType(Limitless.SORCERER_ID);
             if(player.getTags().contains("cheat"))
                 PlayerInfo.setCheatMode(player);

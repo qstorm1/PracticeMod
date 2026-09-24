@@ -13,7 +13,6 @@ public class Purple extends Ability {
 
     public Purple(UUID playerUUID, int id) {
         super(playerUUID,id,0xFF9400d3);
-        this.playerInfo= PlayerInfo.playerInfoHashMap.get(playerUUID);
     }
 
     @Override
