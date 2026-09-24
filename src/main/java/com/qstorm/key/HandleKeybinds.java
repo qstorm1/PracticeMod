@@ -31,6 +31,7 @@ public class HandleKeybinds {
         PayloadTypeRegistry.playC2S().register(EnergyKeyOff.TYPE, EnergyKeyOff.CODEC);
         PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE, Packet.LimitlessInit.CODEC);
         PayloadTypeRegistry.playS2C().register(AnimationPacket.SendAnimationUpdate.TYPE,AnimationPacket.SendAnimationUpdate.CODEC);
+        PayloadTypeRegistry.playS2C().register(Packet.SetClosestPlayer.TYPE,Packet.SetClosestPlayer.CODEC);
 
 
         PayloadTypeRegistry.playS2C().register(Packet.SendClientMessage.TYPE,Packet.SendClientMessage.CODEC);

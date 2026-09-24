@@ -1,11 +1,16 @@
 package com.qstorm.mixin;
 
+import com.qstorm.cca.SorceryInfoStorage;
+import com.qstorm.powers.Ability;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -51,61 +56,70 @@ public abstract class LLInnateMovementHandle{
     @Shadow
     public abstract Vec3 getDeltaMovement();
 
+    @Shadow
+    private Level level;
+
+    //happen on server and client
     @ModifyVariable(
             method="move",
             at= @At("HEAD"),
             argsOnly = true
     )
     public Vec3 updateMovement(Vec3 movement) {
-        if (!((Object) this instanceof Player)) {
-            double increaseAmount;
-            if((Object)this instanceof FallingBlockEntity){
-                increaseAmount=1.5;
+        if(this.level.isClientSide()) return movement;
+        double increaseAmount;
+        if((Object)this instanceof FallingBlockEntity){
+            increaseAmount=1.5;
 
-            }
-            else{
-                increaseAmount=1;
-            }
-            Sorcery closest = Limitless.getClosestLimitlessPosition(this.position);
-            this.needsSync = true;
-            if (closest != null && closest.abilities.getFirst() instanceof LimitlessInnate li) {
-                Vec3 closestPos = closest.storedPlayer.getPosition(0);
+        }
+        else{
+            increaseAmount=1;
+        }
 
-                double distanceFromPlayer = closestPos.distanceTo(position);
+        Limitless closest = Limitless.getClosestLimitless((ServerLevel) this.level,movement);
+        Vec3 closestPos = closest.getPos();
+        this.needsSync = true;
+        if (closest != null&&closestPos!=null) {
+            double distanceFromPlayer = closestPos.distanceTo(position);
+            LimitlessInnate innate = ((LimitlessInnate)closest.abilities.get(0));
 
-
-                //if inside sphere
-                if (li.startDistance*increaseAmount > distanceFromPlayer) {
-                    if (!this.getTags().contains(LimitlessInnate.TAG)) {
-                        this.addTag(LimitlessInnate.TAG);
-                    }
+            //if inside sphere
+            if (innate.startDistance*increaseAmount > distanceFromPlayer) {
+                if (!this.getTags().contains(LimitlessInnate.TAG)) {
+                    this.addTag(LimitlessInnate.TAG);
                 }
+            }
 
 
-                if (li.startDistance*increaseAmount < distanceFromPlayer) {
-                    //outside sphere
-                    if (this.getTags().contains(LimitlessInnate.TAG)) {
-                        this.removeTag(LimitlessInnate.TAG);
-                    }
-                } else if (li.endDistance*increaseAmount < distanceFromPlayer) {
-                    //if between 0 and start
-                    //TODO: item entities currently stop all forward velocity after setting it to 0, fix by giving small push
-                    movement = movement.scale(Math.pow((distanceFromPlayer/(li.startDistance*increaseAmount)),2));
-                } else {
-                    //if in 0 area
-                    movement = movement.scale(0);
+            if (innate.startDistance*increaseAmount < distanceFromPlayer) {
+                //outside sphere
+                if (this.getTags().contains(LimitlessInnate.TAG)) {
+                    this.removeTag(LimitlessInnate.TAG);
                 }
+            } else if (innate.endDistance*increaseAmount < distanceFromPlayer) {
+                //if between 0 and start
+                //TODO: item entities currently stop all forward velocity after setting it to 0, fix by giving small push
+                movement = movement.scale(Math.pow((distanceFromPlayer/(innate.startDistance*increaseAmount)),2));
+            } else {
+                //if in 0 area
+                movement = movement.scale(0);
             }
         }
+
         return movement;
     }
 
 
     @Inject(method = "canBeHitByProjectile",at=@At("HEAD"),cancellable = true)
     public void canBeHitByProjectile(CallbackInfoReturnable<Boolean> cir){
-        if(Sorcery.sorcerers.get(this.getUUID()) != null){
+        if(!SorceryInfoStorage.sorceryData.get(this).getSorcerer()
+                .equals(SorceryInfoStorage.nullSorceryString)){
+
             //if the target is a sorcerer
-            Sorcery.sorcerers.get(this.getUUID()).abilities.forEach((ability -> {
+
+
+
+            SorceryInfoStorage.sorceryData.get(this).getSorcerer().abilities.forEach((ability -> {
                 if (ability instanceof LimitlessInnate li && li.isTicked) {
                     cir.setReturnValue(false);
                 }

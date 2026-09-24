@@ -14,10 +14,14 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 import java.util.ArrayList;
@@ -60,6 +64,7 @@ public class Sorcery {
     //The domain of this ability
     public Domain domain;
 
+    private Player storedPlayer;
 
 
 
@@ -95,9 +100,10 @@ public class Sorcery {
 
         if(player instanceof ServerPlayer serverPlayer) {
             serverSideInitCode(serverPlayer);
+            this.storedPlayer=serverPlayer;
         }
         else{
-            clientSideInitCode(player);
+            clientSideInitCode((LocalPlayer)player);
         }
 
     }
@@ -109,15 +115,15 @@ public class Sorcery {
 
         //handle ticking
         ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, (server) -> {
-            this.tick(serverPlayer);
+            this.tickServer(server,serverPlayer);
         });
     }
 
 
-    protected void clientSideInitCode(Player player){
+    protected void clientSideInitCode(LocalPlayer player){
         ClientTickEvents.END_CLIENT_TICK.register(
                 client -> {
-                    this.tick(player);
+                    this.tickClient(client,player);
                 }
         );
 
@@ -135,6 +141,10 @@ public class Sorcery {
             combo.setAction(ability);
         }
         abilities.getLast().setCombo(combo);
+    }
+
+    public Vec3 getPos(){
+        return storedPlayer.position();
     }
 
     /**
@@ -241,14 +251,26 @@ public class Sorcery {
 
     }
 
-    public void tick(Player contextPlayer){
+    public void tickServer(MinecraftServer context,ServerPlayer player){
         if(abilities.isEmpty()) return;
         abilities.getFirst().isTicked = innateOn;
         for (Ability ability:abilities){
             if(ability.isTicked){
-                ability.tick(contextPlayer);
+                ability.tick(player);
             }
         }
+    }
+    public void tickClient(Minecraft context, LocalPlayer player){
+        if(abilities.isEmpty()) return;
+        abilities.getFirst().isTicked = innateOn;
+        for (Ability ability:abilities){
+            if(ability.isTicked){
+                ability.tick(player);
+            }
+        }
+    }
+    public void tick(){
+
     }
 
 

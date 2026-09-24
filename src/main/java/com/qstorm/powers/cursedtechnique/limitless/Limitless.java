@@ -12,6 +12,7 @@ import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -87,27 +88,27 @@ public class Limitless extends Sorcery {
 
     }
 
+    public static Vec3 closestLimitlessPosition=null;
+
     //TODO: make this a variable that constantly get sent to all clients for more efficiency in mixin stuff
-    public static Limitless getClosestLimitlessPosition(ServerLevel level, Vec3 position){
+    public static Limitless getClosestLimitless(ServerLevel level, Vec3 position){
         ArrayList<Double> smallestDistance = new ArrayList<>();//uses arraylist cause lambdas are stupid
-        ArrayList<Sorcery> finalSorcery = new ArrayList<>();
+        Limitless finalValue=null;
         smallestDistance.add(-1.0);
+        //need position value, need to know if sorcery is limitless and sorcery.innateOn
         for(ServerPlayer player:PlayerLookup.world(level)){
             Sorcery sorcery = SorceryInfoStorage.sorceryData.get(player).getSorcerer();
-            if(sorcery instanceof Limitless && sorcery.innateOn){
+            if(sorcery instanceof Limitless limitless && sorcery.innateOn){
                 if(smallestDistance.getFirst()<player.position().distanceTo(position)){
                     smallestDistance.set(0,player.position().distanceTo(position));
-                    finalSorcery.add(sorcery);
+                    finalValue=limitless;
 
                 }
             }
         }
-        if(finalSorcery.isEmpty()){
-            return null;
-        }
-        return (Limitless) finalSorcery.getFirst();
+        return finalValue;
+        //ServerPlayNetworking.send(doer,new Packet.SetClosestPlayer(finalValue.x,finalValue.y,finalValue.z));
     }
-
 
 
     public static String getSorcererID() {
@@ -120,8 +121,9 @@ public class Limitless extends Sorcery {
     //two times as much cursed energy as blue
 
     @Override
-    public void tick(Player contextPlayer){
-        super.tick(contextPlayer);
+    public void tickServer(MinecraftServer server, ServerPlayer contextPlayer){
+        super.tickServer(server,contextPlayer);
+        //getClosestLimitlessPosition(contextPlayer.level(),contextPlayer,contextPlayer.position());
     }
 
 

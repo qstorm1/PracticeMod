@@ -1,9 +1,11 @@
 package com.qstorm;
 
 import com.qstorm.PAL.PALHandle;
+import com.qstorm.cca.SorceryInfoStorage;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.packets.AnimationPacket;
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -13,6 +15,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
 
 import static com.qstorm.powers.cursedtechnique.JJKClientRender.initJJKClientRender;
 
@@ -45,6 +48,15 @@ public class PracticeModClient implements ClientModInitializer {
             context.player().displayClientMessage(Component.literal(packet.message()),false);
         });
 
+
+        //the Mixin LLInnateMovementHandle needs to have info from the server only Limitless.findClosestPlayer method on the client side,
+        //it is sent from the server and put into the value closestLimitlessPosition
+        ClientPlayNetworking.registerGlobalReceiver(Packet.SetClosestPlayer.TYPE,(packet,context)->{
+            Sorcery value = SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer();
+            if(value instanceof Limitless limitless)
+                limitless.closestLimitlessPosition=new Vec3(packet.x(),packet.y(),packet.z());
+
+        });
 
         //draw the thing in the bottom left
         ClientPlayNetworking.registerGlobalReceiver(Packet.ActivateSorceryRender.TYPE,(packet, context)->{

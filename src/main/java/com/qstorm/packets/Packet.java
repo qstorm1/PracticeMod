@@ -109,4 +109,31 @@ public class Packet {
     }
 
 
+    public record SetClosestPlayer(double x,double y,double z) implements CustomPacketPayload {
+
+        public static final Type<SetClosestPlayer> TYPE =
+                new SetClosestPlayer.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"closest-player-packet"));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, SetClosestPlayer> CODEC =StreamCodec.composite(
+                ByteBufCodecs.DOUBLE,
+                SetClosestPlayer::x,
+
+                ByteBufCodecs.DOUBLE,
+                SetClosestPlayer::y,
+
+                ByteBufCodecs.DOUBLE,
+                SetClosestPlayer::z,
+
+                SetClosestPlayer::new
+        );
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+
+
+
 }
