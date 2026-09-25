@@ -66,22 +66,25 @@ public abstract class LLInnateMovementHandle{
             argsOnly = true
     )
     public Vec3 updateMovement(Vec3 movement) {
-        if(this.level.isClientSide()) return movement;
         double increaseAmount;
         if((Object)this instanceof FallingBlockEntity){
-            increaseAmount=1.5;
+            increaseAmount=1.5;//account for block size
 
         }
         else{
             increaseAmount=1;
         }
 
-        Limitless closest = Limitless.getClosestLimitless((ServerLevel) this.level,movement);
+        Player closest = Limitless.getClosestLimitless(this.level.players(),movement);
+
         this.needsSync = true;
         if (closest != null) {
-            Vec3 closestPos = closest.getPos();
+            if((Object)this == closest) return movement;
+
+            Limitless closestLimitless = (Limitless) SorceryInfoStorage.sorceryData.get(closest).getSorcerer();
+            Vec3 closestPos = closestLimitless.getPos();
             double distanceFromPlayer = closestPos.distanceTo(position);
-            LimitlessInnate innate = ((LimitlessInnate)closest.innate);
+            LimitlessInnate innate = ((LimitlessInnate)closestLimitless.innate);
 
             //if inside sphere
             if (innate.startDistance*increaseAmount > distanceFromPlayer) {

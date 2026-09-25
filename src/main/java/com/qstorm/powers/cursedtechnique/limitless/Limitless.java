@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -98,17 +99,17 @@ public class Limitless extends Sorcery {
     public static Vec3 closestLimitlessPosition=null;
 
     //TODO: make this a variable that constantly get sent to all clients for more efficiency in mixin stuff
-    public static Limitless getClosestLimitless(ServerLevel level, Vec3 position){
+    public static Player getClosestLimitless(List<? extends Player> playerList, Vec3 position){
         ArrayList<Double> smallestDistance = new ArrayList<>();//uses arraylist cause lambdas are stupid
-        Limitless finalValue=null;
+        Player finalValue=null;
         smallestDistance.add(-1.0);
         //need position value, need to know if sorcery is limitless and sorcery.innateOn
-        for(ServerPlayer player:PlayerLookup.world(level)){
+        for(Player player:playerList){
             Sorcery sorcery = SorceryInfoStorage.sorceryData.get(player).getSorcerer();
-            if(sorcery instanceof Limitless limitless && sorcery.innateOn){
+            if(sorcery instanceof Limitless && sorcery.innateOn){
                 if(smallestDistance.getFirst()<player.position().distanceTo(position)){
                     smallestDistance.set(0,player.position().distanceTo(position));
-                    finalValue=limitless;
+                    finalValue=player;
 
                 }
             }
@@ -116,6 +117,7 @@ public class Limitless extends Sorcery {
         return finalValue;
         //ServerPlayNetworking.send(doer,new Packet.SetClosestPlayer(finalValue.x,finalValue.y,finalValue.z));
     }
+
 
 
     public static String getSorcererID() {

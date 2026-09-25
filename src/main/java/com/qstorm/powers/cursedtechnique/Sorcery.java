@@ -91,10 +91,10 @@ public class Sorcery {
         if(!player.getTags().contains(SORCERER_TAG)) return;
         //register sorcerer to data
         SorceryInfoStorage.sorceryData.get(player).setSorcerer(this);
+        this.storedPlayer=player;
 
         if(player instanceof ServerPlayer serverPlayer) {
             serverSideInitCode(serverPlayer);
-            this.storedPlayer=serverPlayer;
         }
         else{
             clientSideInitCode((LocalPlayer)player);
@@ -129,7 +129,7 @@ public class Sorcery {
 
 
     protected void addAbility(Ability ability, Combo combo){
-        ability.id = abilities.isEmpty() ? abilities.getLast().id+1 : 10;
+        ability.id = abilities.isEmpty() ? 10 : abilities.getLast().id+1;
         abilities.add(ability);
         if(combo.isActionNull()){
             combo.setAction(ability);
