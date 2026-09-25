@@ -34,7 +34,7 @@ public class EntityForceStorage implements EntityForce{
     public Vec3 findNetForce() {
         Vec3 finalVal=Vec3.ZERO;
         for (Vec3 val : forces.values()) {
-            finalVal.add(val);
+            finalVal = finalVal.add(val);
         }
         return finalVal;
     }

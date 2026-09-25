@@ -17,6 +17,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -90,11 +91,12 @@ public class Blue extends Ability {
             ServerPlayer shooter = (ServerPlayer) contextPlayer;
             renderToClient(position,radius,shooter);
             //causeExplosion(shooter.level(),shooter);
-            pullEntities(shooter);//create a gravitation pull for each entity
             updateSurroundingBlocks(shooter);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
             updateBluePosition(contextPlayer);
 
         }
+
+        pullEntities(contextPlayer);//create a gravitation pull for each entity
 
 
 
@@ -127,39 +129,41 @@ public class Blue extends Ability {
 
 
 
-    public void pullEntities(ServerPlayer shooter){
-        shooter.level().getAllEntities().forEach((entity)->{
+    public void pullEntities(Player player){
 
-            if(entity==shooter) return;
+        if(player instanceof ServerPlayer shooter) {
+            shooter.level().getAllEntities().forEach((entity) -> {
+                if (entity == shooter) return;
 
-            double radFromCenter = entity.position().distanceTo(position);
-            Vec3 direction = entity.position().subtract(position).normalize();
+                double radFromCenter = entity.position().distanceTo(position);
 
-            if(radFromCenter<=radiusOfEffect){
-                double acceleration;
-                //don't let anything inside of blue
-                if(radFromCenter<radius){
-                    EntityForceStorage.forceData.get(entity).setForce(EntityForceStorage.blueForce,direction.scale(0.1));
+
+                if (radFromCenter <= radiusOfEffect) {
+                    Vec3 direction = entity.position().subtract(position).normalize();
+                    double acceleration;
+                    //don't let anything inside of blue
+                    if (radFromCenter < radius) {
+                        EntityForceStorage.forceData.get(entity).setForce(EntityForceStorage.blueForce, direction.scale(-0.1));
+
+                    } else {
+                        //acceleration is proportional to power
+                        acceleration = (Math.pow(power, 2) / 1000000000) / (radFromCenter * radFromCenter * radFromCenter);
+                        UUID testUUID = entity.getUUID();
+                        if (acceleration < 3) {
+                            EntityForceStorage.forceData.get(entity).setForce(EntityForceStorage.blueForce, direction.scale(-acceleration));
+                        } else {
+                            acceleration=3;
+                            EntityForceStorage.forceData.get(entity).setForce(EntityForceStorage.blueForce, direction.scale(-acceleration));
+                        }
+                    }
+
+                    //                double entityMass=1;
+                    //                if(Mass.mass.get(entity.getClass())!=null) entityMass=Mass.mass.get(entity.getClass());
+
 
                 }
-                else{
-                    //acceleration is proportional to power
-                    acceleration=(Math.pow(power,2)/1000000000)/(radFromCenter*radFromCenter*radFromCenter);
-                    if(acceleration<3) {
-                        EntityForceStorage.forceData.get(entity).setForce(EntityForceStorage.blueForce, direction.scale(-acceleration));
-                    }
-                    else{
-                        return;
-                    }
-                }
-
-//                double entityMass=1;
-//                if(Mass.mass.get(entity.getClass())!=null) entityMass=Mass.mass.get(entity.getClass());
-
-
-
-            }
-        });
+            });
+        }
     }
 
     public void updateSurroundingBlocks(ServerPlayer server){

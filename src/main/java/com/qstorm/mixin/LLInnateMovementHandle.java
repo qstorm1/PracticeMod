@@ -66,7 +66,7 @@ public abstract class LLInnateMovementHandle{
     public Vec3 updateMovement(Vec3 movement) {
 
         Vec3 forceVector= EntityForceStorage.forceData.get(this).findNetForce();
-
+        UUID testUUID = ((Entity)(Object)this).getUUID();
         movement = movement.add(forceVector);
 
 
