@@ -1,4 +1,4 @@
-package com.qstorm.cca;
+package com.qstorm.cca.comboStorage;
 
 
 import com.qstorm.powers.combo.Combo;

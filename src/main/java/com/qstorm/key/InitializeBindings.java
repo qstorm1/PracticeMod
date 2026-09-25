@@ -2,7 +2,7 @@ package com.qstorm.key;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.qstorm.PracticeMod;
-import com.qstorm.cca.SorceryInfoStorage;
+import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.powers.combo.ComboKey;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

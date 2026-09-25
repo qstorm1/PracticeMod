@@ -1,4 +1,4 @@
-package com.qstorm.cca;
+package com.qstorm.cca.sorceryStorage;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.powers.cursedtechnique.Sorcery;

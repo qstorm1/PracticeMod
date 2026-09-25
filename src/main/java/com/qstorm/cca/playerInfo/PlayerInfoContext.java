@@ -1,4 +1,4 @@
-package com.qstorm.cca;
+package com.qstorm.cca.playerInfo;
 
 import org.ladysnake.cca.api.v3.component.Component;
 

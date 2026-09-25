@@ -1,12 +1,9 @@
 package com.qstorm.mixin;
 
-import com.qstorm.cca.SorceryInfoStorage;
-import com.qstorm.powers.Ability;
+import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
-import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;

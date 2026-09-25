@@ -1,8 +1,7 @@
 package com.qstorm.mixin;
 
-import com.qstorm.cca.SorceryInfoStorage;
+import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.key.HandleKeybinds;
-import com.qstorm.key.InitializeBindings;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -12,7 +11,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MouseHandler.class)
 public class Scroll {
@@ -39,7 +37,8 @@ public class Scroll {
                 ci.cancel();
             }
         }
-        if(SorceryInfoStorage.sorceryData.get(Minecraft.getInstance().player).getSorcerer().innate.locksHotBarScroll){
+        if(SorceryInfoStorage.sorceryData.get(Minecraft.getInstance().player).getSorcerer().innate.locksHotBarScroll&&
+                SorceryInfoStorage.sorceryData.get(Minecraft.getInstance().player).getSorcerer().innate.isScroll){
             ci.cancel();
         }
     }

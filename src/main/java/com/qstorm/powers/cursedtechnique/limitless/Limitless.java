@@ -1,7 +1,7 @@
 package com.qstorm.powers.cursedtechnique.limitless;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.cca.SorceryInfoStorage;
+import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.combo.ComboClient;
@@ -10,12 +10,10 @@ import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
 import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;

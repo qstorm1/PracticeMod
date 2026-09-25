@@ -1,9 +1,9 @@
 package com.qstorm.powers.cursedtechnique;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.cca.SorceryDataContext;
-import com.qstorm.cca.SorceryInfoStorage;
-import com.qstorm.cca.PlayerInfoContext;
+import com.qstorm.cca.sorceryStorage.SorceryDataContext;
+import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
+import com.qstorm.cca.playerInfo.PlayerInfoContext;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
@@ -19,10 +19,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;

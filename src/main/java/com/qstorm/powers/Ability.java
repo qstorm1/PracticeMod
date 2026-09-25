@@ -1,6 +1,6 @@
 package com.qstorm.powers;
 
-import com.qstorm.cca.PlayerInfoContext;
+import com.qstorm.cca.playerInfo.PlayerInfoContext;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.combo.Combo;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;

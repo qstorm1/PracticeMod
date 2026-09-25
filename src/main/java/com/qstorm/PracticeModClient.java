@@ -1,9 +1,8 @@
 package com.qstorm;
 
 import com.qstorm.PAL.PALHandle;
-import com.qstorm.cca.SorceryInfoStorage;
+import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.key.InitializeBindings;
-import com.qstorm.packets.AnimationPacket;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
@@ -11,7 +10,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;

@@ -1,6 +1,6 @@
 package com.qstorm.effects.custom;
 
-import com.qstorm.cca.SorceryInfoStorage;
+import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;

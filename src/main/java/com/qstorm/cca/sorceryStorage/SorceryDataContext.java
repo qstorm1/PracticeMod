@@ -1,4 +1,4 @@
-package com.qstorm.cca;
+package com.qstorm.cca.sorceryStorage;
 
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import org.ladysnake.cca.api.v3.component.Component;

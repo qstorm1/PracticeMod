@@ -1,7 +1,7 @@
 package com.qstorm.powers.combo;
 
 import com.qstorm.PracticeMod;
-import com.qstorm.cca.CCAComboStorageClass;
+import com.qstorm.cca.comboStorage.CCAComboStorageClass;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
