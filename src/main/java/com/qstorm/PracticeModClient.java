@@ -46,10 +46,6 @@ public class PracticeModClient implements ClientModInitializer {
             context.player().displayClientMessage(Component.literal(packet.message()),false);
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(Packet.LimitlessInit.TYPE,(packet,context)->{
-            Limitless.initLimitlessPlayer(context.player());
-        });
-
 
         //the Mixin LLInnateMovementHandle needs to have info from the server only Limitless.findClosestPlayer method on the client side,
         //it is sent from the server and put into the value closestLimitlessPosition

@@ -78,3 +78,10 @@ I spent live 100 hours dealing with a stupid error where fabric the EntityCompon
 cause it wasn't anywhere in the docs
 
 I don't think anyone understands the messed up satisfaction that comes from deleting the most important part of your code. Thats what I felt when I deleted the static variables I was using which previously held ALL of the data
+
+-PAL handle,
+finish blue,
+ make domain,
+ make red (easy after blue),
+ Fix projectile for innate,
+ make onHit slow the arm animation and  not do damage, the arm animation continues

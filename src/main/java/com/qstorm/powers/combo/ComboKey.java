@@ -3,6 +3,7 @@ package com.qstorm.powers.combo;
 import com.qstorm.PracticeMod;
 import com.qstorm.cca.comboStorage.CCAComboStorageClass;
 import com.qstorm.key.HandleKeybinds;
+import com.qstorm.powers.PlayerInfo;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -11,6 +12,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -141,19 +143,15 @@ public class ComboKey{
 
 
     public static void handleKey(Player player, int keyPressed){
-        if(!(CCAComboStorageClass.playerCombos.get(player)).getCombos().isEmpty()) {
+       if(!CCAComboStorageClass.playerCombos.get(player).getCombos().isEmpty()) {
             int current = Combo.findLongestCombo(player);
+
             //render server stuff
             for (Combo combo : CCAComboStorageClass.playerCombos.get(player).getCombos()) {
                 if (current != combo.current) continue;
+                combo.checkIfContinue(player,keyPressed);
                 if(player instanceof ServerPlayer serverPlayer) {
-                    combo.checkIfContinue(player,keyPressed);
                     Combo.handleServerSideComboRendering(serverPlayer, keyPressed, false);
-                }
-                else if(!Minecraft.getInstance().isSingleplayer())
-                    combo.checkIfContinue(player,keyPressed);
-                else {
-                    combo.checkIfContinueLocalSingleplayer((LocalPlayer)player,keyPressed);
                 }
 
             }

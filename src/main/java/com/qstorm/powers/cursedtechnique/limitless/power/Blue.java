@@ -2,12 +2,14 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 
 import com.qstorm.PAL.PALHandle;
 import com.qstorm.PracticeMod;
+import com.qstorm.cca.entityForce.EntityForceStorage;
 import com.qstorm.packets.AnimationPacket;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.resources.Identifier;
@@ -81,19 +83,24 @@ public class Blue extends Ability {
 
 
 
-
     @Override
     public void tick(Player contextPlayer){
-        ServerPlayer shooter = (ServerPlayer) contextPlayer;
+        super.tick(contextPlayer);
+        if(contextPlayer instanceof ServerPlayer serverPlayer){
+            ServerPlayer shooter = (ServerPlayer) contextPlayer;
+            renderToClient(position,radius,shooter);
+            //causeExplosion(shooter.level(),shooter);
+            pullEntities(shooter);//create a gravitation pull for each entity
+            updateSurroundingBlocks(shooter);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
+            updateBluePosition(contextPlayer);
 
-        renderToClient(position,radius,shooter);
-        pullEntities(shooter);//create a gravitation pull for each entity
-        updateSurroundingBlocks(shooter);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
-        //causeExplosion(shooter.level(),shooter);
-        updateBluePosition(contextPlayer);
+        }
+
+
+
         ticksEnabled--;
         if(ticksEnabled<=0){
-            end(shooter.level());
+            end();
         }
 
     }
@@ -132,15 +139,15 @@ public class Blue extends Ability {
                 double acceleration;
                 //don't let anything inside of blue
                 if(radFromCenter<radius){
-                    entity.setDeltaMovement(0,0,0);
-                    entity.addDeltaMovement(direction.scale(0.1));
+                    EntityForceStorage.forceData.get(entity).setForce(EntityForceStorage.blueForce,direction.scale(0.1));
 
                 }
                 else{
                     //acceleration is proportional to power
                     acceleration=(Math.pow(power,2)/1000000000)/(radFromCenter*radFromCenter*radFromCenter);
-                    if(acceleration<3)
-                        entity.addDeltaMovement(direction.scale(-acceleration));
+                    if(acceleration<3) {
+                        EntityForceStorage.forceData.get(entity).setForce(EntityForceStorage.blueForce, direction.scale(-acceleration));
+                    }
                     else{
                         return;
                     }
@@ -239,11 +246,6 @@ public class Blue extends Ability {
         position.add(position1.x);
         position.add(position1.y);
         position.add(position1.z);
-        Vec3 test = playerShooting.getEyePosition();
-        Vec3 test2 = playerShooting.getLookAngle();
-        Vec3 test3 = playerShooting.getViewVector(0);
-        Vec3 test4 = playerShooting.getViewVector(1);
-
 
 
         //temporary particle render, replace with actual thing later cause i don't want to deal with rendering pain

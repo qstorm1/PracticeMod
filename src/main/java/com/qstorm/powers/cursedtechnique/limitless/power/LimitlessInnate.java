@@ -114,11 +114,8 @@ public class LimitlessInnate extends Ability {
     }
 
     @Override
-    public void end(ServerLevel level){
-        super.end(level);
-        level.getAllEntities().forEach(entity-> {
-
-        });
+    public void end(){
+        super.end();
 
     }
 

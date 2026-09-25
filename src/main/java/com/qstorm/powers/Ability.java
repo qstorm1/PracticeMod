@@ -9,6 +9,7 @@ import com.zigythebird.playeranim.api.PlayerAnimationFactory;
 import com.zigythebird.playeranimcore.animation.Animation;
 import com.zigythebird.playeranimcore.animation.RawAnimation;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -125,19 +126,18 @@ public abstract class Ability {
 
 
 
-    public void DoSinglePlayerLocal(LocalPlayer player){
-        runClient(player);
-    }
 
 
     public void Do(Player player){
         PlayerInfoContext context = PlayerInfo.playerInfoData.get(player);
-        power=(rate*context.getOutput());
-        percentPower=power/rate*context.getMaxOutput();
+
 
         //if the power isn't enough to run the abilities initial cost
-        if(power<initial){
-            return;
+        if(player instanceof ServerPlayer){
+            power=(rate*context.getOutput());
+            percentPower=power/rate*context.getMaxOutput();
+            if(power<initial)
+                return;
         }//if this is records times
         if (times.isEmpty()) {
             run(player);
@@ -205,6 +205,8 @@ public abstract class Ability {
     }
 
 
+
+
     protected void animate(Player player, Identifier factory, Animation animation){
         if(!player.level().isClientSide())
             return;
@@ -240,7 +242,7 @@ public abstract class Ability {
         isTicked=false;
     }
 
-    public void end(ServerLevel context){
+    public void end(){
         this.isTicked=false;
         disableScroll();
     };

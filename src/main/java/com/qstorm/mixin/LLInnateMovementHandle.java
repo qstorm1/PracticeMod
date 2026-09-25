@@ -1,5 +1,6 @@
 package com.qstorm.mixin;
 
+import com.qstorm.cca.entityForce.EntityForceStorage;
 import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
@@ -63,7 +64,18 @@ public abstract class LLInnateMovementHandle{
             argsOnly = true
     )
     public Vec3 updateMovement(Vec3 movement) {
+
+        Vec3 forceVector= EntityForceStorage.forceData.get(this).findNetForce();
+
+        movement = movement.add(forceVector);
+
+
+
+
+
+
         double increaseAmount;
+
         if((Object)this instanceof FallingBlockEntity){
             increaseAmount=1.5;//account for block size
 

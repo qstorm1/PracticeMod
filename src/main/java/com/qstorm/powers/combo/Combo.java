@@ -6,6 +6,7 @@ import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +51,7 @@ public class Combo {
 
     //the player this combo is attached to (used to detect ComboKey's)
     public UUID playerUUID;
-    ServerPlayer storePlayer;
+    Player storePlayer;
 
     Ability action;
 
@@ -62,18 +63,16 @@ public class Combo {
     private Combo(Player player,String name){
         this.playerUUID = player.getUUID();
         this.name=name;
+        this.storePlayer = player;
+
 
         if (player instanceof ServerPlayer) {
-            this.storePlayer = (ServerPlayer) player;
-
-
-
             //update the state of the combo every tick from the server
             ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
-                server.execute(() -> tick(server.getPlayerList().getPlayer(playerUUID)));
+                server.execute(() -> tick(player));
             });
-
         }
+
 
         CCAComboStorageClass.playerCombos.get(player).addCombo(this);
 
@@ -199,7 +198,7 @@ public class Combo {
 
     public void checkIfContinueLocalSingleplayer(LocalPlayer player, int keyPressed){
         if(comboKeys.get(current).id==keyPressed&&current>=comboKeys.size()-1){
-            action.DoSinglePlayerLocal(player);
+            action.Do(player);
 
         }
     }
