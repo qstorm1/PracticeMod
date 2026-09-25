@@ -12,6 +12,8 @@ import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
 import com.qstorm.powers.cursedtechnique.limitless.power.Red;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,10 +66,14 @@ public class Limitless extends Sorcery {
      * @param player the Limitless player that has been initialized
      */
     public static void initLimitlessPlayer(Player player){
-        //non-resetable
-        //TODO: make it resetable (remove all the combos and stuff
-        boolean test = isSorcerer(player);
+
+
+
+        //TODO: make it resettable (remove all the combos and stuff
         if(!isSorcerer(player)){
+            if(player instanceof LocalPlayer && Minecraft.getInstance().isSingleplayer())
+                //if in singleplayer then isSorcerer will return true after the command is run on server so we need to get the random stuff set up is made
+                ComboClient.addComboRendererToClient();
             return;
         }
 
@@ -78,11 +84,11 @@ public class Limitless extends Sorcery {
 
 
 
-
-        if(!(player instanceof ServerPlayer serverPlayer)) {
+        if(player instanceof LocalPlayer) {
             ComboClient.addComboRendererToClient();
         }
-        else{
+
+        if(player instanceof ServerPlayer serverPlayer){
             //auto init client side
             ServerPlayNetworking.send(serverPlayer,new Packet.LimitlessInit());
         }

@@ -1,6 +1,7 @@
 package com.qstorm.powers.combo;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.cca.CCAComboStorageClass;
 import com.qstorm.key.HandleKeybinds;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -140,21 +141,21 @@ public class ComboKey{
 
 
     public static void handleKey(Player player, int keyPressed){
-        if(!(Combo.playerCombos.get(player.getUUID())==null||
-                        Combo.playerCombos.get(player.getUUID()).isEmpty())) {
-            int current = Combo.findLongestCombo(player.getUUID());
+        if(!(CCAComboStorageClass.playerCombos.get(player)).getCombos().isEmpty()) {
+            int current = Combo.findLongestCombo(player);
             //render server stuff
-            for (Combo combo : Combo.playerCombos.get(player.getUUID())) {
-                if (current == combo.current) {
-                    if(player instanceof ServerPlayer serverPlayer) {
-                        Combo.handleServerSideComboRendering(serverPlayer, keyPressed, false);
-                        combo.checkIfContinue(player,keyPressed);
-                    }
-                    else if(!Minecraft.getInstance().isSingleplayer()) combo.checkIfContinue(player,keyPressed);
-                    else {
-                        combo.checkIfContinueLocalSingleplayer((LocalPlayer)player,keyPressed);
-                    }
+            for (Combo combo : CCAComboStorageClass.playerCombos.get(player).getCombos()) {
+                if (current != combo.current) continue;
+                if(player instanceof ServerPlayer serverPlayer) {
+                    combo.checkIfContinue(player,keyPressed);
+                    Combo.handleServerSideComboRendering(serverPlayer, keyPressed, false);
                 }
+                else if(!Minecraft.getInstance().isSingleplayer())
+                    combo.checkIfContinue(player,keyPressed);
+                else {
+                    combo.checkIfContinueLocalSingleplayer((LocalPlayer)player,keyPressed);
+                }
+
             }
         }
     }

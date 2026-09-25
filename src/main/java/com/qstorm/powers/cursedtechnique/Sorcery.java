@@ -54,7 +54,7 @@ public class Sorcery {
     /**
      * Abilities of player
      * get(0) = Innate technique
-     * MUST BE INIT ON CLIENT SIDE CORRECTLY BECAUSE
+     * MUST BE INIT ON CLIENT SIDE CORRECTLY BECAUSE of SCROLL
      * -lockHotbar in Scroll Mixin class
      * TODO: all abilities delete themselves on un-initialized
      */
@@ -158,11 +158,24 @@ public class Sorcery {
             Collection<ServerPlayer> players = PlayerLookup.all(server);
             for(ServerPlayer player:players){
                 SorceryDataContext context = SorceryInfoStorage.sorceryData.get(player);
+
+                //if the sorcery type is a limitless, the player is considered a sorcerer, and the sorcery of the data hasn't already been set
                 if(context.getSorceryType().equals(Limitless.getSorcererID())&&Sorcery.isSorcerer(player)&&context.getSorcerer()==null){
                     Limitless.initLimitlessPlayer(player);
                 }
             }
         });
+        ClientTickEvents.END_CLIENT_TICK.register((client -> {
+             Player player = Minecraft.getInstance().player;
+             if(player!=null) {
+                 SorceryDataContext context = SorceryInfoStorage.sorceryData.get(player);
+                 //if the sorcery type is a limitless, the player is considered a sorcerer, and the sorcery of the data hasn't already been set
+                 if (context.getSorceryType().equals(Limitless.getSorcererID()) && Sorcery.isSorcerer(player) && context.getSorcerer() == null) {
+                     Limitless.initLimitlessPlayer(player);
+                 }
+             }
+
+        }));
     }
 
 
@@ -172,8 +185,7 @@ public class Sorcery {
      * @return if the player input already has a sorcery object in memory
      */
     public static boolean isSorcerer(Player player){
-        return !SorceryInfoStorage.sorceryData.get(player).getSorceryType().equals(SorceryInfoStorage.nullSorceryString)
-                && player.getTags().contains(SORCERER_TAG);
+        return !SorceryInfoStorage.sorceryData.get(player).getSorceryType().equals(SorceryInfoStorage.nullSorceryString);
     }
 
 

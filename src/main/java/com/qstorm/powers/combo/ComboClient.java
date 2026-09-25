@@ -29,8 +29,17 @@ public class ComboClient {
     public static ArrayList<Integer> colors = new ArrayList<>();
 
     static boolean isRendered = false;
+
+
+
+    static boolean isInit=false;
+
+
+
     //run on client whenever
     public static void addComboRendererToClient(){
+        if(isInit) return;
+        isInit=true;
         drawComboList();
         renderComboBox();
         drawKeybinds();

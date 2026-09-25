@@ -31,6 +31,9 @@ public class Scroll {
     ),cancellable = true)
     private void lockHotbar(long windowPointer, double xOffset, double yOffset, CallbackInfo ci){
         assert Minecraft.getInstance().player != null;
+        if(SorceryInfoStorage.sorceryData.get(Minecraft.getInstance().player).getSorcerer()==null||
+                SorceryInfoStorage.sorceryData.get(Minecraft.getInstance().player).getSorceryType().equals(Sorcery.SORCERER_TAG))
+            return;
         for(Ability ab: SorceryInfoStorage.sorceryData.get(Minecraft.getInstance().player).getSorcerer().abilities){
             if(ab.locksHotBarScroll&&ab.isScroll){
                 ci.cancel();

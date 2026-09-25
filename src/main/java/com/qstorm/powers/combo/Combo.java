@@ -1,11 +1,11 @@
 package com.qstorm.powers.combo;
 
 import com.qstorm.PracticeMod;
+import com.qstorm.cca.CCAComboStorageClass;
 import com.qstorm.packets.Packet;
 import com.qstorm.powers.Ability;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -41,17 +41,9 @@ public class Combo {
 
     //do an action whenever current=Integer
     public HashMap<Integer, Ability> actionOnKey = new HashMap<>();
+
     //the amount into the combo
     int current=0;
-
-
-
-    //server side only
-    /**
-     * All combos are stored in this hash map
-     */
-    public static HashMap<UUID,ArrayList<Combo>> playerCombos = new HashMap<>();
-
 
 
 
@@ -62,33 +54,29 @@ public class Combo {
 
     Ability action;
 
-    boolean registered;
+
 
     /**
      * ASSUME THAT COMBO KEYS HAVE BEEN REGISTERED AND ARE FUCNTIONAL
      */
     private Combo(Player player,String name){
-        playerUUID =player.getUUID();
-        registered=true;
-
-        if(!Minecraft.getInstance().isSingleplayer()||!player.level().isClientSide()) {
-            this.name = name;
-
-            //add to the servers list of players
-            playerCombos.computeIfAbsent(playerUUID, k -> new ArrayList<>());
-            playerCombos.get(playerUUID).add(this);
-        }
+        this.playerUUID = player.getUUID();
+        this.name=name;
 
         if (player instanceof ServerPlayer) {
             this.storePlayer = (ServerPlayer) player;
 
+
+
             //update the state of the combo every tick from the server
             ServerTickEvents.END_SERVER_TICK.register(PracticeMod.USES_DATA, server -> {
-                if(registered)
-                    server.execute(() -> tick(server.getPlayerList().getPlayer(playerUUID)));
+                server.execute(() -> tick(server.getPlayerList().getPlayer(playerUUID)));
             });
 
         }
+
+        CCAComboStorageClass.playerCombos.get(player).addCombo(this);
+
 
     }
 
@@ -251,14 +239,8 @@ public class Combo {
 
 
 
-    public static void deregisterPlayerCombos(UUID playerUUID){
-        Combo.playerCombos.forEach((id,combos)->{
-            for(Combo combo:combos){
-                if(combo.playerUUID.equals(playerUUID)){
-                    combo.deregisterCombo();
-                }
-            }
-        });
+    public static void deregisterAllPlayerCombos(Player player){
+        CCAComboStorageClass.playerCombos.get(player).clearCombo();
     }
 
 
@@ -267,8 +249,11 @@ public class Combo {
      * Remove this combo from handling
      */
     public void deregisterCombo(){
-        this.registered=false;
-        playerCombos.remove(playerUUID);
+        CCAComboStorageClass.playerCombos.get(storePlayer).removeCombo(name);
+    }
+
+    public static void deregisterComboStatic(Player player, String comboName){
+        CCAComboStorageClass.playerCombos.get(player).removeCombo(comboName);
     }
 
 
@@ -324,13 +309,14 @@ public class Combo {
         resetClientHUDFromServer(player);
     }
 
+
+
     /**
      * returns the highest current value of this player
-     * @param playerUUID
      */
-    public static int findLongestCombo(UUID playerUUID){
+    public static int findLongestCombo(Player player){
         int max = 0;
-        for(Combo combo:playerCombos.get(playerUUID)){
+        for(Combo combo:CCAComboStorageClass.playerCombos.get(player).getCombos()){
             if(combo.current>max){
                 max=combo.current;
             }
@@ -379,7 +365,7 @@ public class Combo {
     public static void handleServerSideComboRendering(ServerPlayer player, int keyPressed,boolean isReset){
         //at this point current is the value after the one just pressed no?
 
-        ArrayList<Combo> combosPlayerHas = playerCombos.get(player.getUUID());
+        ArrayList<Combo> combosPlayerHas = CCAComboStorageClass.playerCombos.get(player).getCombos();
         ArrayList<Combo> combosToRender= new ArrayList<>();
 
         //data to send to client
@@ -390,7 +376,7 @@ public class Combo {
 
         //find the current biggest combo, combos with the highest current will be rendered
         //if this is a reset call, the current of the reset will be 0 therefore not being considered as the main combo
-        int currentMax=findLongestCombo(player.getUUID());
+        int currentMax=findLongestCombo(player);
 
 
         //if we reset and there are no other combos working
@@ -403,11 +389,11 @@ public class Combo {
 
 
         //make the updated list have all the combos with the highest comboKey
-        if(currentMax!=0) {
+        if(currentMax!=0)
             for (Combo combo : combosPlayerHas)
                 if (combo.current == currentMax && combo.comboKeys.get(currentMax - 1).id == keyPressed)
                     combosToRender.add(combo);
-        }
+
 
 
 
@@ -443,7 +429,4 @@ public class Combo {
         //send rendering data to server
         ServerPlayNetworking.send(player, new Packet.ComboRenderInfoS2C(listOfStrings,listOfIntegers,listOfColors));
     }
-
-
-
 }

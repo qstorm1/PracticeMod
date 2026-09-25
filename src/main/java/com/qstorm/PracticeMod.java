@@ -2,14 +2,11 @@ package com.qstorm;
 
 
 import com.qstorm.commands.Commands;
-import com.qstorm.effects.CustomEffects;
 import com.qstorm.item.ModItems;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.key.InitializeBindings;
-import com.qstorm.potion.ModPotions;
 import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.combo.ComboKey;
-import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -90,7 +87,7 @@ public class PracticeMod implements ModInitializer {
 
 		InitializeBindings.onPlayerLeave(player);
 
-		Combo.deregisterPlayerCombos(player.getUUID());
+
 		ComboKey.deregisterPlayer(player.getUUID());
 
 		Sorcery.onPlayerLeave(player);
