@@ -81,7 +81,7 @@ public abstract class LLInnateMovementHandle{
         if (closest != null) {
             Vec3 closestPos = closest.getPos();
             double distanceFromPlayer = closestPos.distanceTo(position);
-            LimitlessInnate innate = ((LimitlessInnate)closest.abilities.get(0));
+            LimitlessInnate innate = ((LimitlessInnate)closest.innate);
 
             //if inside sphere
             if (innate.startDistance*increaseAmount > distanceFromPlayer) {
@@ -115,16 +115,9 @@ public abstract class LLInnateMovementHandle{
         //if the sorcerer had been initialized
         if((Object)this instanceof Player player && Sorcery.isSorcerer(player)){
 
-            //if the target is a sorcerer
-
-
-
-            SorceryInfoStorage.sorceryData.get(this).getSorcerer().abilities.forEach((ability -> {
-                if (ability instanceof LimitlessInnate li && li.isTicked) {
-                    cir.setReturnValue(false);
-                }
-            }));
-
+            if(SorceryInfoStorage.sorceryData.get(this).getSorcerer().innate instanceof LimitlessInnate li
+                    && li.isTicked)
+                cir.setReturnValue(false);
         }
     }
 

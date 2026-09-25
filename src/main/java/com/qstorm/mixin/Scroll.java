@@ -39,5 +39,8 @@ public class Scroll {
                 ci.cancel();
             }
         }
+        if(SorceryInfoStorage.sorceryData.get(Minecraft.getInstance().player).getSorcerer().innate.locksHotBarScroll){
+            ci.cancel();
+        }
     }
 }

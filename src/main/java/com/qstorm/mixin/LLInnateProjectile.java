@@ -34,13 +34,8 @@ public class LLInnateProjectile {
                                        CallbackInfoReturnable<EntityHitResult> cir, @Local(ordinal = 0, argsOnly = true) Entity entity){
         if(entity instanceof Player player && Sorcery.isSorcerer(player)){
             //if the target is a sorcerer
-            SorceryInfoStorage.sorceryData.get(entity).getSorcerer().abilities.forEach(ability -> {
-                if (ability instanceof LimitlessInnate li && li.isTicked) {
-                    cir.setReturnValue(null);
-//                    if(!projectile.getTags().contains(LimitlessInnate.TAG))
-//                        projectile.addTag(LimitlessInnate.TAG);
-                }
-            });
+            if(SorceryInfoStorage.sorceryData.get(entity).getSorcerer().innate instanceof LimitlessInnate li && li.isTicked)
+                cir.setReturnValue(null);
 
         }
 

@@ -81,13 +81,7 @@ public class Sorcery {
         //sets all the important values
         this.domainEnergyCost=domainEnergyCost;
         this.constantAbilityTickCost = constantAbilityTickCost;
-
-
-        //set innate ability to be first
-        if(!abilities.isEmpty()){
-            abilities = new ArrayList<>();
-        }
-        abilities.add(innate);
+        this.innate=innate;
     }
 
 
@@ -135,7 +129,7 @@ public class Sorcery {
 
 
     protected void addAbility(Ability ability, Combo combo){
-        ability.id = abilities.getLast().id+1;
+        ability.id = abilities.isEmpty() ? abilities.getLast().id+1 : 10;
         abilities.add(ability);
         if(combo.isActionNull()){
             combo.setAction(ability);
@@ -236,6 +230,9 @@ public class Sorcery {
                         s.onScroll(payload.scrollAmount());
                     }
                 }
+                if(sorcery.innate.isScroll){
+                    sorcery.innate.onScroll(payload.scrollAmount());
+                }
             });
         });
 
@@ -266,8 +263,8 @@ public class Sorcery {
     }
 
     public void tickServer(MinecraftServer context,ServerPlayer player){
-        if(abilities.isEmpty()) return;
-        abilities.getFirst().isTicked = innateOn;
+        if(innate==null) return;
+        innate.isTicked = innateOn;
         for (Ability ability:abilities){
             if(ability.isTicked){
                 ability.tick(player);
@@ -275,8 +272,8 @@ public class Sorcery {
         }
     }
     public void tickClient(Minecraft context, LocalPlayer player){
-        if(abilities.isEmpty()) return;
-        abilities.getFirst().isTicked = innateOn;
+        if(innate==null) return;
+        innate.isTicked = innateOn;
         for (Ability ability:abilities){
             if(ability.isTicked){
                 ability.tick(player);
