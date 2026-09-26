@@ -12,9 +12,9 @@ import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 public class PlayerInfoDomainStorage implements DomainComponent{
 
     Vec3 prevPos;
-    int x;
-    int y;
-    int z;
+    int x=0;
+    int y=0;
+    int z=0;
     public static final ComponentKey<Component> oldPos = ComponentRegistry.getOrCreate(
             Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"old-pos-after-domain"),
             Component.class);
@@ -40,8 +40,5 @@ public class PlayerInfoDomainStorage implements DomainComponent{
 
     @Override
     public void writeData(ValueOutput writeView) {
-        writeView.putInt("x",(int)prevPos.x);
-        writeView.putInt("y",(int)prevPos.y);
-        writeView.putInt("z",(int)prevPos.z);
     }
 }
