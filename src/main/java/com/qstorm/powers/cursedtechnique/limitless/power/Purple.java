@@ -10,12 +10,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Purple extends Ability {
@@ -70,7 +73,7 @@ public class Purple extends Ability {
 
             //updateSurroundingBlocks(shooter);//transform effected blocks into gravitational blocks and apply forces to all gravitational blocks
             updatePurplePosition(player);
-            updateSurroundings(player);
+            updateSurroundings(serverPlayer);
         }
 
 
@@ -89,7 +92,7 @@ public class Purple extends Ability {
         end();
     }
 
-    public void updateSurroundings(Player player){
+    public void updateSurroundings(ServerPlayer player){
 
         Vec3 val;
         for(int x = -8; x < 8;x++){
@@ -98,7 +101,10 @@ public class Purple extends Ability {
                     val = position.add(x, y, z);
                     //if within 8 blocks
                     if(position.distanceTo(val)<radius-3) {
-
+                        List<Entity> entities = player.level().getEntities(null,new AABB(val.x,val.y,val.x,val.x+1,val.y+1,val.z+1));
+                        for(Entity e: entities){
+                            if(!e.equals(player)) e.kill(player.level());
+                        }
                         player.level().setBlockAndUpdate(new BlockPos((int) val.x, (int) val.y, (int) val.z), Blocks.AIR.defaultBlockState());
                     }
                 }
