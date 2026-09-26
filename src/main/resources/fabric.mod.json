@@ -45,7 +45,8 @@
 			"practice-mod:player-data",
 			"practice-mod:sorcery-info-data",
 			"practice-mod:player-combo-list",
-			"practice-mod:entity-force"
+			"practice-mod:entity-force",
+			"practice-mod:old-pos-after-domain"
 		]
 	}
 }

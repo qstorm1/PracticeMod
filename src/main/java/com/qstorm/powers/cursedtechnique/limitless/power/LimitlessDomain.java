@@ -28,8 +28,7 @@ import java.util.Set;
 public class LimitlessDomain implements Domain {
 
 
-    ComponentKey<Component> oldPos = ComponentRegistry.getOrCreate(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"old-pos-after-domain"),
-            Component.class)
+
 
 
     @Override
@@ -49,16 +48,41 @@ public class LimitlessDomain implements Domain {
     }
 
     public void sendToLevel(MinecraftServer server,Entity e){
-        ServerLevel lev = (server.getLevel(DimHandle.LIMITLESS_VOID);
+        ServerLevel lev = server.getLevel(DimHandle.LIMITLESS_VOID);
         if(lev==null) return;
         e.teleportTo(lev,0.0,0.0,0.0, Set.of(),0,0,false);
     }
 
     public void sendToLevel(MinecraftServer server,Entity e,double xNew,double yNew,double zNew){
-        ServerLevel lev = (server.getLevel(DimHandle.LIMITLESS_VOID);
+        ServerLevel lev = server.getLevel(DimHandle.LIMITLESS_VOID);
         if(lev==null) return;
         e.teleportTo(lev,xNew,yNew,zNew, Set.of(),0,0,false);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

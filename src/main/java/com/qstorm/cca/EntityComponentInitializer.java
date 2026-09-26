@@ -1,6 +1,7 @@
 package com.qstorm.cca;
 
 import com.qstorm.cca.comboStorage.CCAComboStorageClass;
+import com.qstorm.cca.domainInfo.PlayerInfoDomainStorage;
 import com.qstorm.cca.entityForce.EntityForceStorage;
 import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.powers.PlayerInfo;
@@ -23,5 +24,6 @@ public class EntityComponentInitializer implements org.ladysnake.cca.api.v3.enti
         registry.registerForPlayers(CCAComboStorageClass.playerCombos, player ->
                 new CCAComboStorageClass(),RespawnCopyStrategy.ALWAYS_COPY);
         registry.registerFor(Entity.class,EntityForceStorage.forceData,entity -> new EntityForceStorage());
+        registry.registerFor(Entity.class, PlayerInfoDomainStorage.oldPos,entity -> new PlayerInfoDomainStorage());
     }
 }

@@ -6,6 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public interface Domain extends DomainComponent {
+public interface Domain {
     void onActivate(MinecraftServer server, ServerPlayer shooter);
 }
