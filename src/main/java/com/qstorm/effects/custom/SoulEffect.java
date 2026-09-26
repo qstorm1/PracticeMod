@@ -1,4 +1,4 @@
-package com.qstorm.effects.custom;
+package com.qRegiststorm.effects.custom;
 
 import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.powers.PlayerInfo;

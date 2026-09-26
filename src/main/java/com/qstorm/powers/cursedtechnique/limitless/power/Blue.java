@@ -1,26 +1,47 @@
 package com.qstorm.powers.cursedtechnique.limitless.power;
 
-import com.qstorm.PAL.PALHandle;
 import com.qstorm.PracticeMod;
 import com.qstorm.cca.entityForce.EntityForceStorage;
 import com.qstorm.packets.AnimationPacket;
 import com.qstorm.powers.Ability;
-import com.qstorm.powers.PlayerInfo;
-import com.zigythebird.playeranim.animation.PlayerAnimationController;
-import com.zigythebird.playeranim.api.PlayerAnimationAccess;
+import com.qstorm.powers.cursedtechnique.limitless.IgnoresLimitlessInnate;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartNames;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemFrameRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -148,7 +169,7 @@ public class Blue extends Ability {
                     } else {
                         //acceleration is proportional to power
                         acceleration = (Math.pow(power, 2) / 1000000000) / (radFromCenter * radFromCenter * radFromCenter);
-                        UUID testUUID = entity.getUUID();
+
                         if (acceleration < 3) {
                             EntityForceStorage.forceData.get(entity).setForce(EntityForceStorage.blueForce, direction.scale(-acceleration));
                         } else {
@@ -189,7 +210,65 @@ public class Blue extends Ability {
     }
 
 
-    class GravityBlock extends Display.BlockDisplay{
+
+
+
+
+
+
+
+    public static final ResourceKey<EntityType<?>> BLUE_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"blue-key"));
+
+    public static final EntityType<BlueInstance> BLUE_INSTANCE = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,BLUE_KEY,
+            EntityType.Builder.of(BlueInstance::new, MobCategory.MISC).sized(3,3)
+                    .build(BLUE_KEY)
+    );
+
+
+
+    //TODO: make entity a
+    //an entity
+    public static class BlueInstance extends Entity implements IgnoresLimitlessInnate {
+
+
+
+        public BlueInstance(EntityType<?> entityType, Level level) {
+            super(entityType, level);
+            this.setInvulnerable(true);
+            this.noPhysics=true;
+        }
+
+        @Override
+        protected void defineSynchedData(SynchedEntityData.Builder builder) {
+
+        }
+
+        @Override
+        public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
+            return false;
+        }
+
+        @Override
+        protected void readAdditionalSaveData(ValueInput input) {
+
+        }
+
+        @Override
+        protected void addAdditionalSaveData(ValueOutput output) {
+
+        }
+    }
+
+
+
+
+
+
+
+
+    public static class GravityBlock extends Display.BlockDisplay{
         Vec3 acceleration;
         Vec3 velocity;
         int terminalVelocity;
