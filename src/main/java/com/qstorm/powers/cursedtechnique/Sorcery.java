@@ -10,6 +10,7 @@ import com.qstorm.powers.Ability;
 import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
+import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessDomain;
 import com.qstorm.powers.cursedtechnique.limitless.power.abstractSphere.SphereLayer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -255,7 +256,8 @@ public class Sorcery {
         }));
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.DomainPacket.TYPE,(payload, context)->{
-            if(isSorcerer(context.player())) return;;
+            if(!isSorcerer(context.player())) return;
+            SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().domain.onActivate(context.server(),context.player());
         });
     }
 

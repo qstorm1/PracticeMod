@@ -2,7 +2,9 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.dimension.DimHandle;
+import com.qstorm.packets.AnimationPacket;
 import com.qstorm.powers.cursedtechnique.Domain;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -10,7 +12,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.commands.ExecuteCommand;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -29,35 +34,42 @@ public class LimitlessDomain implements Domain {
 
 
 
-    public static final Identifier DOMAIN_ANIMATION_TAG = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"limitless-domain-animation-tag-jjk");
-
+    public boolean animationFinished = false;
 
     @Override
     public void onActivate(MinecraftServer server, ServerPlayer shooter) {
         //play animation
+        //no time to make waiter
         onAnimationFinish(server,shooter);
+        ServerPlayNetworking.send(shooter,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.domainInit));
     }
 
     public void onAnimationFinish(MinecraftServer server,ServerPlayer shooter){
         shooter.level().getAllEntities().forEach((entity)-> {
             if(shooter.position().distanceTo(entity.position())<=32){
-                if(shooter==entity)
-                    sendToLevel(server,entity,5,5,5);
+                if(shooter.getStringUUID().equals(entity.getStringUUID()))
+                    sendToLevel(server,entity,5,5,0);
+                else if(entity instanceof LivingEntity livingEntity){
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,200,255));
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,200,255));
+                }
                 sendToLevel(server,entity);
+
             }
+
         });
     }
 
     public void sendToLevel(MinecraftServer server,Entity e){
         ServerLevel lev = server.getLevel(DimHandle.LIMITLESS_VOID);
         if(lev==null) return;
-        e.teleportTo(lev,0.0,0.0,0.0, Set.of(),0,0,false);
+        e.teleportTo(lev,0.0,1.0,0.0, Set.of(),0,0,false);
     }
 
     public void sendToLevel(MinecraftServer server,Entity e,double xNew,double yNew,double zNew){
         ServerLevel lev = server.getLevel(DimHandle.LIMITLESS_VOID);
         if(lev==null) return;
-        e.teleportTo(lev,xNew,yNew,zNew, Set.of(),0,0,false);
+        e.teleportTo(lev,xNew,yNew,zNew, Set.of(),0,0,true);
     }
 
 

@@ -6,10 +6,7 @@ import com.qstorm.packets.Packet;
 import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.combo.ComboClient;
 import com.qstorm.powers.cursedtechnique.Sorcery;
-import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
-import com.qstorm.powers.cursedtechnique.limitless.power.LimitlessInnate;
-import com.qstorm.powers.cursedtechnique.limitless.power.Purple;
-import com.qstorm.powers.cursedtechnique.limitless.power.Red;
+import com.qstorm.powers.cursedtechnique.limitless.power.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -42,6 +39,7 @@ public class Limitless extends Sorcery {
     private Limitless(Player player){
         super(new LimitlessInnate(player.getUUID(),0),player,100000,10);
         UUID playerUUID = player.getUUID();
+        this.domain=new LimitlessDomain();
         addAbility(
                 new Blue(playerUUID,0),
                 Combo.build(player,"Limitless Blue").addKey1(10).addKey3(100).addKey4(60)

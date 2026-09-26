@@ -31,6 +31,7 @@ public class PALHandle{
     public static final Identifier PURPLE_ANIMATION_IDENTIFIER = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"purple");
     public static RawAnimation PURPLE_SUMMON;
 
+
     public static void init(){
 
         //when reloading resource pack run this
@@ -49,6 +50,9 @@ public class PALHandle{
 
 
                             DOMAIN_ONE = PlayerRawAnimationBuilder.begin().then(DOMAIN_ANIMATION_IDENTIFIER, Animation.LoopType.PLAY_ONCE).build();
+
+
+
 
 
                             },applyExectutor

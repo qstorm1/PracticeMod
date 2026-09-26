@@ -7,5 +7,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public interface Domain {
+
     void onActivate(MinecraftServer server, ServerPlayer shooter);
 }
