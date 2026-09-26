@@ -2,10 +2,13 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.item.armor.LaserEyes;
+import com.qstorm.packets.AnimationPacket;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -23,6 +26,8 @@ public class Purple extends Ability {
     static final double maxRadius=10;
     double radiusOfEffect;
     double distanceFromEye=0;//TODO: add max distance
+
+    public static final Identifier PURPLE_ANIMATION_TAG = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"purple-animation-tag-jjk");
 
 
     public Purple(UUID playerUUID, int id) {
@@ -47,6 +52,13 @@ public class Purple extends Ability {
         this.direction=player.getViewVector(0);
 
         startTickLoop();
+    }
+
+    @Override
+    public void runServer(ServerPlayer player){
+        super.runServer(player);
+
+        ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.domainInit));
     }
 
 
@@ -105,14 +117,15 @@ public class Purple extends Ability {
         DustParticleOptions purpleParticle = new DustParticleOptions(0xFF800080,1F);
 
         int count= 500;
-        playerShooting.level().sendParticles(
-                playerShooting,
-                purpleParticle,
-                false,true,
-                position.getFirst(), position.get(1), position.getLast(), count,
-//                radius/2, radius/2, radius/2, 0.0
-                radius/4,radius/4,radius/4,0
-        );
+        for(ServerPlayer p:playerShooting.level().players())
+            playerShooting.level().sendParticles(
+                    p,
+                    purpleParticle,
+                    false,true,
+                    position.getFirst(), position.get(1), position.getLast(), count,
+    //                radius/2, radius/2, radius/2, 0.0
+                    radius/4,radius/4,radius/4,0
+            );
 
 
 //        for(ServerPlayer player: PlayerLookup.world(playerShooting.level())){

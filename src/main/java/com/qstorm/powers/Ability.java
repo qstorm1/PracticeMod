@@ -230,13 +230,9 @@ public abstract class Ability {
         }
     }
 
-    public static void initAnimate(Identifier factoryID, RawAnimation rawAnimation,int priority){
-        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(factoryID,priority,
-                player ->new PlayerAnimationController(player,
-                        (animationController, animationState, animationSetter) ->
-                                animationSetter.setAnimation(rawAnimation))
-        );
-    }
+
+
+
 
 
     public void startTickLoop(){

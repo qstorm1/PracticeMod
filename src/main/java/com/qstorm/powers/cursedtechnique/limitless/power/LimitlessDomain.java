@@ -29,6 +29,7 @@ public class LimitlessDomain implements Domain {
 
 
 
+    public static final Identifier DOMAIN_ANIMATION_TAG = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"limitless-domain-animation-tag-jjk");
 
 
     @Override

@@ -61,6 +61,7 @@ public class Blue extends Ability {
 
     public static final Identifier BLUE_ANIMATION_TAG = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"blue-animation-tag-jjk");
 
+    static final DustParticleOptions blueParticle = new DustParticleOptions(0xFFADD8E6,1F);
 
     Vec3 position;
     double currentVelocity;
@@ -104,6 +105,15 @@ public class Blue extends Ability {
         //ServerPlayNetworking.send(player.level().players(),);
         ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.blueInit));
 
+        for(ServerPlayer p:player.level().players())
+            player.level().sendParticles(
+                    p,
+                    blueParticle,
+                    false,true,
+                    player.position().x, player.position().y+2, player.position().z, 5,
+                    //                radius/2, radius/2, radius/2, 0.0
+                    3,3,3,0
+            );
     }
 
 
@@ -341,17 +351,18 @@ public class Blue extends Ability {
 
 
         //temporary particle render, replace with actual thing later cause i don't want to deal with rendering pain
-        DustParticleOptions blueParticle = new DustParticleOptions(0xFF000080,1F);
+
 
         int count= 500;
-        playerShooting.level().sendParticles(
-                playerShooting,
-                blueParticle,
-                false,true,
-                position.getFirst(), position.get(1), position.getLast(), count,
-//                radius/2, radius/2, radius/2, 0.0
-                radius/4,radius/4,radius/4,0
-        );
+        for(ServerPlayer p:playerShooting.level().players())
+            playerShooting.level().sendParticles(
+                    p,
+                    blueParticle,
+                    false,true,
+                    position.getFirst(), position.get(1), position.getLast(), count,
+                    //                radius/2, radius/2, radius/2, 0.0
+                    radius/4,radius/4,radius/4,0
+            );
 
 
 //        for(ServerPlayer player: PlayerLookup.world(playerShooting.level())){

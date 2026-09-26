@@ -3,9 +3,12 @@ package com.qstorm.powers.cursedtechnique.limitless.power;
 import com.qstorm.PracticeMod;
 import com.qstorm.cca.entityForce.EntityForceStorage;
 import com.qstorm.item.armor.LaserEyes;
+import com.qstorm.packets.AnimationPacket;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.PlayerInfo;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -23,6 +26,7 @@ public class Red extends Ability {
     double radiusOfEffect;
     double distanceFromEye=0;//TODO: add max distance
 
+    public static final Identifier RED_ANIMATION_TAG = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"red-animation-tag-jjk");
 
 
 
@@ -51,6 +55,14 @@ public class Red extends Ability {
         this.direction=player.getViewVector(0);
 
         startTickLoop();
+    }
+
+    @Override
+    public void runServer(ServerPlayer player){
+        super.runServer(player);
+
+        ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.redInit));
+
     }
 
 
@@ -154,14 +166,15 @@ public class Red extends Ability {
         DustParticleOptions redParticle = new DustParticleOptions(0xFFff0000,1F);
 
         int count= 200;
-        playerShooting.level().sendParticles(
-                playerShooting,
-                redParticle,
-                false,true,
-                position.getFirst(), position.get(1), position.getLast(), count,
-//                radius/2, radius/2, radius/2, 0.0
-                radius/4,radius/4,radius/4,0
-        );
+        for(ServerPlayer p:playerShooting.level().players())
+            playerShooting.level().sendParticles(
+                    p,
+                    redParticle,
+                    false,true,
+                    position.getFirst(), position.get(1), position.getLast(), count,
+                    //                radius/2, radius/2, radius/2, 0.0
+                    radius/4,radius/4,radius/4,0
+            );
 
 
 //        for(ServerPlayer player: PlayerLookup.world(playerShooting.level())){
