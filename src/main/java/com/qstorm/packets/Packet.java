@@ -36,6 +36,24 @@ public class Packet {
         }
     }
 
+    public record RenderIfInnate(boolean isInnate) implements CustomPacketPayload{
+
+        public static final Type<RenderIfInnate> TYPE=
+                new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"render-if-innate"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, RenderIfInnate> CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                RenderIfInnate::isInnate,
+
+                RenderIfInnate::new
+        );
+
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
     public record RenderBlueToClient(ArrayList<Double> position, Double radius) implements CustomPacketPayload {
         //TODO: six eyes or advance sorcery can automatically detect which combo's a player is doing so this info shared to them as well
         public static final Type<RenderBlueToClient> TYPE =

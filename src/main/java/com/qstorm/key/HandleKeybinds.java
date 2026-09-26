@@ -29,14 +29,16 @@ public class HandleKeybinds {
         PayloadTypeRegistry.playC2S().register(HandleScroll.TYPE, HandleScroll.CODEC);
         PayloadTypeRegistry.playC2S().register(EnergyKeyOn.TYPE, EnergyKeyOn.CODEC);
         PayloadTypeRegistry.playC2S().register(EnergyKeyOff.TYPE, EnergyKeyOff.CODEC);
+        PayloadTypeRegistry.playC2S().register(DomainPacket.TYPE, DomainPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(Packet.LimitlessInit.TYPE, Packet.LimitlessInit.CODEC);
         PayloadTypeRegistry.playS2C().register(AnimationPacket.SendAnimationUpdate.TYPE,AnimationPacket.SendAnimationUpdate.CODEC);
         PayloadTypeRegistry.playS2C().register(Packet.SetClosestPlayer.TYPE,Packet.SetClosestPlayer.CODEC);
 
 
         PayloadTypeRegistry.playS2C().register(Packet.SendClientMessage.TYPE,Packet.SendClientMessage.CODEC);
+        PayloadTypeRegistry.playS2C().register(Packet.RenderIfInnate.TYPE,Packet.RenderIfInnate.CODEC);
 
-        //server side stuff
+
         PayloadTypeRegistry.playS2C().register(Packet.ComboRenderInfoS2C.TYPE,Packet.ComboRenderInfoS2C.CODEC);
         PayloadTypeRegistry.playS2C().register(Packet.ActivateSorceryRender.TYPE, Packet.ActivateSorceryRender.CODEC);
 
@@ -218,12 +220,12 @@ public class HandleKeybinds {
         }
     }
 
-    public record Domain() implements CustomPacketPayload {
+    public record DomainPacket() implements CustomPacketPayload {
         //just an identifier
-        public static final Type<Domain> TYPE =
+        public static final Type<DomainPacket> TYPE =
                 new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID, "domain-packet"));
 
-        public static final StreamCodec<Object, Domain> CODEC = StreamCodec.unit(new Domain());
+        public static final StreamCodec<Object, DomainPacket> CODEC = StreamCodec.unit(new DomainPacket());
 
         @Override
         public Type<? extends CustomPacketPayload> type() {

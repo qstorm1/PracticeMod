@@ -4,6 +4,7 @@ import com.qstorm.PAL.PALHandle;
 import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.combo.ComboClient;
 import com.qstorm.powers.cursedtechnique.JJKClientRender;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
@@ -16,14 +17,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
-import static com.qstorm.powers.cursedtechnique.JJKClientRender.initJJKClientRender;
-
 public class PracticeModClient implements ClientModInitializer {
 
     public static boolean startedRender = false;
     public static Integer cursedEnergy=0;
     public static Double cursedOutput=0.0;
 
+    public static boolean startedRenderInnate = false;
+    public static boolean isInnate = false;
 
     @Override
     public void onInitializeClient() {
@@ -76,6 +77,23 @@ public class PracticeModClient implements ClientModInitializer {
                 }
             });
         });
+
+        //draw the thing that says if innate or not
+        ClientPlayNetworking.registerGlobalReceiver(Packet.RenderIfInnate.TYPE,(packet,context)->{
+            isInnate=packet.isInnate();
+        });
+        if(!startedRenderInnate){
+            HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT,Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"innate-name-ya"),
+                    (graphics,tracker)->{
+                if(isInnate) {
+
+
+                    ComboClient.drawResizableRectangle(graphics, 0.9, 0.94, 0.09, 0.05, 0xFF808080);
+                    //ComboClient.drawResizableBorder(graphics, 0.9, 0.94, 0.09, 0.05, 1, 0xFF000000);
+                }
+            });
+            startedRenderInnate=true;
+        }
 
     }
 

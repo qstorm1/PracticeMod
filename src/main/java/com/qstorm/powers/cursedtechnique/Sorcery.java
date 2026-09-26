@@ -10,7 +10,6 @@ import com.qstorm.powers.Ability;
 import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
-import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
 import com.qstorm.powers.cursedtechnique.limitless.power.abstractSphere.SphereLayer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -249,11 +248,15 @@ public class Sorcery {
 
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKeyOff.TYPE,((payload, context) -> {
             context.server().execute(()->{
-                if(isSorcerer(context.player())) return;
+                if(!isSorcerer(context.player())) return;
                 SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().energyKeyOn=false;
                 PracticeMod.LOGGER.info("Energy Key: {}" , SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().energyKeyOn);
             });
         }));
+
+        ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.DomainPacket.TYPE,(payload, context)->{
+            if(isSorcerer(context.player())) return;;
+        });
     }
 
     public void serverTick(Player contextPlayer){
@@ -323,6 +326,8 @@ public class Sorcery {
 
     public void activateInnate(){
         innateOn=!innateOn;
+        if(storedPlayer instanceof ServerPlayer storedServerPlayer)
+            ServerPlayNetworking.send(storedServerPlayer,new Packet.RenderIfInnate(innateOn));
         PracticeMod.LOGGER.info("Activated innate {}", innateOn);
     }
 

@@ -188,7 +188,7 @@ public class InitializeBindings {
 
             if(domainKey.isDown()){
                 if(!InitializeBindings.domainKeyWasDown.get(client.player.getUUID())) {
-                    ClientPlayNetworking.send(new HandleKeybinds.Domain());
+                    ClientPlayNetworking.send(new HandleKeybinds.DomainPacket());
                     InitializeBindings.domainKeyWasDown.put(client.player.getUUID(), true);
 
                 }

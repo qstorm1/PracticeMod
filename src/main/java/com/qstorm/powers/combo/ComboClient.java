@@ -286,7 +286,7 @@ public class ComboClient {
         }
     }
 
-    private static void drawResizableRectangle(GuiGraphics graphics,double percentFromLeft,double percentFromTop,double percentWidth,double percentHeight, int color){
+    public static void drawResizableRectangle(GuiGraphics graphics,double percentFromLeft,double percentFromTop,double percentWidth,double percentHeight, int color){
         graphics.fill(
                 (int)(graphics.guiWidth()*percentFromLeft),
                 (int)((graphics.guiHeight()*percentFromTop)),
@@ -296,7 +296,7 @@ public class ComboClient {
 
     }
 
-    private static void drawResizableBorder(GuiGraphics graphics,double percentFromLeft,double percentFromTop, double percentWidth,double percentHeight, int borderSize, int color){
+    public static void drawResizableBorder(GuiGraphics graphics,double percentFromLeft,double percentFromTop, double percentWidth,double percentHeight, int borderSize, int color){
         //|
         graphics.fill(
                 (int)(graphics.guiWidth()*percentFromLeft-borderSize/2F),
