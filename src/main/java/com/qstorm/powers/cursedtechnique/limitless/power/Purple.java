@@ -58,7 +58,7 @@ public class Purple extends Ability {
     public void runServer(ServerPlayer player){
         super.runServer(player);
 
-        ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.domainInit));
+        ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.purpleInit));
     }
 
 
@@ -77,11 +77,16 @@ public class Purple extends Ability {
 
         ticksEnabled--;
         if(ticksEnabled<=0){
-            if(player instanceof ServerPlayer)
-                end();
+            if(player instanceof ServerPlayer serverPlayer)
+                end(serverPlayer);
         }
 
 
+    }
+
+    public void end(ServerPlayer player){
+        ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.stop));
+        end();
     }
 
     public void updateSurroundings(Player player){

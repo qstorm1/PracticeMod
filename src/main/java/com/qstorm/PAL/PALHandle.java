@@ -28,6 +28,7 @@ public class PALHandle{
     public static RawAnimation BLUE_SUMMON;
     public static final Identifier RED_ANIMATION_IDENTIFIER = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"red");
     public static RawAnimation RED_SUMMON;
+    public static final Identifier PURPLE_ANIMATION_IDENTIFIER = Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"purple");
     public static RawAnimation PURPLE_SUMMON;
 
     public static void init(){
@@ -40,12 +41,11 @@ public class PALHandle{
                             PracticeMod.LOGGER.info("Reloaded Assets for {}",PracticeMod.MOD_ID);
 
                             initAnimate(ANIMATION_FACTORY_ID,1521);
-                            BLUE_SUMMON = PlayerRawAnimationBuilder.begin().then(BLUE_ANIMATION_IDENTIFIER, Animation.LoopType.PLAY_ONCE).build();
+                            BLUE_SUMMON = PlayerRawAnimationBuilder.begin().then(BLUE_ANIMATION_IDENTIFIER, Animation.LoopType.HOLD_ON_LAST_FRAME).build();
 
-                            RED_SUMMON = PlayerRawAnimationBuilder.begin().then(RED_ANIMATION_IDENTIFIER, Animation.LoopType.PLAY_ONCE).build();
+                            RED_SUMMON = PlayerRawAnimationBuilder.begin().then(RED_ANIMATION_IDENTIFIER, Animation.LoopType.HOLD_ON_LAST_FRAME).build();
 
-                            PURPLE_SUMMON = PlayerRawAnimationBuilder.begin().then(DOMAIN_ANIMATION_IDENTIFIER, Animation.LoopType.PLAY_ONCE).build();
-
+                            PURPLE_SUMMON = PlayerRawAnimationBuilder.begin().then(PURPLE_ANIMATION_IDENTIFIER, Animation.LoopType.PLAY_ONCE).build();
 
 
                             DOMAIN_ONE = PlayerRawAnimationBuilder.begin().then(DOMAIN_ANIMATION_IDENTIFIER, Animation.LoopType.PLAY_ONCE).build();
@@ -77,22 +77,28 @@ public class PALHandle{
 
     public static void setClientAnimationDetection(){
         ClientPlayNetworking.registerGlobalReceiver(AnimationPacket.SendAnimationUpdate.TYPE, ((payload, context) -> {
-            switch(payload.ID()){
-                case AnimationPacket.SendAnimationUpdate.blueInit -> {
-                    PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(
-                            context.player(), ANIMATION_FACTORY_ID);
-                    if(controller!=null) controller.triggerAnimation(BLUE_SUMMON);
-                }
+            PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(
+                    context.player(), ANIMATION_FACTORY_ID);
+            if(controller!=null) {
+                switch (payload.ID()) {
+                    case AnimationPacket.SendAnimationUpdate.blueInit -> {
+                        controller.triggerAnimation(BLUE_SUMMON);
+                    }
 
-                case AnimationPacket.SendAnimationUpdate.redInit -> {
-                    PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(
-                            context.player(), ANIMATION_FACTORY_ID);
-                    if(controller!=null) controller.triggerAnimation(RED_SUMMON);
-                }
-                case AnimationPacket.SendAnimationUpdate.domainInit -> {
-                    PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(
-                            context.player(), ANIMATION_FACTORY_ID);
-                    if(controller!=null) controller.triggerAnimation(DOMAIN_ONE);
+                    case AnimationPacket.SendAnimationUpdate.redInit -> {
+                        controller.triggerAnimation(RED_SUMMON);
+                    }
+
+                    case AnimationPacket.SendAnimationUpdate.purpleInit -> {
+                        controller.triggerAnimation(PURPLE_SUMMON);
+                    }
+                    case AnimationPacket.SendAnimationUpdate.domainInit -> {
+                        controller.triggerAnimation(DOMAIN_ONE);
+                    }
+                    case AnimationPacket.SendAnimationUpdate.blueEnd, AnimationPacket.SendAnimationUpdate.domainEnd,
+                         AnimationPacket.SendAnimationUpdate.redEnd, AnimationPacket.SendAnimationUpdate.stop -> {
+                        controller.stop();
+                    }
                 }
             }
         }));

@@ -140,6 +140,7 @@ public class Red extends Ability {
     }
 
     public void end(ServerPlayer player){
+        ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.stop));
         end();
         player.level().getAllEntities().forEach(
                 entity -> {

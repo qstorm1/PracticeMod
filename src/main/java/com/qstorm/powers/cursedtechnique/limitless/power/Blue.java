@@ -90,7 +90,7 @@ public class Blue extends Ability {
 
         this.radiusOfEffect=radius*3;
         prevEyeVector=positionToSpawn;
-        distanceFromEye=radius+3;
+        distanceFromEye=radius+13;
         this.position=positionToSpawn.add(player.getLookAngle().scale(distanceFromEye));
 
         enableScroll();
@@ -105,15 +105,17 @@ public class Blue extends Ability {
         //ServerPlayNetworking.send(player.level().players(),);
         ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.blueInit));
 
-        for(ServerPlayer p:player.level().players())
-            player.level().sendParticles(
-                    p,
-                    blueParticle,
-                    false,true,
-                    player.position().x, player.position().y+2, player.position().z, 5,
-                    //                radius/2, radius/2, radius/2, 0.0
-                    3,3,3,0
-            );
+        //Vec3 spawnPos = player.position();
+
+//        for(ServerPlayer p:player.level().players())
+//            player.level().sendParticles(
+//                    p,
+//                    blueParticle,
+//                    true,true,
+//                    player.position().x-0.3, player.position().y+1, player.position().z, 50,
+//                    //                radius/2, radius/2, radius/2, 0.0
+//                    0.1,0.1,0.1,0
+//            );
     }
 
 
@@ -137,9 +139,16 @@ public class Blue extends Ability {
 
         ticksEnabled--;
         if(ticksEnabled<=0){
-            end();
+            if(contextPlayer instanceof ServerPlayer serverPlayer)
+                end(serverPlayer);
         }
 
+    }
+
+
+    public void end(ServerPlayer player){
+        ServerPlayNetworking.send(player,new AnimationPacket.SendAnimationUpdate(AnimationPacket.SendAnimationUpdate.blueEnd));
+        end();
     }
 
 

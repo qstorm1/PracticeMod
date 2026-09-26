@@ -12,7 +12,16 @@ public class AnimationPacket {
 
         public static final int blueInit=2050;
         public static final int redInit=2051;
-        public static final int domainInit=2052;
+        public static final int purpleInit=2052;
+        public static final int domainInit=2053;
+
+
+        public static final int blueEnd=2060;
+        public static final int redEnd=2061;
+        public static final int domainEnd=2062;
+
+        public static final int stop=2099;
+
 
         public static final Type<AnimationPacket.SendAnimationUpdate> TYPE =
                 new AnimationPacket.SendAnimationUpdate.Type<>(Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"animation-update-packet"));
