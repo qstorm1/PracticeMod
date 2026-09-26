@@ -5,6 +5,7 @@ import com.qstorm.cca.entityForce.EntityForceStorage;
 import com.qstorm.packets.AnimationPacket;
 import com.qstorm.powers.Ability;
 import com.qstorm.powers.cursedtechnique.limitless.IgnoresLimitlessInnate;
+import com.qstorm.powers.cursedtechnique.limitless.power.abstractSphere.SphereRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -20,6 +21,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.BlockPos;
@@ -218,7 +220,7 @@ public class Blue extends Ability {
 
 
     public static final ResourceKey<EntityType<?>> BLUE_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"blue-key"));
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"sphere-instance"));
 
     public static final EntityType<BlueInstance> BLUE_INSTANCE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,BLUE_KEY,
@@ -228,11 +230,16 @@ public class Blue extends Ability {
 
 
 
+    public static void init(){
+        EntityRenderers.register(Blue.BLUE_INSTANCE, SphereRenderer::new);
+    }
+
+
+
+
     //TODO: make entity a
     //an entity
     public static class BlueInstance extends Entity implements IgnoresLimitlessInnate {
-
-
 
         public BlueInstance(EntityType<?> entityType, Level level) {
             super(entityType, level);

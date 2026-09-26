@@ -4,6 +4,7 @@ import com.qstorm.PAL.PALHandle;
 import com.qstorm.cca.sorceryStorage.SorceryInfoStorage;
 import com.qstorm.key.InitializeBindings;
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.cursedtechnique.JJKClientRender;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import net.fabricmc.api.ClientModInitializer;
@@ -28,7 +29,7 @@ public class PracticeModClient implements ClientModInitializer {
     public void onInitializeClient() {
         //initialize all keyboard stuff
         InitializeBindings.init();
-        initJJKClientRender();
+        JJKClientRender.initJJKClientRender();
         PALHandle.init();
 
 

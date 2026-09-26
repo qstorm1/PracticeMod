@@ -11,6 +11,7 @@ import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.PlayerInfo;
 import com.qstorm.powers.cursedtechnique.limitless.Limitless;
 import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
+import com.qstorm.powers.cursedtechnique.limitless.power.abstractSphere.SphereLayer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -146,7 +147,7 @@ public class Sorcery {
      */
     public static void init(){
         registerServerNetworking();
-        Blue.BlueLayers.registerLayers();
+        SphereLayer.registerLayers();
 
         ServerTickEvents.END_SERVER_TICK.register((server)->{
             Collection<ServerPlayer> players = PlayerLookup.all(server);

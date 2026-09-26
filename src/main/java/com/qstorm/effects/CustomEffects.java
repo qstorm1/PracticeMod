@@ -1,7 +1,7 @@
 package com.qstorm.effects;
 
+import com.qRegiststorm.effects.custom.SoulEffect;
 import com.qstorm.PracticeMod;
-import com.qstorm.effects.custom.SoulEffect;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;

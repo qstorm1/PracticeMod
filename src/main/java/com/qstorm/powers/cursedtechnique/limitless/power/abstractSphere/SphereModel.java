@@ -10,7 +10,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
-public class SphereModel  extends EntityModel<Blue.BlueRenderState> {
+public class SphereModel extends EntityModel<SphereRenderState> {
 
     public final ModelPart body;
 

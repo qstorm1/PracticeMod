@@ -55,7 +55,9 @@ public class PALHandle{
 
                             DOMAIN_ONE = PlayerRawAnimationBuilder.begin().then(ANIMATION_NAME_ID, Animation.LoopType.PLAY_ONCE).build();
                             Ability.initAnimate(Blue.BLUE_ANIMATION_TAG,DOMAIN_ONE,1510);
-                                },applyExectutor)
+
+                            },applyExectutor
+                        )
         );
 
 

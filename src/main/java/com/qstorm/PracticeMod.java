@@ -2,10 +2,10 @@ package com.qstorm;
 
 
 import com.qstorm.commands.Commands;
+import com.qstorm.dimension.DimHandle;
 import com.qstorm.item.ModItems;
 import com.qstorm.key.HandleKeybinds;
 import com.qstorm.key.InitializeBindings;
-import com.qstorm.powers.combo.Combo;
 import com.qstorm.powers.combo.ComboKey;
 import com.qstorm.powers.cursedtechnique.Sorcery;
 import net.fabricmc.api.ModInitializer;
@@ -39,9 +39,9 @@ public class PracticeMod implements ModInitializer {
 		//all actions that reset happen after the data is used
 		ServerTickEvents.END_SERVER_TICK.addPhaseOrdering(USES_DATA,RESET);
 
-
 		ModItems.initialize();
 
+		DimHandle.init();
 
 
 		Commands.init();

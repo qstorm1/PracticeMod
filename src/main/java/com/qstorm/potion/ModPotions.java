@@ -2,7 +2,6 @@ package com.qstorm.potion;
 
 import com.qstorm.PracticeMod;
 import com.qstorm.effects.CustomEffects;
-import com.qstorm.effects.custom.SoulEffect;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;

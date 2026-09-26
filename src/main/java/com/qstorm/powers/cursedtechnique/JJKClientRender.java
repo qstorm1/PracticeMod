@@ -2,6 +2,8 @@ package com.qstorm.powers.cursedtechnique;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.qstorm.packets.Packet;
+import com.qstorm.powers.cursedtechnique.limitless.power.Blue;
+import com.qstorm.powers.cursedtechnique.limitless.power.abstractSphere.SphereRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -11,6 +13,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
@@ -18,6 +21,10 @@ import java.util.ArrayList;
 @Environment(value= EnvType.CLIENT)
 public class JJKClientRender {
     public static void initJJKClientRender(){
+
+        Blue.init();
+
+
         //registerBlue();
         ClientPlayNetworking.registerGlobalReceiver(Packet.RenderBlueToClient.TYPE,((payload, context) -> {
             positionsToRender=payload.position();

@@ -5,23 +5,25 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.BlockPos;
-
+import org.jspecify.annotations.NonNull;
 
 
 @Environment(EnvType.CLIENT)
-public class SphereRenderer <T extends Blue.BlueInstance> extends EntityRenderer {
+public class SphereRenderer <T extends Blue.BlueInstance> extends EntityRenderer<Blue.BlueInstance,SphereRenderState> {
 
-    protected SphereRenderer(EntityRendererProvider.Context context) {
+
+    public SphereRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public EntityRenderState createRenderState() {
-        return new EntityRenderState();
+    public @NonNull SphereRenderState createRenderState() {
+        return new SphereRenderState();
     }
+
     protected int getBlockLightLevel(T blue, BlockPos blockPos) {
         return 15;
     }
+
 }

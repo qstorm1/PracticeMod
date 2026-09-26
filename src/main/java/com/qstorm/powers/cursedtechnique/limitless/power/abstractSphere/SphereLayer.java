@@ -7,10 +7,10 @@ import net.minecraft.resources.Identifier;
 
 public class SphereLayer {
     public static final ModelLayerLocation BLUE_INSTANCE = new ModelLayerLocation(
-            Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"blue-layer"),
+            Identifier.fromNamespaceAndPath(PracticeMod.MOD_ID,"sphere-instance"),
             "main");
 
     public static void registerLayers(){
-        EntityModelLayerRegistry.registerModelLayer(SphereLayer.BLUE_INSTANCE);
+        EntityModelLayerRegistry.registerModelLayer(SphereLayer.BLUE_INSTANCE,SphereModel::getTexturedModelData);
     }
 }
