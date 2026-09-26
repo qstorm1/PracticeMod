@@ -39,6 +39,10 @@ public abstract class Ability {
      */
     public int ticksEnabled;
 
+
+
+    public int maxTicksEnabled;
+
     /**
      * The player with this ability
      */

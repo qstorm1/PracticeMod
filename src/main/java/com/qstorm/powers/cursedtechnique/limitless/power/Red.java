@@ -14,17 +14,23 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Red extends Ability {
-    public Red(UUID playerUUID, int id) {
-        super(playerUUID,id,0xFFdc143c);
-    }
 
 
     Vec3 position;
     Vec3 direction;
     double radius;
-    final double maxRadius=1;
+    static final double maxRadius=1;
     double radiusOfEffect;
     double distanceFromEye=0;//TODO: add max distance
+
+
+
+
+    public Red(UUID playerUUID, int id) {
+        super(playerUUID,id,0xFFdc143c);
+        this.rate=1;
+    }
+
 
 
 
@@ -32,6 +38,7 @@ public class Red extends Ability {
     public void runServerClient(Player player) {
         super.runServerClient(player);
         ticksEnabled=100;
+        maxTicksEnabled=ticksEnabled;
         Vec3 positionToSpawn = player.getEyePosition();
         this.radius=power/200000;
         if(radius>maxRadius)
@@ -68,6 +75,12 @@ public class Red extends Ability {
 
 
     }
+
+
+
+
+
+
     public static final Integer RED_FORCE = 54;
     public static final String RED_EFFECTED_TAG = "ret";
 
@@ -140,7 +153,7 @@ public class Red extends Ability {
         //temporary particle render, replace with actual thing later cause i don't want to deal with rendering pain
         DustParticleOptions redParticle = new DustParticleOptions(0xFFff0000,1F);
 
-        int count= 500;
+        int count= 200;
         playerShooting.level().sendParticles(
                 playerShooting,
                 redParticle,

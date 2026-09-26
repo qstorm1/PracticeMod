@@ -180,6 +180,7 @@ public class Sorcery {
      * @return if the player input already has a sorcery object in memory
      */
     public static boolean isSorcerer(Player player){
+        var test = SorceryInfoStorage.sorceryData.get(player).getSorceryType();
         return !SorceryInfoStorage.sorceryData.get(player).getSorceryType().equals(SorceryInfoStorage.nullSorceryString);
     }
 
@@ -240,7 +241,7 @@ public class Sorcery {
         //when the energy key is pressed, handle that
         ServerPlayNetworking.registerGlobalReceiver(HandleKeybinds.EnergyKeyOn.TYPE,(payload, context)->{
             context.server().execute(()->{
-                if(isSorcerer(context.player())) return;
+                if(!isSorcerer(context.player())) return;
                 SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().energyKeyOn=true;
                 PracticeMod.LOGGER.info("Energy Key: {}" ,SorceryInfoStorage.sorceryData.get(context.player()).getSorcerer().energyKeyOn);
             });
