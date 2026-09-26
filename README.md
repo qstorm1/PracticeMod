@@ -1,8 +1,9 @@
 # Minecraft Jujitsu Kaisen Mod
 
 ## Setup
-Mod is located in build/libs/practice-mod-1.0.0.jar Requires Minecraft 1.21.11 fabric, if you don't know how to get fabric follow [this tutorial](https://www.youtube.com/watch?v=RpN94a2q8JI)
-If you just want to try the mod yourself, check out the releases to get a fake minecraft instance going (It's a little complex to do though)
+Mod is located in build/libs/practice-mod-1.0.0.jar or [git releases](https://github.com/qstorm1/PracticeMod/releases/tag/vbeta.1.0.0) Requires Minecraft 1.21.11 fabric, if you don't know how to get fabric follow [this tutorial](https://www.youtube.com/watch?v=RpN94a2q8JI)
+
+If you want to try the mod yourself but don't have minecraft, fork this mod with your IDE of choice and run the configuration called Minecraft Client (It's a little complex to do)
 
 Make sure to install all dependencies listed below
 ### Dependencies
